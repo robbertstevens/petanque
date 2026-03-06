@@ -9,6 +9,7 @@ This file provides guidance for AI coding agents working in this repository.
 - **Language**: TypeScript (strict mode)
 - **UI**: React 19 with Tailwind CSS v4
 - **Database**: SQLite with Drizzle ORM
+- **Auth**: better-auth with username/password
 - **Node Version**: v24 (see `.nvmrc`)
 
 ## Build, Lint, and Test Commands
@@ -62,12 +63,17 @@ npm run db:studio    # Open Drizzle Studio GUI
 petanque/
 ├── src/
 │   ├── app/              # Next.js App Router pages and layouts
+│   │   ├── api/auth/     # Auth API routes (better-auth)
 │   │   ├── layout.tsx    # Root layout (fonts, metadata)
 │   │   ├── page.tsx      # Home page
 │   │   └── globals.css   # Global styles (Tailwind CSS v4)
-│   └── db/               # Database layer
-│       ├── index.ts      # Database client export
-│       └── schema.ts     # Drizzle schema definitions
+│   ├── db/               # Database layer
+│   │   ├── index.ts      # Database client export
+│   │   ├── schema.ts     # Drizzle schema definitions
+│   │   └── auth-schema.ts # Auth tables (user, session, account, verification)
+│   └── lib/              # Shared utilities
+│       ├── auth.ts       # Auth server configuration
+│       └── auth-client.ts # Auth client for React
 ├── drizzle/              # Generated migrations (by drizzle-kit)
 ├── public/               # Static assets (images, icons)
 ├── drizzle.config.ts     # Drizzle Kit configuration
