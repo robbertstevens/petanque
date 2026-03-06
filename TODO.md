@@ -50,6 +50,7 @@
 
 - [ ] View upcoming matches (for my teams)
 - [ ] Match detail page
+- [ ] Keep score during the match
 - [ ] Submit match score (by any team member)
 - [ ] Admin can override/correct scores
 - [ ] Match history page
