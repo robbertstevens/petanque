@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
+import { AdminLink } from "@/components/admin-link";
+import { BecomeAdminButton } from "@/components/become-admin-button";
 import { signOut, useSession } from "@/lib/auth-client";
 
 export default function Dashboard() {
@@ -59,6 +61,8 @@ export default function Dashboard() {
           >
             My Teams
           </Link>
+          <AdminLink />
+          <BecomeAdminButton userId={session.user.id} />
         </nav>
 
         <button

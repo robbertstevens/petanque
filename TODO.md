@@ -26,19 +26,17 @@
   - [x] View "My Teams" page
   - [x] Team detail page (view members, leave team)
   - [x] Team captain can remove members
+- [x] Phase 3: Competition Management (Admin)
+  - [x] Admin dashboard page
+  - [x] Create competition form (name, dates, team size 2-3, etc.)
+  - [x] Manage groups within competition (create, rename, delete)
+  - [x] Assign teams to groups
+  - [x] View competition registrations
+  - [x] Generate round-robin schedule for group stage
+  - [x] Generate knockout bracket from group stage winners
+  - [x] Override/edit match scores
 
 ## To Do
-
-### Phase 3: Competition Management (Admin)
-
-- [ ] Admin dashboard page
-- [ ] Create competition form (name, dates, team size 2-3, etc.)
-- [ ] Manage groups within competition (create, rename, delete)
-- [ ] Assign teams to groups
-- [ ] View competition registrations
-- [ ] Generate round-robin schedule for group stage
-- [ ] Generate knockout bracket from group stage winners
-- [ ] Override/edit match scores
 
 ### Phase 4: Competition Registration (Users)
 
