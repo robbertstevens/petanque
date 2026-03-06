@@ -19,29 +19,15 @@
   - [x] Create `match` table (id, groupId, homeTeamId, awayTeamId, scheduledAt, status, round, isKnockout)
   - [x] Create `matchScore` table (matchId, homeScore, awayScore, submittedByUserId, confirmedAt)
   - [x] Run migrations and push schema
+- [x] Phase 2: Team Management
+  - [x] Create team page (form to create team with name)
+  - [x] Team invitation system (invite users by username)
+  - [x] Accept/decline team invitations
+  - [x] View "My Teams" page
+  - [x] Team detail page (view members, leave team)
+  - [x] Team captain can remove members
 
 ## To Do
-
-### Phase 1: Core Data Models
-
-- [ ] Add `isAdmin` field to user table
-- [ ] Create `team` table (id, name, createdAt, captainUserId)
-- [ ] Create `teamMember` table (teamId, userId, joinedAt)
-- [ ] Create `competition` table (id, name, description, startDate, endDate, teamSize, status)
-- [ ] Create `group` table (id, competitionId, name)
-- [ ] Create `competitionTeam` table (competitionId, teamId, groupId)
-- [ ] Create `match` table (id, groupId, homeTeamId, awayTeamId, scheduledAt, status, round, isKnockout)
-- [ ] Create `matchScore` table (matchId, homeScore, awayScore, submittedByUserId, confirmedAt)
-- [ ] Run migrations and push schema
-
-### Phase 2: Team Management
-
-- [ ] Create team page (form to create team with name)
-- [ ] Team invitation system (invite users by username/email)
-- [ ] Accept/decline team invitations
-- [ ] View "My Teams" page
-- [ ] Team detail page (view members, leave team)
-- [ ] Team captain can remove members
 
 ### Phase 3: Competition Management (Admin)
 

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -50,6 +51,15 @@ export default function Dashboard() {
             {session.user.email}
           </p>
         </div>
+
+        <nav className="mb-6 space-y-2">
+          <Link
+            href="/teams"
+            className="block w-full rounded-md bg-zinc-100 px-4 py-3 text-center font-medium text-black transition-colors hover:bg-zinc-200 dark:bg-zinc-800 dark:text-white dark:hover:bg-zinc-700"
+          >
+            My Teams
+          </Link>
+        </nav>
 
         <button
           onClick={handleSignOut}
