@@ -20,12 +20,15 @@ npm run build        # Build for production
 npm run start        # Start production server
 ```
 
-### Linting
+### Linting and Formatting
 
 ```bash
 npm run lint         # Run ESLint on the entire codebase
 npx eslint <file>    # Lint a specific file
 npx eslint --fix     # Auto-fix linting issues
+npm run format       # Format all files with Prettier
+npm run format:check # Check if files are formatted
+npx prettier --write <file>  # Format a specific file
 ```
 
 ### Testing
@@ -54,6 +57,7 @@ petanque/
 │       └── globals.css   # Global styles (Tailwind CSS v4)
 ├── public/               # Static assets (images, icons)
 ├── eslint.config.mjs     # ESLint flat config (v9)
+├── prettier.config.mjs   # Prettier config (with Tailwind plugin)
 ├── next.config.ts        # Next.js configuration
 ├── tsconfig.json         # TypeScript configuration
 ├── postcss.config.mjs    # PostCSS config (Tailwind)
@@ -169,8 +173,17 @@ Uses ESLint v9 with flat config:
 
 - `eslint-config-next/core-web-vitals` - Next.js rules with Core Web Vitals
 - `eslint-config-next/typescript` - TypeScript-specific rules
+- `eslint-config-prettier` - Disables ESLint rules that conflict with Prettier
 
 Ignored paths: `.next/`, `out/`, `build/`, `next-env.d.ts`
+
+## Prettier Configuration
+
+Uses Prettier with default settings plus Tailwind CSS plugin:
+
+- `prettier-plugin-tailwindcss` - Automatically sorts Tailwind CSS classes
+
+ESLint and Prettier are configured to work together without conflicts via `eslint-config-prettier`.
 
 ## Common Tasks
 
@@ -203,7 +216,6 @@ mkdir -p src/app/api/hello
 
 ## Important Notes
 
-- No Prettier is configured - rely on ESLint for formatting
 - No CI/CD is configured yet
 - React 19 features are available (use, Server Components, etc.)
 - Tailwind CSS v4 uses the new `@tailwindcss/postcss` plugin
