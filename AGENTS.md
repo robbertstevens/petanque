@@ -206,35 +206,6 @@ Uses Prettier with default settings plus Tailwind CSS plugin:
 
 ESLint and Prettier are configured to work together without conflicts via `eslint-config-prettier`.
 
-## Common Tasks
-
-### Adding a New Page
-
-Create a new directory in `src/app/` with a `page.tsx` file:
-
-```bash
-mkdir -p src/app/about
-# Create src/app/about/page.tsx
-```
-
-### Adding a New Component
-
-Create components in `src/components/` (create directory if needed):
-
-```bash
-mkdir -p src/components
-# Create src/components/Button.tsx
-```
-
-### Adding API Routes
-
-Create API routes in `src/app/api/`:
-
-```bash
-mkdir -p src/app/api/hello
-# Create src/app/api/hello/route.ts
-```
-
 ## Important Notes
 
 - No CI/CD is configured yet
