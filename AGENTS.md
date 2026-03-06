@@ -8,6 +8,7 @@ This file provides guidance for AI coding agents working in this repository.
 - **Type**: Next.js 16 application with App Router
 - **Language**: TypeScript (strict mode)
 - **UI**: React 19 with Tailwind CSS v4
+- **Database**: SQLite with Drizzle ORM
 - **Node Version**: v24 (see `.nvmrc`)
 
 ## Build, Lint, and Test Commands
@@ -46,16 +47,30 @@ No test framework is currently configured. When adding tests:
 npx tsc --noEmit     # Run TypeScript type checking without emitting files
 ```
 
+### Database
+
+```bash
+npm run db:generate  # Generate migrations from schema changes
+npm run db:migrate   # Run pending migrations
+npm run db:push      # Push schema changes directly (dev only)
+npm run db:studio    # Open Drizzle Studio GUI
+```
+
 ## Project Structure
 
 ```
 petanque/
 ├── src/
-│   └── app/              # Next.js App Router pages and layouts
-│       ├── layout.tsx    # Root layout (fonts, metadata)
-│       ├── page.tsx      # Home page
-│       └── globals.css   # Global styles (Tailwind CSS v4)
+│   ├── app/              # Next.js App Router pages and layouts
+│   │   ├── layout.tsx    # Root layout (fonts, metadata)
+│   │   ├── page.tsx      # Home page
+│   │   └── globals.css   # Global styles (Tailwind CSS v4)
+│   └── db/               # Database layer
+│       ├── index.ts      # Database client export
+│       └── schema.ts     # Drizzle schema definitions
+├── drizzle/              # Generated migrations (by drizzle-kit)
 ├── public/               # Static assets (images, icons)
+├── drizzle.config.ts     # Drizzle Kit configuration
 ├── eslint.config.mjs     # ESLint flat config (v9)
 ├── prettier.config.mjs   # Prettier config (with Tailwind plugin)
 ├── next.config.ts        # Next.js configuration
