@@ -8,6 +8,17 @@
 - [x] User registration & login pages
 - [x] Dashboard page with sign out
 - [x] ESLint + Prettier configuration
+- [x] Phase 1: Core Data Models
+  - [x] Create `userRole` table (admin tracking via separate table)
+  - [x] Create `team` table (id, name, createdAt, captainUserId)
+  - [x] Create `teamMember` table (teamId, userId, joinedAt)
+  - [x] Create `teamInvitation` table (with status: pending/accepted/declined)
+  - [x] Create `competition` table (with status: draft/registration/group_stage/knockout/completed)
+  - [x] Create `group` table (id, competitionId, name)
+  - [x] Create `competitionTeam` table (competitionId, teamId, groupId)
+  - [x] Create `match` table (id, groupId, homeTeamId, awayTeamId, scheduledAt, status, round, isKnockout)
+  - [x] Create `matchScore` table (matchId, homeScore, awayScore, submittedByUserId, confirmedAt)
+  - [x] Run migrations and push schema
 
 ## To Do
 
