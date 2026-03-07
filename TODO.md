@@ -41,17 +41,15 @@
   - [x] Register team for competition
   - [x] View "My Competitions" page
   - [x] Withdraw team from competition (before start)
+- [x] Phase 5: Match & Scoring
+  - [x] View upcoming matches (for my teams)
+  - [x] Match detail page
+  - [x] Keep score during the match
+  - [x] Submit match score (by any team member)
+  - [x] Admin can override/correct scores
+  - [x] Match history page
 
 ## To Do
-
-### Phase 5: Match & Scoring
-
-- [ ] View upcoming matches (for my teams)
-- [ ] Match detail page
-- [ ] Keep score during the match
-- [ ] Submit match score (by any team member)
-- [ ] Admin can override/correct scores
-- [ ] Match history page
 
 ### Phase 6: Standings & Results
 
