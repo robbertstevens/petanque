@@ -1,6 +1,6 @@
 "use server";
 
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, or } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 
@@ -34,14 +34,17 @@ async function getCurrentUser() {
 }
 
 // ============================================================================
-// Helper: Check if user is admin
+// Helper: Check if user is admin (or super_admin)
 // ============================================================================
 
 export async function isCurrentUserAdmin(): Promise<boolean> {
   const currentUser = await getCurrentUser();
 
   const role = await db.query.userRole.findFirst({
-    where: and(eq(userRole.userId, currentUser.id), eq(userRole.role, "admin")),
+    where: and(
+      eq(userRole.userId, currentUser.id),
+      or(eq(userRole.role, "admin"), eq(userRole.role, "super_admin")),
+    ),
   });
 
   return !!role;

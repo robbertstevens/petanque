@@ -3,7 +3,10 @@ import { headers } from "next/headers";
 import Link from "next/link";
 
 import { auth } from "@/lib/auth";
-import { isCurrentUserAdmin } from "@/lib/actions/competitions";
+import {
+  isCurrentUserAdminOrSuperAdmin,
+  isCurrentUserSuperAdmin,
+} from "@/lib/actions/users";
 
 export default async function AdminLayout({
   children,
@@ -18,11 +21,13 @@ export default async function AdminLayout({
     redirect("/");
   }
 
-  const isAdmin = await isCurrentUserAdmin();
+  const isAdminOrSuperAdmin = await isCurrentUserAdminOrSuperAdmin();
 
-  if (!isAdmin) {
+  if (!isAdminOrSuperAdmin) {
     redirect("/dashboard");
   }
+
+  const isSuperAdmin = await isCurrentUserSuperAdmin();
 
   return (
     <div className="min-h-screen bg-zinc-50 font-sans dark:bg-black">
@@ -45,6 +50,14 @@ export default async function AdminLayout({
               >
                 Competitions
               </Link>
+              {isSuperAdmin && (
+                <Link
+                  href="/admin/users"
+                  className="text-sm text-zinc-600 hover:text-black dark:text-zinc-400 dark:hover:text-white"
+                >
+                  Users
+                </Link>
+              )}
             </nav>
           </div>
           <Link

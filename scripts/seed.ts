@@ -7,6 +7,7 @@
  * - npm run db:seed
  *
  * Test Accounts (all passwords are "password"):
+ * - superadmin: Super admin user (can manage other admins)
  * - admin: Admin user
  * - alice: Captain of "Les Boulistes" and "Solo Warriors"
  * - bob: Captain of "Boule de Feu"
@@ -114,6 +115,11 @@ async function seedUsers(): Promise<Map<string, User>> {
   console.log("\nCreating users...");
 
   const usersToCreate = [
+    {
+      username: "superadmin",
+      email: "superadmin@example.com",
+      name: "Super Admin",
+    },
     { username: "admin", email: "admin@example.com", name: "Admin User" },
     { username: "alice", email: "alice@example.com", name: "Alice Johnson" },
     { username: "bob", email: "bob@example.com", name: "Bob Smith" },
@@ -168,25 +174,33 @@ async function seedUsers(): Promise<Map<string, User>> {
 }
 
 // ============================================================================
-// Seed Admin Role
+// Seed Admin Roles
 // ============================================================================
 
 async function seedAdminRole(users: Map<string, User>) {
-  console.log("\nAssigning admin role...");
+  console.log("\nAssigning admin roles...");
 
-  const adminUser = users.get("admin");
-  if (!adminUser) {
-    console.error("  Admin user not found!");
-    return;
+  // Make superadmin a super_admin
+  const superAdminUser = users.get("superadmin");
+  if (superAdminUser) {
+    await db.insert(schema.userRole).values({
+      id: generateUUID(),
+      userId: superAdminUser.id,
+      role: "super_admin",
+    });
+    console.log(`  Made ${superAdminUser.username} a super admin.`);
   }
 
-  await db.insert(schema.userRole).values({
-    id: generateUUID(),
-    userId: adminUser.id,
-    role: "admin",
-  });
-
-  console.log(`  Made ${adminUser.username} an admin.`);
+  // Make admin an admin
+  const adminUser = users.get("admin");
+  if (adminUser) {
+    await db.insert(schema.userRole).values({
+      id: generateUUID(),
+      userId: adminUser.id,
+      role: "admin",
+    });
+    console.log(`  Made ${adminUser.username} an admin.`);
+  }
 }
 
 // ============================================================================

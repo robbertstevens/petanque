@@ -23,7 +23,7 @@ export const userRole = sqliteTable(
       .notNull()
       .unique()
       .references(() => user.id, { onDelete: "cascade" }),
-    role: text("role", { enum: ["admin"] }).notNull(),
+    role: text("role", { enum: ["admin", "super_admin"] }).notNull(),
     createdAt: integer("created_at", { mode: "timestamp_ms" })
       .default(sql`(cast(unixepoch('subsecond') * 1000 as integer))`)
       .notNull(),
