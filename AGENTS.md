@@ -1,16 +1,14 @@
 # AGENTS.md
 
-This file provides guidance for AI coding agents working in this repository.
+Guidance for AI coding agents working in this repository.
 
 ## Project Overview
 
-- **Project**: Petanque
-- **Type**: Next.js 16 application with App Router
-- **Language**: TypeScript (strict mode)
-- **UI**: React 19 with Tailwind CSS v4
+- **Project**: Petanque - Competition management web application
+- **Stack**: Next.js 16 (App Router), React 19, TypeScript (strict), Tailwind CSS v4
 - **Database**: SQLite with Drizzle ORM
-- **Auth**: better-auth with username/password
-- **Node Version**: v24 (see `.nvmrc`)
+- **Auth**: better-auth with username/password (scrypt hashing)
+- **Node**: v24 (see `.nvmrc`)
 
 ## Build, Lint, and Test Commands
 
@@ -55,35 +53,20 @@ npm run db:generate  # Generate migrations from schema changes
 npm run db:migrate   # Run pending migrations
 npm run db:push      # Push schema changes directly (dev only)
 npm run db:studio    # Open Drizzle Studio GUI
+npm run db:seed      # Seed database with test data (all passwords: 'password')
 ```
 
 ## Project Structure
 
-```
-petanque/
-├── src/
-│   ├── app/              # Next.js App Router pages and layouts
-│   │   ├── api/auth/     # Auth API routes (better-auth)
-│   │   ├── layout.tsx    # Root layout (fonts, metadata)
-│   │   ├── page.tsx      # Home page
-│   │   └── globals.css   # Global styles (Tailwind CSS v4)
-│   ├── db/               # Database layer
-│   │   ├── index.ts      # Database client export
-│   │   ├── schema.ts     # Drizzle schema definitions
-│   │   └── auth-schema.ts # Auth tables (user, session, account, verification)
-│   └── lib/              # Shared utilities
-│       ├── auth.ts       # Auth server configuration
-│       └── auth-client.ts # Auth client for React
-├── drizzle/              # Generated migrations (by drizzle-kit)
-├── public/               # Static assets (images, icons)
-├── drizzle.config.ts     # Drizzle Kit configuration
-├── eslint.config.mjs     # ESLint flat config (v9)
-├── prettier.config.mjs   # Prettier config (with Tailwind plugin)
-├── next.config.ts        # Next.js configuration
-├── tsconfig.json         # TypeScript configuration
-├── postcss.config.mjs    # PostCSS config (Tailwind)
-└── package.json          # Project manifest
-```
+- `src/app/` - Next.js App Router pages and layouts
+  - `api/auth/` - Auth API routes (better-auth)
+  - `admin/` - Admin pages, `competitions/` - User-facing, `teams/` - Team management
+- `src/components/` - Reusable UI components
+- `src/db/` - Database layer (schema, relations, client)
+- `src/lib/actions/` - Server actions (teams.ts, competitions.ts)
+- `src/lib/auth.ts` - Auth server config, `auth-client.ts` - React client
+- `scripts/seed.ts` - Database seed script
+- `drizzle/` - Generated migrations
 
 ## Code Style Guidelines
 
@@ -105,109 +88,67 @@ Order imports as follows (with blank lines between groups):
 4. Relative imports
 5. Style imports
 
-```typescript
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-
-import { someUtil } from "@/lib/utils";
-
-import "./globals.css";
-```
-
 ### Path Aliases
 
-Use the `@/*` alias for imports from the `src/` directory:
+Use the `@/*` alias for imports from the `src/` directory.
+
+### Server Actions
+
+Place server actions in `src/lib/actions/`:
+
+- Start with `"use server"` directive
+- Use `getCurrentUser()` helper to verify auth via `auth.api.getSession({ headers: await headers() })`
+- Return `{ error: string }` on failure, `{ success: true, ...data }` on success
+- Call `revalidatePath()` after mutations
+
+### Client Components with Forms
+
+Use `useActionState` for form handling with signature:
 
 ```typescript
-// Good
-import { Button } from "@/components/Button";
-
-// Avoid
-import { Button } from "../../../components/Button";
-```
-
-### React Components
-
-- Use functional components with TypeScript
-- Export components as default for pages, named exports for reusable components
-- Use Next.js `Image` component for images (automatic optimization)
-- Use `next/font` for font optimization
-
-```typescript
-// Page component (default export)
-export default function HomePage() {
-  return <div>...</div>;
-}
-
-// Reusable component (named export)
-export function Button({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <button>{children}</button>;
-}
+const [state, formAction, isPending] = useActionState<State, FormData>(
+  actionFn,
+  null,
+);
 ```
 
 ### Styling
 
-- Use Tailwind CSS utility classes for styling
-- Tailwind CSS v4 with `@import "tailwindcss"` syntax
-- Support dark mode via `dark:` prefix and `prefers-color-scheme`
+- Use Tailwind CSS utility classes
+- Support dark mode via `dark:` prefix
 - Use CSS custom properties for theme values (see `globals.css`)
-- Use `@theme inline` directive for Tailwind CSS v4 theme customization
-
-```tsx
-<div className="flex items-center bg-white dark:bg-black">
-```
 
 ### Naming Conventions
 
-- **Files**: kebab-case for utilities (`auth-utils.ts`), PascalCase for components (`Button.tsx`)
-- **Components**: PascalCase (`HomePage`, `UserProfile`)
-- **Functions**: camelCase (`getUserData`, `handleSubmit`)
+- **Files**: kebab-case for utilities (`auth-utils.ts`), kebab-case for components (`create-team-form.tsx`)
+- **Components**: PascalCase (`CreateTeamForm`, `UserProfile`)
+- **Functions/variables**: camelCase (`getUserData`, `handleSubmit`)
 - **Constants**: SCREAMING_SNAKE_CASE for true constants (`API_URL`)
 - **Types/Interfaces**: PascalCase (`UserProps`, `ApiResponse`)
+- **Database tables**: camelCase singular (`team`, `teamMember`, `competition`)
 
 ### Error Handling
 
+- Server actions return `{ error: string }` on failure
 - Use try-catch blocks for async operations
-- Provide meaningful error messages
 - Use Next.js error boundaries (`error.tsx`) for page-level errors
-- Log errors appropriately (avoid exposing sensitive data)
+- Never expose sensitive data in error messages
 
-### Next.js Specific
+### Database Patterns
 
-- Place pages in `src/app/` using App Router conventions
-- Use `page.tsx` for page components
-- Use `layout.tsx` for layouts
-- Use `loading.tsx` for loading states
-- Use `error.tsx` for error handling
-- Use `not-found.tsx` for 404 pages
-- Metadata export for SEO: `export const metadata: Metadata = { ... }`
+- Use Drizzle's query API with relations for reads: `db.query.team.findFirst({ with: { members: true } })`
+- Use Drizzle's insert/update/delete for writes
+- Define relations in schema files alongside table definitions
+- Use `crypto.randomUUID()` for primary keys
 
-### React Compiler
+## React Compiler
 
 This project has React Compiler enabled (`reactCompiler: true` in `next.config.ts`).
-The compiler automatically optimizes React components. Follow React rules of hooks
-and component purity for best results.
-
-## ESLint Configuration
-
-Uses ESLint v9 with flat config:
-
-- `eslint-config-next/core-web-vitals` - Next.js rules with Core Web Vitals
-- `eslint-config-next/typescript` - TypeScript-specific rules
-- `eslint-config-prettier` - Disables ESLint rules that conflict with Prettier
-
-Ignored paths: `.next/`, `out/`, `build/`, `next-env.d.ts`
-
-## Prettier Configuration
-
-Uses Prettier with default settings plus Tailwind CSS plugin:
-
-- `prettier-plugin-tailwindcss` - Automatically sorts Tailwind CSS classes
-
-ESLint and Prettier are configured to work together without conflicts via `eslint-config-prettier`.
+The compiler automatically optimizes components - no need for manual `useMemo`/`useCallback`.
+Follow React rules of hooks and component purity for best results.
 
 ## Important Notes
 
-- No CI/CD is configured yet
-- React 19 features are available (use, Server Components, etc.)
-- Tailwind CSS v4 uses the new `@tailwindcss/postcss` plugin
+- better-auth uses scrypt from `@noble/hashes` for password hashing (not bcrypt)
+- Competition statuses: `draft`, `registration`, `group_stage`, `knockout`, `completed`
+- Tailwind CSS v4 uses `@import "tailwindcss"` and `@theme inline` directive
