@@ -536,6 +536,29 @@ export async function generateKnockoutBracket(competitionId: string) {
   return { success: true, matchCount: firstRoundMatches.length };
 }
 
+// ============================================================================
+// Standing Types (exported for use in components)
+// ============================================================================
+
+export type TeamStanding = {
+  teamId: string;
+  teamName: string;
+  points: number;
+  wins: number;
+  losses: number;
+  draws: number;
+  played: number;
+  scored: number;
+  conceded: number;
+  difference: number;
+};
+
+export type GroupStandings = {
+  groupId: string;
+  groupName: string;
+  standings: TeamStanding[];
+};
+
 // Helper function to calculate group standings
 function calculateGroupStandings(grp: {
   competitionTeams: { teamId: string }[];
@@ -993,4 +1016,167 @@ export async function makeUserAdmin(userId: string) {
   revalidatePath("/admin");
   revalidatePath("/dashboard");
   return { success: true };
+}
+
+// ============================================================================
+// USER-FACING: Get Competition Standings (Groups + Knockout)
+// ============================================================================
+
+export async function getCompetitionStandings(competitionId: string) {
+  await getCurrentUser(); // Ensure authenticated
+
+  const comp = await db.query.competition.findFirst({
+    where: eq(competition.id, competitionId),
+    with: {
+      groups: {
+        with: {
+          competitionTeams: {
+            with: {
+              team: true,
+            },
+          },
+          matches: {
+            with: {
+              homeTeam: true,
+              awayTeam: true,
+              score: true,
+            },
+          },
+        },
+      },
+      matches: {
+        with: {
+          homeTeam: true,
+          awayTeam: true,
+          score: true,
+        },
+      },
+    },
+  });
+
+  if (!comp) {
+    return null;
+  }
+
+  // Don't show standings for draft competitions
+  if (comp.status === "draft") {
+    return null;
+  }
+
+  // Calculate standings for each group
+  const groupStandings: GroupStandings[] = comp.groups.map((grp) => {
+    const rawStandings = calculateGroupStandings(grp);
+    const teamMap = new Map(
+      grp.competitionTeams.map((ct) => [ct.teamId, ct.team.name]),
+    );
+
+    return {
+      groupId: grp.id,
+      groupName: grp.name,
+      standings: rawStandings.map((s) => ({
+        teamId: s.teamId,
+        teamName: teamMap.get(s.teamId) || "Unknown",
+        points: s.points,
+        wins: s.wins,
+        losses: s.losses,
+        draws: s.draws,
+        played: s.wins + s.losses + s.draws,
+        scored: s.scored,
+        conceded: s.conceded,
+        difference: s.scored - s.conceded,
+      })),
+    };
+  });
+
+  // Get knockout matches
+  const knockoutMatches = comp.matches
+    .filter((m) => m.isKnockout)
+    .map((m) => ({
+      id: m.id,
+      round: m.round,
+      homeTeamId: m.homeTeamId,
+      homeTeamName: m.homeTeam.name,
+      awayTeamId: m.awayTeamId,
+      awayTeamName: m.awayTeam.name,
+      status: m.status,
+      homeScore: m.score?.homeScore ?? null,
+      awayScore: m.score?.awayScore ?? null,
+      winnerId:
+        m.score && m.status === "completed"
+          ? m.score.homeScore > m.score.awayScore
+            ? m.homeTeamId
+            : m.awayTeamId
+          : null,
+    }))
+    .sort((a, b) => a.round - b.round);
+
+  return {
+    id: comp.id,
+    name: comp.name,
+    description: comp.description,
+    status: comp.status,
+    startDate: comp.startDate,
+    endDate: comp.endDate,
+    groupStandings,
+    knockoutMatches,
+  };
+}
+
+// ============================================================================
+// USER-FACING: Get Completed Competitions (Archive)
+// ============================================================================
+
+export async function getCompletedCompetitions() {
+  await getCurrentUser(); // Ensure authenticated
+
+  const competitions = await db.query.competition.findMany({
+    where: eq(competition.status, "completed"),
+    orderBy: desc(competition.endDate),
+    with: {
+      competitionTeams: {
+        with: {
+          team: true,
+        },
+      },
+    },
+  });
+
+  return competitions.map((c) => ({
+    id: c.id,
+    name: c.name,
+    description: c.description,
+    teamSize: c.teamSize,
+    startDate: c.startDate,
+    endDate: c.endDate,
+    teamCount: c.competitionTeams.length,
+  }));
+}
+
+// ============================================================================
+// USER-FACING: Get Active Competitions (In Progress)
+// ============================================================================
+
+export async function getActiveCompetitions() {
+  await getCurrentUser(); // Ensure authenticated
+
+  const competitions = await db.query.competition.findMany({
+    orderBy: desc(competition.createdAt),
+    with: {
+      competitionTeams: true,
+    },
+  });
+
+  // Filter to only show non-draft competitions
+  return competitions
+    .filter((c) => c.status !== "draft")
+    .map((c) => ({
+      id: c.id,
+      name: c.name,
+      description: c.description,
+      teamSize: c.teamSize,
+      startDate: c.startDate,
+      endDate: c.endDate,
+      status: c.status,
+      teamCount: c.competitionTeams.length,
+    }));
 }

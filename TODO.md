@@ -48,15 +48,11 @@
   - [x] Submit match score (by any team member)
   - [x] Admin can override/correct scores
   - [x] Match history page
-
-## To Do
-
-### Phase 6: Standings & Results
-
-- [ ] Group standings table (points, wins, losses, score differential)
-- [ ] Knockout bracket visualization
-- [ ] Competition results page (winners, final standings)
-- [ ] Historical competition archive
+- [x] Phase 6: Standings & Results
+  - [x] Group standings table (points, wins, losses, score differential)
+  - [x] Knockout bracket visualization
+  - [x] Competition results page (winners, final standings)
+  - [x] Historical competition archive
 
 ## Future Enhancements (Nice to Have)
 

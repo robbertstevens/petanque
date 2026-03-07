@@ -33,6 +33,8 @@ export default async function CompetitionsLayout({
           <nav className="mt-4 flex gap-4">
             <NavLink href="/competitions">Browse</NavLink>
             <NavLink href="/competitions/my">My Competitions</NavLink>
+            <NavLink href="/competitions/standings">Standings</NavLink>
+            <NavLink href="/competitions/archive">Archive</NavLink>
           </nav>
         </div>
       </header>

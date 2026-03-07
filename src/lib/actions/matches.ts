@@ -1,17 +1,11 @@
 "use server";
 
-import { eq, and, or, inArray, desc } from "drizzle-orm";
+import { eq, or, inArray, desc } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 
 import { db } from "@/db";
-import {
-  match,
-  matchScore,
-  teamMember,
-  team,
-  competition,
-} from "@/db/competition-schema";
+import { match, matchScore, teamMember, team } from "@/db/competition-schema";
 import { auth } from "@/lib/auth";
 
 // ============================================================================
