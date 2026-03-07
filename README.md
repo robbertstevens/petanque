@@ -1,36 +1,108 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Petanque Competition Management
+
+A Next.js web application for managing Petanque competitions, teams, and matches.
+
+## Features
+
+- **User Authentication** - Sign up, sign in, and manage your account
+- **Team Management** - Create teams, invite players, manage members
+- **Competition Management** - Create and organize competitions (admin only)
+- **Competition Phases** - Registration → Group Stage → Knockout → Completed
+- **Match Scoring** - Submit and confirm match scores (first to 13 points wins)
+- **Standings & Results** - View group standings, knockout brackets, and final results
+- **Role-Based Access** - Super admins can manage other admins
+
+## Tech Stack
+
+- **Framework**: Next.js 16 (App Router)
+- **Language**: TypeScript (strict mode)
+- **Database**: Turso (LibSQL) with Drizzle ORM
+- **Authentication**: better-auth with username/password
+- **Styling**: Tailwind CSS v4 with dark mode
+- **Password Hashing**: scrypt (via @noble/hashes)
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js v24 (see `.nvmrc`)
+- Turso database (or local SQLite for development)
+
+### Environment Variables
+
+Create a `.env` file with:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Auth secret (generate with: openssl rand -base64 32)
+AUTH_SECRET=your-secret-here
+
+# Turso database (for production)
+TURSO_DATABASE_URL=libsql://your-database.turso.io
+TURSO_AUTH_TOKEN=your-auth-token
+
+# Or SQLite for local development
+DATABASE_URL=file:./local.db
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+# Install dependencies
+npm install
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Generate database schema
+npm run db:generate
 
-## Learn More
+# Push schema to database
+npm run db:push
 
-To learn more about Next.js, take a look at the following resources:
+# Seed with test data (optional)
+npm run db:seed
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Start development server
+npm run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Test Accounts (after seeding)
 
-## Deploy on Vercel
+All passwords are `password`:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `superadmin` - Super admin (can manage other admins)
+- `admin` - Admin (can manage competitions)
+- `alice`, `bob`, `eve` - Team captains
+- `charlie`, `diana`, `frank`, `grace` - Team members
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Commands
+
+```bash
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run start        # Start production server
+npm run lint         # Run ESLint
+npm run format       # Format with Prettier
+npx tsc --noEmit     # Type check
+npm run db:generate  # Generate migrations
+npm run db:push      # Push schema to database
+npm run db:seed      # Seed database with test data
+npm run db:studio    # Open Drizzle Studio
+```
+
+## Project Structure
+
+- `src/app/` - Next.js App Router pages
+  - `api/auth/` - Auth API routes
+  - `admin/` - Admin pages
+  - `competitions/` - Competition pages
+  - `dashboard/` - User dashboard
+  - `matches/` - Match pages
+  - `teams/` - Team pages
+- `src/components/` - Reusable UI components
+- `src/db/` - Database schema and client
+- `src/lib/actions/` - Server actions
+- `scripts/` - Utility scripts (seed, etc.)
+
+## Petanque Rules
+
+- Teams of 2-3 players
+- First to 13 points wins a match
+- Competition formats: Group stage → Knockout bracket
