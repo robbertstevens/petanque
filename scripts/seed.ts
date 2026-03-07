@@ -570,13 +570,14 @@ async function seedMatches(
   const admin = users.get("admin");
   if (!admin) return;
 
-  // Spring Cup 2025 - Group A matches (in progress - some with scores)
+  // Spring Cup 2025 - Group A matches (in progress - mixed statuses for testing)
   const springCup = competitions.get("Spring Cup 2025");
   const springGroupA = groups.get("Spring Cup 2025 - Group A");
 
   if (springCup && springGroupA) {
     const lesBoulistes = teams.get("Les Boulistes");
     const bouleDeFeu = teams.get("Boule de Feu");
+    const lesCochonnets = teams.get("Les Cochonnets");
 
     if (lesBoulistes && bouleDeFeu) {
       // Match 1: Les Boulistes vs Boule de Feu (completed with score)
@@ -604,6 +605,70 @@ async function seedMatches(
 
       console.log(
         `  Spring Cup - Group A: Les Boulistes 13 - 8 Boule de Feu (completed)`,
+      );
+
+      // Match 2: Boule de Feu vs Les Boulistes (reverse fixture - IN PROGRESS)
+      const match2Id = generateUUID();
+      await db.insert(schema.match).values({
+        id: match2Id,
+        competitionId: springCup.id,
+        groupId: springGroupA.id,
+        homeTeamId: bouleDeFeu.id,
+        awayTeamId: lesBoulistes.id,
+        round: 2,
+        isKnockout: false,
+        status: "in_progress",
+      });
+
+      // Partial score for in-progress match
+      await db.insert(schema.matchScore).values({
+        id: generateUUID(),
+        matchId: match2Id,
+        homeScore: 7,
+        awayScore: 5,
+        submittedByUserId: admin.id,
+      });
+
+      console.log(
+        `  Spring Cup - Group A: Boule de Feu 7 - 5 Les Boulistes (in progress)`,
+      );
+    }
+
+    // Add Les Cochonnets to Group A for more matches
+    if (lesCochonnets && lesBoulistes && bouleDeFeu) {
+      // Update Les Cochonnets to Group A (they were in Group B)
+      // Match 3: Les Cochonnets vs Les Boulistes (scheduled - ready to play)
+      const match3Id = generateUUID();
+      await db.insert(schema.match).values({
+        id: match3Id,
+        competitionId: springCup.id,
+        groupId: springGroupA.id,
+        homeTeamId: lesCochonnets.id,
+        awayTeamId: lesBoulistes.id,
+        round: 2,
+        isKnockout: false,
+        status: "scheduled",
+      });
+
+      console.log(
+        `  Spring Cup - Group A: Les Cochonnets vs Les Boulistes (scheduled)`,
+      );
+
+      // Match 4: Les Cochonnets vs Boule de Feu (scheduled)
+      const match4Id = generateUUID();
+      await db.insert(schema.match).values({
+        id: match4Id,
+        competitionId: springCup.id,
+        groupId: springGroupA.id,
+        homeTeamId: lesCochonnets.id,
+        awayTeamId: bouleDeFeu.id,
+        round: 3,
+        isKnockout: false,
+        status: "scheduled",
+      });
+
+      console.log(
+        `  Spring Cup - Group A: Les Cochonnets vs Boule de Feu (scheduled)`,
       );
     }
   }
