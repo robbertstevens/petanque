@@ -5,9 +5,13 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useEffect } from "react";
 
-import { createCompetition } from "@/lib/actions/competitions";
+import { createCompetition } from "@/lib/actions/competitions-admin";
 
-type State = { error?: string; success?: boolean; competitionId?: string } | null;
+type State = {
+  error?: string;
+  success?: boolean;
+  competitionId?: string;
+} | null;
 
 export default function NewCompetitionPage() {
   const router = useRouter();
@@ -59,7 +63,7 @@ export default function NewCompetitionPage() {
             minLength={3}
             maxLength={100}
             placeholder="Summer Tournament 2024"
-            className="w-full rounded-md border border-zinc-300 px-3 py-2 text-black focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+            className="w-full rounded-md border border-zinc-300 px-3 py-2 text-black focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
           />
         </div>
 
@@ -75,7 +79,7 @@ export default function NewCompetitionPage() {
             name="description"
             rows={3}
             placeholder="Optional description of the competition..."
-            className="w-full rounded-md border border-zinc-300 px-3 py-2 text-black focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+            className="w-full rounded-md border border-zinc-300 px-3 py-2 text-black focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
           />
         </div>
 
@@ -91,7 +95,7 @@ export default function NewCompetitionPage() {
             name="teamSize"
             required
             defaultValue="2"
-            className="w-full rounded-md border border-zinc-300 px-3 py-2 text-black focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+            className="w-full rounded-md border border-zinc-300 px-3 py-2 text-black focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
           >
             <option value="2">Doublette (2 players)</option>
             <option value="3">Triplette (3 players)</option>
@@ -110,7 +114,7 @@ export default function NewCompetitionPage() {
               id="startDate"
               name="startDate"
               type="date"
-              className="w-full rounded-md border border-zinc-300 px-3 py-2 text-black focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+              className="w-full rounded-md border border-zinc-300 px-3 py-2 text-black focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
             />
           </div>
           <div>
@@ -124,7 +128,7 @@ export default function NewCompetitionPage() {
               id="endDate"
               name="endDate"
               type="date"
-              className="w-full rounded-md border border-zinc-300 px-3 py-2 text-black focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+              className="w-full rounded-md border border-zinc-300 px-3 py-2 text-black focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
             />
           </div>
         </div>

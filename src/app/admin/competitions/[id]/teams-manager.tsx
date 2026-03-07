@@ -3,7 +3,7 @@
 import { useActionState } from "react";
 import { useRouter } from "next/navigation";
 
-import { assignTeamToGroup } from "@/lib/actions/competitions";
+import { assignTeamToGroup } from "@/lib/actions/competitions-admin";
 
 type Team = {
   id: string;

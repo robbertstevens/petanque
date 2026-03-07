@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 
-import { getCompetition } from "@/lib/actions/competitions";
+import { getCompetitionAdmin } from "@/lib/actions/competitions-admin";
 import { StatusManager } from "./status-manager";
 import { GroupsManager } from "./groups-manager";
 import { TeamsManager } from "./teams-manager";
@@ -14,7 +14,7 @@ type Props = {
 
 export default async function CompetitionDetailPage({ params }: Props) {
   const { id } = await params;
-  const competition = await getCompetition(id);
+  const competition = await getCompetitionAdmin(id);
 
   if (!competition) {
     notFound();

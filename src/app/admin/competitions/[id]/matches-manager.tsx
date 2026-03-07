@@ -4,7 +4,7 @@ import { useActionState } from "react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import { updateMatchScore } from "@/lib/actions/competitions";
+import { updateMatchScore } from "@/lib/actions/competitions-admin";
 
 type Match = {
   id: string;
@@ -50,7 +50,10 @@ export function MatchesManager({
               No matches scheduled. Generate schedule from the Groups section.
             </p>
           ) : (
-            <MatchesTable matches={group.matches} canEditScores={canEditScores} />
+            <MatchesTable
+              matches={group.matches}
+              canEditScores={canEditScores}
+            />
           )}
         </div>
       ))}
@@ -61,7 +64,10 @@ export function MatchesManager({
           <h4 className="mb-3 font-medium text-black dark:text-white">
             Knockout Stage
           </h4>
-          <MatchesTable matches={knockoutMatches} canEditScores={canEditScores} />
+          <MatchesTable
+            matches={knockoutMatches}
+            canEditScores={canEditScores}
+          />
         </div>
       )}
 
@@ -152,8 +158,10 @@ function MatchRow({
 
   const statusStyles: Record<string, string> = {
     scheduled: "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
-    in_progress: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-    completed: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+    in_progress:
+      "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+    completed:
+      "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
     cancelled: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
   };
 

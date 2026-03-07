@@ -9,7 +9,7 @@ import {
   updateGroup,
   deleteGroup,
   generateGroupSchedule,
-} from "@/lib/actions/competitions";
+} from "@/lib/actions/competitions-admin";
 
 type Group = {
   id: string;
@@ -46,7 +46,9 @@ export function GroupsManager({
               key={group.id}
               group={group}
               canModify={canModify}
-              canGenerateSchedule={status === "registration" || status === "group_stage"}
+              canGenerateSchedule={
+                status === "registration" || status === "group_stage"
+              }
             />
           ))}
         </div>
@@ -83,7 +85,7 @@ function CreateGroupForm({
         name="name"
         placeholder="Group name (e.g., Group A)"
         required
-        className="flex-1 rounded-md border border-zinc-300 px-3 py-2 text-black focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white sm:max-w-xs"
+        className="flex-1 rounded-md border border-zinc-300 px-3 py-2 text-black focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 focus:outline-none sm:max-w-xs dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
       />
       <button
         type="submit"
@@ -144,10 +146,7 @@ function GroupCard({
   return (
     <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
       {isEditing ? (
-        <EditGroupForm
-          group={group}
-          onClose={() => setIsEditing(false)}
-        />
+        <EditGroupForm group={group} onClose={() => setIsEditing(false)} />
       ) : (
         <>
           <div className="flex items-start justify-between">
@@ -245,7 +244,7 @@ function EditGroupForm({
         name="name"
         defaultValue={group.name}
         required
-        className="w-full rounded-md border border-zinc-300 px-3 py-2 text-black focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+        className="w-full rounded-md border border-zinc-300 px-3 py-2 text-black focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
       />
       <div className="flex gap-2">
         <button

@@ -1,4 +1,4 @@
-import type { GroupStandings } from "@/lib/actions/competitions";
+import type { GroupStandings } from "@/lib/actions/competitions-user";
 import { GroupStandingsTable } from "../standings/[id]/group-standings-table";
 import { KnockoutBracket } from "../standings/[id]/knockout-bracket";
 

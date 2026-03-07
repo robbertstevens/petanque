@@ -4,7 +4,7 @@ import { useActionState } from "react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import { registerTeamForCompetition } from "@/lib/actions/competitions";
+import { registerTeamForCompetition } from "@/lib/actions/competitions-user";
 
 type Team = Readonly<{
   id: string;

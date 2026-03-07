@@ -4,10 +4,8 @@ import { headers } from "next/headers";
 
 import { auth } from "@/lib/auth";
 import { getMyTeams, getMyInvitations } from "@/lib/actions/teams";
-import {
-  getMyCompetitions,
-  isCurrentUserAdmin,
-} from "@/lib/actions/competitions";
+import { getMyCompetitions } from "@/lib/actions/competitions-user";
+import { isCurrentUserAdmin } from "@/lib/actions/competitions-admin";
 import { getUpcomingMatches, getMatchHistory } from "@/lib/actions/matches";
 
 import { SignOutButton } from "./sign-out-button";

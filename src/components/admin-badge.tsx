@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import { isCurrentUserAdmin } from "@/lib/actions/competitions";
+import { isCurrentUserAdmin } from "@/lib/actions/competitions-admin";
 
 export function AdminBadge() {
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);

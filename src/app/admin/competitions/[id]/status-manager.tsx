@@ -3,16 +3,24 @@
 import { useActionState } from "react";
 import { useRouter } from "next/navigation";
 
-import { updateCompetitionStatus } from "@/lib/actions/competitions";
+import { updateCompetitionStatus } from "@/lib/actions/competitions-admin";
 
-type Status = "draft" | "registration" | "group_stage" | "knockout" | "completed";
+type Status =
+  | "draft"
+  | "registration"
+  | "group_stage"
+  | "knockout"
+  | "completed";
 type State = { error?: string; success?: boolean } | null;
 
 const statusStyles: Record<Status, string> = {
   draft: "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
-  registration: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-  group_stage: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-  knockout: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400",
+  registration:
+    "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+  group_stage:
+    "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+  knockout:
+    "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400",
   completed: "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
 };
 

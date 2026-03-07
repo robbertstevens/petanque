@@ -1,4 +1,4 @@
-import type { GroupStandings } from "@/lib/actions/competitions";
+import type { GroupStandings } from "@/lib/actions/competitions-user";
 
 type KnockoutMatch = {
   id: string;

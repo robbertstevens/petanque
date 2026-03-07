@@ -2,28 +2,11 @@
 
 import { eq, and, or } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { headers } from "next/headers";
 
 import { db } from "@/db";
 import { userRole } from "@/db/competition-schema";
 import { user } from "@/db/auth-schema";
-import { auth } from "@/lib/auth";
-
-// ============================================================================
-// Helper: Get current user from session
-// ============================================================================
-
-async function getCurrentUser() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session?.user) {
-    throw new Error("Unauthorized");
-  }
-
-  return session.user;
-}
+import { getCurrentUser } from "./auth-utils";
 
 // ============================================================================
 // Helper: Check if user is super-admin

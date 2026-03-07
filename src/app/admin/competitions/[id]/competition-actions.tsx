@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import {
   deleteCompetition,
   generateKnockoutBracket,
-} from "@/lib/actions/competitions";
+} from "@/lib/actions/competitions-admin";
 
 type State = { error?: string; success?: boolean; matchCount?: number } | null;
 

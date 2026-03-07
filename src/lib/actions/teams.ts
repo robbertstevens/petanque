@@ -2,28 +2,11 @@
 
 import { eq, and } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { headers } from "next/headers";
 
 import { db } from "@/db";
 import { team, teamMember, teamInvitation } from "@/db/competition-schema";
 import { user } from "@/db/auth-schema";
-import { auth } from "@/lib/auth";
-
-// ============================================================================
-// Helper: Get current user from session
-// ============================================================================
-
-async function getCurrentUser() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session?.user) {
-    throw new Error("Unauthorized");
-  }
-
-  return session.user;
-}
+import { getCurrentUser } from "./auth-utils";
 
 // ============================================================================
 // Create Team
@@ -319,10 +302,7 @@ export async function leaveTeam(teamId: string) {
   await db
     .delete(teamMember)
     .where(
-      and(
-        eq(teamMember.teamId, teamId),
-        eq(teamMember.userId, currentUser.id),
-      ),
+      and(eq(teamMember.teamId, teamId), eq(teamMember.userId, currentUser.id)),
     );
 
   revalidatePath("/teams");

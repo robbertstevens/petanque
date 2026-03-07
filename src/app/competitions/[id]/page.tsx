@@ -2,11 +2,11 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 
 import {
-  getCompetitionForUser,
+  getCompetition,
   getMyTeamsAsCaptain,
   getCompetitionStandings,
   getCompetitionMatches,
-} from "@/lib/actions/competitions";
+} from "@/lib/actions/competitions-user";
 import { RegisterTeamForm } from "./register-team-form";
 import { CompetitionProgress } from "./competition-progress";
 import { ScheduleSection } from "./schedule-section";
@@ -33,7 +33,7 @@ export default async function CompetitionDetailPage({
   const currentTab = tab && tabs.some((t) => t.key === tab) ? tab : "overview";
 
   const [competition, myTeams, standings, matches] = await Promise.all([
-    getCompetitionForUser(id),
+    getCompetition(id),
     getMyTeamsAsCaptain(),
     getCompetitionStandings(id),
     getCompetitionMatches(id),
@@ -175,7 +175,7 @@ export default async function CompetitionDetailPage({
 // Tab Components
 // ============================================================================
 
-type Competition = Awaited<ReturnType<typeof getCompetitionForUser>>;
+type Competition = Awaited<ReturnType<typeof getCompetition>>;
 type Team = Awaited<ReturnType<typeof getMyTeamsAsCaptain>>[number];
 
 function OverviewTab({

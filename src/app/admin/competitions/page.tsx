@@ -1,9 +1,9 @@
 import Link from "next/link";
 
-import { getCompetitions } from "@/lib/actions/competitions";
+import { getAllCompetitions } from "@/lib/actions/competitions-admin";
 
 export default async function CompetitionsPage() {
-  const competitions = await getCompetitions();
+  const competitions = await getAllCompetitions();
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-8">
@@ -93,10 +93,7 @@ export default async function CompetitionsPage() {
                       ? new Date(comp.startDate).toLocaleDateString()
                       : "-"}
                     {comp.endDate && (
-                      <>
-                        {" "}
-                        - {new Date(comp.endDate).toLocaleDateString()}
-                      </>
+                      <> - {new Date(comp.endDate).toLocaleDateString()}</>
                     )}
                   </td>
                   <td className="px-4 py-3">

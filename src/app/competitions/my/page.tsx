@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { getMyCompetitions } from "@/lib/actions/competitions";
+import { getMyCompetitions } from "@/lib/actions/competitions-user";
 import { WithdrawButton } from "./withdraw-button";
 
 export default async function MyCompetitionsPage() {

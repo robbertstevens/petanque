@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { getAvailableCompetitions } from "@/lib/actions/competitions";
+import { getAvailableCompetitions } from "@/lib/actions/competitions-user";
 
 export default async function CompetitionsBrowsePage() {
   const competitions = await getAvailableCompetitions();

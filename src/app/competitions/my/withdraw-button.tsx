@@ -4,7 +4,7 @@ import { useActionState } from "react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-import { withdrawTeamFromCompetition } from "@/lib/actions/competitions";
+import { withdrawTeamFromCompetition } from "@/lib/actions/competitions-user";
 
 type State = { error?: string; success?: boolean } | null;
 
