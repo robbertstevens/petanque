@@ -61,6 +61,18 @@ export default function Dashboard() {
           >
             My Teams
           </Link>
+          <Link
+            href="/competitions"
+            className="block w-full rounded-md bg-zinc-100 px-4 py-3 text-center font-medium text-black transition-colors hover:bg-zinc-200 dark:bg-zinc-800 dark:text-white dark:hover:bg-zinc-700"
+          >
+            Browse Competitions
+          </Link>
+          <Link
+            href="/competitions/my"
+            className="block w-full rounded-md bg-zinc-100 px-4 py-3 text-center font-medium text-black transition-colors hover:bg-zinc-200 dark:bg-zinc-800 dark:text-white dark:hover:bg-zinc-700"
+          >
+            My Competitions
+          </Link>
           <AdminLink />
           <BecomeAdminButton userId={session.user.id} />
         </nav>

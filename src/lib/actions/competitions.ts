@@ -12,6 +12,8 @@ import {
   match,
   matchScore,
   userRole,
+  team,
+  teamMember,
 } from "@/db/competition-schema";
 import { auth } from "@/lib/auth";
 
@@ -39,10 +41,7 @@ export async function isCurrentUserAdmin(): Promise<boolean> {
   const currentUser = await getCurrentUser();
 
   const role = await db.query.userRole.findFirst({
-    where: and(
-      eq(userRole.userId, currentUser.id),
-      eq(userRole.role, "admin"),
-    ),
+    where: and(eq(userRole.userId, currentUser.id), eq(userRole.role, "admin")),
   });
 
   return !!role;
@@ -186,7 +185,12 @@ export async function getCompetition(competitionId: string) {
 
 export async function updateCompetitionStatus(
   competitionId: string,
-  newStatus: "draft" | "registration" | "group_stage" | "knockout" | "completed",
+  newStatus:
+    | "draft"
+    | "registration"
+    | "group_stage"
+    | "knockout"
+    | "completed",
 ) {
   await requireAdmin();
 
@@ -489,10 +493,7 @@ export async function generateKnockoutBracket(competitionId: string) {
 
   // Generate bracket (simple single elimination)
   // Round to nearest power of 2
-  const bracketSize = Math.pow(
-    2,
-    Math.ceil(Math.log2(qualifiedTeams.length)),
-  );
+  const bracketSize = Math.pow(2, Math.ceil(Math.log2(qualifiedTeams.length)));
   const byes = bracketSize - qualifiedTeams.length;
 
   // Shuffle teams for seeding (in real app, would seed by group position)
@@ -538,11 +539,23 @@ export async function generateKnockoutBracket(competitionId: string) {
 // Helper function to calculate group standings
 function calculateGroupStandings(grp: {
   competitionTeams: { teamId: string }[];
-  matches: { homeTeamId: string; awayTeamId: string; score: { homeScore: number; awayScore: number } | null }[];
+  matches: {
+    homeTeamId: string;
+    awayTeamId: string;
+    score: { homeScore: number; awayScore: number } | null;
+  }[];
 }) {
   const standings: Map<
     string,
-    { teamId: string; points: number; wins: number; losses: number; draws: number; scored: number; conceded: number }
+    {
+      teamId: string;
+      points: number;
+      wins: number;
+      losses: number;
+      draws: number;
+      scored: number;
+      conceded: number;
+    }
   > = new Map();
 
   // Initialize standings
@@ -680,6 +693,277 @@ export async function deleteCompetition(competitionId: string) {
 
   revalidatePath("/admin/competitions");
   return { success: true };
+}
+
+// ============================================================================
+// USER-FACING: Get Available Competitions (Registration Phase)
+// ============================================================================
+
+export async function getAvailableCompetitions() {
+  await getCurrentUser(); // Ensure authenticated
+
+  const competitions = await db.query.competition.findMany({
+    where: eq(competition.status, "registration"),
+    orderBy: desc(competition.createdAt),
+    with: {
+      competitionTeams: true,
+    },
+  });
+
+  return competitions.map((c) => ({
+    id: c.id,
+    name: c.name,
+    description: c.description,
+    teamSize: c.teamSize,
+    startDate: c.startDate,
+    endDate: c.endDate,
+    status: c.status,
+    registeredTeamCount: c.competitionTeams.length,
+  }));
+}
+
+// ============================================================================
+// USER-FACING: Get Competition by ID (Public View)
+// ============================================================================
+
+export async function getCompetitionForUser(competitionId: string) {
+  await getCurrentUser(); // Ensure authenticated
+
+  const comp = await db.query.competition.findFirst({
+    where: eq(competition.id, competitionId),
+    with: {
+      competitionTeams: {
+        with: {
+          team: true,
+        },
+      },
+    },
+  });
+
+  if (!comp) {
+    return null;
+  }
+
+  return {
+    id: comp.id,
+    name: comp.name,
+    description: comp.description,
+    teamSize: comp.teamSize,
+    startDate: comp.startDate,
+    endDate: comp.endDate,
+    status: comp.status,
+    registeredTeams: comp.competitionTeams.map((ct) => ({
+      id: ct.id,
+      teamId: ct.team.id,
+      teamName: ct.team.name,
+      registeredAt: ct.registeredAt,
+    })),
+  };
+}
+
+// ============================================================================
+// USER-FACING: Get User's Teams Where They Are Captain
+// ============================================================================
+
+export async function getMyTeamsAsCaptain() {
+  const currentUser = await getCurrentUser();
+
+  const teams = await db.query.team.findMany({
+    where: eq(team.captainUserId, currentUser.id),
+    with: {
+      members: true,
+      competitionTeams: true,
+    },
+  });
+
+  return teams.map((t) => ({
+    id: t.id,
+    name: t.name,
+    memberCount: t.members.length,
+    registeredCompetitionIds: t.competitionTeams.map((ct) => ct.competitionId),
+  }));
+}
+
+// ============================================================================
+// USER-FACING: Register Team for Competition
+// ============================================================================
+
+export async function registerTeamForCompetition(
+  competitionId: string,
+  teamId: string,
+) {
+  const currentUser = await getCurrentUser();
+
+  // Get competition
+  const comp = await db.query.competition.findFirst({
+    where: eq(competition.id, competitionId),
+  });
+
+  if (!comp) {
+    return { error: "Competition not found" };
+  }
+
+  if (comp.status !== "registration") {
+    return { error: "Registration is not open for this competition" };
+  }
+
+  // Get team and verify captain
+  const teamData = await db.query.team.findFirst({
+    where: eq(team.id, teamId),
+    with: {
+      members: true,
+    },
+  });
+
+  if (!teamData) {
+    return { error: "Team not found" };
+  }
+
+  if (teamData.captainUserId !== currentUser.id) {
+    return { error: "Only the team captain can register the team" };
+  }
+
+  // Check team has enough members
+  if (teamData.members.length < comp.teamSize) {
+    return {
+      error: `Team must have at least ${comp.teamSize} members to register`,
+    };
+  }
+
+  // Check if team is already registered
+  const existingRegistration = await db.query.competitionTeam.findFirst({
+    where: and(
+      eq(competitionTeam.competitionId, competitionId),
+      eq(competitionTeam.teamId, teamId),
+    ),
+  });
+
+  if (existingRegistration) {
+    return { error: "Team is already registered for this competition" };
+  }
+
+  // Register the team
+  await db.insert(competitionTeam).values({
+    competitionId,
+    teamId,
+  });
+
+  revalidatePath(`/competitions/${competitionId}`);
+  revalidatePath("/competitions/my");
+  revalidatePath(`/admin/competitions/${competitionId}`);
+  return { success: true };
+}
+
+// ============================================================================
+// USER-FACING: Withdraw Team from Competition
+// ============================================================================
+
+export async function withdrawTeamFromCompetition(
+  competitionId: string,
+  teamId: string,
+) {
+  const currentUser = await getCurrentUser();
+
+  // Get competition
+  const comp = await db.query.competition.findFirst({
+    where: eq(competition.id, competitionId),
+  });
+
+  if (!comp) {
+    return { error: "Competition not found" };
+  }
+
+  if (comp.status !== "registration") {
+    return { error: "Can only withdraw during registration phase" };
+  }
+
+  // Get team and verify captain
+  const teamData = await db.query.team.findFirst({
+    where: eq(team.id, teamId),
+  });
+
+  if (!teamData) {
+    return { error: "Team not found" };
+  }
+
+  if (teamData.captainUserId !== currentUser.id) {
+    return { error: "Only the team captain can withdraw the team" };
+  }
+
+  // Find and delete the registration
+  const registration = await db.query.competitionTeam.findFirst({
+    where: and(
+      eq(competitionTeam.competitionId, competitionId),
+      eq(competitionTeam.teamId, teamId),
+    ),
+  });
+
+  if (!registration) {
+    return { error: "Team is not registered for this competition" };
+  }
+
+  await db
+    .delete(competitionTeam)
+    .where(eq(competitionTeam.id, registration.id));
+
+  revalidatePath(`/competitions/${competitionId}`);
+  revalidatePath("/competitions/my");
+  revalidatePath(`/admin/competitions/${competitionId}`);
+  return { success: true };
+}
+
+// ============================================================================
+// USER-FACING: Get My Competitions (Where User's Teams Are Registered)
+// ============================================================================
+
+export async function getMyCompetitions() {
+  const currentUser = await getCurrentUser();
+
+  // Get all teams where user is a member
+  const memberships = await db.query.teamMember.findMany({
+    where: eq(teamMember.userId, currentUser.id),
+  });
+
+  const teamIds = memberships.map((m) => m.teamId);
+
+  if (teamIds.length === 0) {
+    return [];
+  }
+
+  // Get all competition registrations for these teams
+  const registrations = await db.query.competitionTeam.findMany({
+    with: {
+      competition: true,
+      team: true,
+    },
+  });
+
+  // Filter to only include teams the user is a member of
+  const myRegistrations = registrations.filter((r) =>
+    teamIds.includes(r.teamId),
+  );
+
+  // Get captain info to check if user is captain
+  const teamsWithCaptainInfo = await db.query.team.findMany({
+    where: eq(team.captainUserId, currentUser.id),
+  });
+  const captainTeamIds = teamsWithCaptainInfo.map((t) => t.id);
+
+  return myRegistrations.map((r) => ({
+    registrationId: r.id,
+    competitionId: r.competition.id,
+    competitionName: r.competition.name,
+    competitionStatus: r.competition.status,
+    competitionStartDate: r.competition.startDate,
+    competitionEndDate: r.competition.endDate,
+    teamId: r.team.id,
+    teamName: r.team.name,
+    registeredAt: r.registeredAt,
+    isCaptain: captainTeamIds.includes(r.teamId),
+    canWithdraw:
+      r.competition.status === "registration" &&
+      captainTeamIds.includes(r.teamId),
+  }));
 }
 
 // ============================================================================

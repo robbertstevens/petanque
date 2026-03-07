@@ -35,16 +35,14 @@
   - [x] Generate round-robin schedule for group stage
   - [x] Generate knockout bracket from group stage winners
   - [x] Override/edit match scores
+- [x] Phase 4: Competition Registration (Users)
+  - [x] Browse available competitions page
+  - [x] Competition detail page
+  - [x] Register team for competition
+  - [x] View "My Competitions" page
+  - [x] Withdraw team from competition (before start)
 
 ## To Do
-
-### Phase 4: Competition Registration (Users)
-
-- [ ] Browse available competitions page
-- [ ] Competition detail page
-- [ ] Register team for competition
-- [ ] View "My Competitions" page
-- [ ] Withdraw team from competition (before start)
 
 ### Phase 5: Match & Scoring
 
