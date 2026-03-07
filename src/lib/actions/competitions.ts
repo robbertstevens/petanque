@@ -788,6 +788,90 @@ export async function getCompetitionForUser(competitionId: string) {
 }
 
 // ============================================================================
+// USER-FACING: Get Competition Matches (Schedule)
+// ============================================================================
+
+export async function getCompetitionMatches(competitionId: string) {
+  await getCurrentUser(); // Ensure authenticated
+
+  const comp = await db.query.competition.findFirst({
+    where: eq(competition.id, competitionId),
+  });
+
+  if (!comp) {
+    return null;
+  }
+
+  const matches = await db.query.match.findMany({
+    where: eq(match.competitionId, competitionId),
+    with: {
+      homeTeam: true,
+      awayTeam: true,
+      group: true,
+      score: true,
+    },
+    orderBy: [desc(match.round), match.createdAt],
+  });
+
+  const upcomingMatches = matches.filter(
+    (m) => m.status === "scheduled" || m.status === "in_progress",
+  );
+  const completedMatches = matches.filter((m) => m.status === "completed");
+
+  return {
+    upcoming: upcomingMatches.map((m) => ({
+      id: m.id,
+      round: m.round,
+      isKnockout: m.isKnockout,
+      status: m.status,
+      scheduledAt: m.scheduledAt,
+      homeTeam: {
+        id: m.homeTeam.id,
+        name: m.homeTeam.name,
+      },
+      awayTeam: {
+        id: m.awayTeam.id,
+        name: m.awayTeam.name,
+      },
+      group: m.group
+        ? {
+            id: m.group.id,
+            name: m.group.name,
+          }
+        : null,
+      score: null,
+    })),
+    completed: completedMatches.map((m) => ({
+      id: m.id,
+      round: m.round,
+      isKnockout: m.isKnockout,
+      status: m.status,
+      scheduledAt: m.scheduledAt,
+      homeTeam: {
+        id: m.homeTeam.id,
+        name: m.homeTeam.name,
+      },
+      awayTeam: {
+        id: m.awayTeam.id,
+        name: m.awayTeam.name,
+      },
+      group: m.group
+        ? {
+            id: m.group.id,
+            name: m.group.name,
+          }
+        : null,
+      score: m.score
+        ? {
+            homeScore: m.score.homeScore,
+            awayScore: m.score.awayScore,
+          }
+        : null,
+    })),
+  };
+}
+
+// ============================================================================
 // USER-FACING: Get User's Teams Where They Are Captain
 // ============================================================================
 
