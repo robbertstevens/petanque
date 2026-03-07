@@ -6,7 +6,7 @@ Guidance for AI coding agents working in this repository.
 
 - **Project**: Petanque - Competition management web application
 - **Stack**: Next.js 16 (App Router), React 19, TypeScript (strict), Tailwind CSS v4
-- **Database**: SQLite with Drizzle ORM
+- **Database**: Turso (LibSQL) with Drizzle ORM
 - **Auth**: better-auth with username/password (scrypt hashing)
 - **Node**: v24 (see `.nvmrc`)
 

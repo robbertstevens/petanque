@@ -15,16 +15,20 @@
  * - grace: Has pending invitation to "Les Boulistes"
  */
 
-import Database from "better-sqlite3";
-import { drizzle } from "drizzle-orm/better-sqlite3";
+import "dotenv/config";
+import { createClient } from "@libsql/client";
+import { drizzle } from "drizzle-orm/libsql";
 import { scryptAsync } from "@noble/hashes/scrypt.js";
 import { bytesToHex } from "@noble/hashes/utils.js";
 
 import * as schema from "../src/db/schema";
 
 // Initialize database
-const sqlite = new Database("sqlite.db");
-const db = drizzle(sqlite, { schema });
+const client = createClient({
+  url: process.env.TURSO_DATABASE_URL!,
+  authToken: process.env.TURSO_AUTH_TOKEN,
+});
+const db = drizzle(client, { schema });
 
 // ============================================================================
 // Types
@@ -84,19 +88,20 @@ async function clearDatabase() {
   console.log("Clearing existing data...");
 
   // Delete in correct order due to foreign key constraints
-  db.delete(schema.matchScore).run();
-  db.delete(schema.match).run();
-  db.delete(schema.competitionTeam).run();
-  db.delete(schema.group).run();
-  db.delete(schema.competition).run();
-  db.delete(schema.teamInvitation).run();
-  db.delete(schema.teamMember).run();
-  db.delete(schema.team).run();
-  db.delete(schema.userRole).run();
-  db.delete(schema.session).run();
-  db.delete(schema.account).run();
-  db.delete(schema.verification).run();
-  db.delete(schema.user).run();
+  // Using sequential awaits to avoid connection limit issues
+  await db.delete(schema.matchScore);
+  await db.delete(schema.match);
+  await db.delete(schema.competitionTeam);
+  await db.delete(schema.group);
+  await db.delete(schema.competition);
+  await db.delete(schema.teamInvitation);
+  await db.delete(schema.teamMember);
+  await db.delete(schema.team);
+  await db.delete(schema.userRole);
+  await db.delete(schema.session);
+  await db.delete(schema.account);
+  await db.delete(schema.verification);
+  await db.delete(schema.user);
 
   console.log("  Database cleared.");
 }
