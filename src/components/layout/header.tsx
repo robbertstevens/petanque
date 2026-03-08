@@ -42,12 +42,6 @@ export async function Header() {
                 >
                   Teams
                 </Link>
-                <Link
-                  href="/dashboard"
-                  className="text-sm text-zinc-600 transition-colors hover:text-black dark:text-zinc-400 dark:hover:text-white"
-                >
-                  Dashboard
-                </Link>
                 {isAdmin && (
                   <Link
                     href="/admin"
