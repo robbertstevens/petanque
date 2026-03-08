@@ -14,7 +14,7 @@ export function CompetitionProgress({ status }: Props) {
 
   return (
     <div className="mb-6">
-      <div className="flex items-center">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-0">
         {phases.map((phase, index) => {
           const isCompleted = index < currentIndex;
           const isCurrent = index === currentIndex;
@@ -59,7 +59,7 @@ export function CompetitionProgress({ status }: Props) {
               </div>
               {index < phases.length - 1 && (
                 <div
-                  className={`mx-2 h-0.5 w-8 sm:mx-4 sm:w-12 ${
+                  className={`hidden h-0.5 w-12 sm:mx-4 sm:block ${
                     isCompleted
                       ? "bg-green-300 dark:bg-green-700"
                       : "bg-zinc-200 dark:bg-zinc-700"
