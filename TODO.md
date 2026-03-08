@@ -54,11 +54,39 @@
   - [x] Competition results page (winners, final standings)
   - [x] Historical competition archive
 
+## Phase 7: Public Competition Pages (Replaces Internal Pages)
+
+Transform existing competition pages into public-facing pages with conditional auth-gated features.
+
+- [ ] Refactor `/competitions` page for public access
+  - [ ] Show all non-draft competitions to everyone
+  - [ ] Show "Register Team" button only if authenticated + team captain
+  - [ ] Show "Login to Register" CTA for anonymous users
+  - [ ] Add competition search & filtering
+- [ ] Refactor `/competitions/[id]` page for public access
+  - [ ] Show competition details, groups, standings publicly
+  - [ ] Show bracket visualization read-only
+  - [ ] Show match history with scores
+  - [ ] Conditional "My Matches" section (authenticated + participating only)
+  - [ ] Conditional "Register/Withdraw" buttons (authenticated only)
+- [ ] Add active competitions overview to homepage (`src/app/page.tsx`)
+  - [ ] Display 3-5 active competitions (registration/group_stage/knockout)
+  - [ ] Quick links to competition details
+  - [ ] "View All Competitions" link
+- [ ] Remove draft competitions from public listing (admin-only)
+- [ ] Update navigation: Add public "Competitions" link
+- [ ] Ensure admin routes remain at `/admin/competitions/*`
+
 ## Future Enhancements (Nice to Have)
 
+- [ ] Loading states and skeleton screens
+- [ ] Empty state illustrations for "no data" scenarios
+- [ ] Breadcrumb navigation for deep pages
+- [ ] Tournament seeding options (random, manual, ranking-based)
+- [ ] Team performance analytics and history
+- [ ] Transfer team captaincy to another member
 - [ ] Email notifications (match reminders, score submissions)
 - [ ] Team logos/avatars
 - [ ] Player statistics
-- [ ] Public competition pages (spectator view)
 - [ ] Mobile-responsive design improvements
 - [ ] Export standings/results to PDF
