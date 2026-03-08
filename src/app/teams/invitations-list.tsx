@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { useRouter } from "next/navigation";
+import { Check, X, Loader2 } from "lucide-react";
 
 import { respondToInvitation } from "@/lib/actions/teams";
 
@@ -71,8 +72,13 @@ function InvitationCard({ invitation }: Readonly<{ invitation: Invitation }>) {
           <button
             type="submit"
             disabled={isPending}
-            className="rounded-md bg-green-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex items-center gap-1 rounded-md bg-green-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50"
           >
+            {isAccepting ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Check className="h-4 w-4" />
+            )}
             {isAccepting ? "..." : "Accept"}
           </button>
         </form>
@@ -80,8 +86,13 @@ function InvitationCard({ invitation }: Readonly<{ invitation: Invitation }>) {
           <button
             type="submit"
             disabled={isPending}
-            className="rounded-md bg-zinc-200 px-3 py-1.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-300 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600"
+            className="flex items-center gap-1 rounded-md bg-zinc-200 px-3 py-1.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-300 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600"
           >
+            {isDeclining ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <X className="h-4 w-4" />
+            )}
             {isDeclining ? "..." : "Decline"}
           </button>
         </form>

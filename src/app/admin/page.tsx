@@ -1,4 +1,14 @@
 import Link from "next/link";
+import {
+  FileText,
+  Pencil,
+  Users,
+  Play,
+  CheckCircle,
+  Plus,
+  Eye,
+  Trophy,
+} from "lucide-react";
 
 import { getAllCompetitions } from "@/lib/actions/competitions-admin";
 
@@ -18,40 +28,54 @@ export default async function AdminDashboard() {
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-8">
-      <h2 className="mb-6 text-2xl font-semibold text-black dark:text-white">
-        Admin Dashboard
-      </h2>
+      <div className="mb-6 flex items-center gap-2">
+        <Trophy className="h-6 w-6" />
+        <h2 className="text-2xl font-semibold text-black dark:text-white">
+          Admin Dashboard
+        </h2>
+      </div>
 
       {/* Stats */}
       <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
-          <p className="text-sm text-zinc-600 dark:text-zinc-400">
+          <div className="mb-2 flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+            <FileText className="h-4 w-4" />
             Total Competitions
-          </p>
+          </div>
           <p className="text-2xl font-semibold text-black dark:text-white">
             {stats.total}
           </p>
         </div>
         <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
-          <p className="text-sm text-zinc-600 dark:text-zinc-400">Draft</p>
+          <div className="mb-2 flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+            <Pencil className="h-4 w-4" />
+            Draft
+          </div>
           <p className="text-2xl font-semibold text-zinc-500">{stats.draft}</p>
         </div>
         <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
-          <p className="text-sm text-zinc-600 dark:text-zinc-400">
+          <div className="mb-2 flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+            <Users className="h-4 w-4" />
             Registration Open
-          </p>
+          </div>
           <p className="text-2xl font-semibold text-blue-600">
             {stats.registration}
           </p>
         </div>
         <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
-          <p className="text-sm text-zinc-600 dark:text-zinc-400">Active</p>
+          <div className="mb-2 flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+            <Play className="h-4 w-4" />
+            Active
+          </div>
           <p className="text-2xl font-semibold text-green-600">
             {stats.active}
           </p>
         </div>
         <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
-          <p className="text-sm text-zinc-600 dark:text-zinc-400">Completed</p>
+          <div className="mb-2 flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+            <CheckCircle className="h-4 w-4" />
+            Completed
+          </div>
           <p className="text-2xl font-semibold text-zinc-500">
             {stats.completed}
           </p>
@@ -60,20 +84,23 @@ export default async function AdminDashboard() {
 
       {/* Quick Actions */}
       <div className="mb-8">
-        <h3 className="mb-4 text-lg font-medium text-black dark:text-white">
+        <h3 className="mb-4 flex items-center gap-2 text-lg font-medium text-black dark:text-white">
+          <Trophy className="h-5 w-5" />
           Quick Actions
         </h3>
         <div className="flex gap-4">
           <Link
             href="/admin/competitions/new"
-            className="rounded-md bg-black px-4 py-2 font-medium text-white transition-colors hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
+            className="flex items-center gap-1.5 rounded-md bg-black px-4 py-2 font-medium text-white transition-colors hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
           >
+            <Plus className="h-4 w-4" />
             Create Competition
           </Link>
           <Link
             href="/admin/competitions"
-            className="rounded-md border border-zinc-300 bg-white px-4 py-2 font-medium text-black transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:hover:bg-zinc-700"
+            className="flex items-center gap-1.5 rounded-md border border-zinc-300 bg-white px-4 py-2 font-medium text-black transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:hover:bg-zinc-700"
           >
+            <Eye className="h-4 w-4" />
             View All Competitions
           </Link>
         </div>
@@ -81,7 +108,8 @@ export default async function AdminDashboard() {
 
       {/* Recent Competitions */}
       <div>
-        <h3 className="mb-4 text-lg font-medium text-black dark:text-white">
+        <h3 className="mb-4 flex items-center gap-2 text-lg font-medium text-black dark:text-white">
+          <FileText className="h-5 w-5" />
           Recent Competitions
         </h3>
         {competitions.length === 0 ? (
@@ -128,8 +156,9 @@ export default async function AdminDashboard() {
                     <td className="px-4 py-3">
                       <Link
                         href={`/admin/competitions/${comp.id}`}
-                        className="text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+                        className="flex items-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
                       >
+                        <Trophy className="h-4 w-4" />
                         Manage
                       </Link>
                     </td>

@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { useRouter } from "next/navigation";
+import { Crown, User, Trash2, Loader2 } from "lucide-react";
 
 import { removeMember } from "@/lib/actions/teams";
 
@@ -52,14 +53,14 @@ function MemberCard({
           {(member.user.name ?? member.user.username ?? "?")[0].toUpperCase()}
         </div>
         <div>
-          <p className="font-medium text-black dark:text-white">
+          <p className="flex items-center gap-1 font-medium text-black dark:text-white">
             {member.user.name ?? member.user.username}
             {isThisCaptain && (
-              <span className="ml-2 text-xs text-zinc-500">(Captain)</span>
+              <Crown className="h-3 w-3 text-yellow-600 dark:text-yellow-400" />
             )}
           </p>
-          <p className="text-sm text-zinc-600 dark:text-zinc-400">
-            @{member.user.username}
+          <p className="flex items-center gap-1 text-sm text-zinc-600 dark:text-zinc-400">
+            <User className="h-3 w-3" />@{member.user.username}
           </p>
         </div>
       </div>
@@ -68,8 +69,13 @@ function MemberCard({
           <button
             type="submit"
             disabled={isPending}
-            className="rounded-md bg-red-100 px-3 py-1.5 text-sm font-medium text-red-700 transition-colors hover:bg-red-200 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-red-900/30 dark:text-red-400 dark:hover:bg-red-900/50"
+            className="flex items-center gap-1 rounded-md bg-red-100 px-3 py-1.5 text-sm font-medium text-red-700 transition-colors hover:bg-red-200 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-red-900/30 dark:text-red-400 dark:hover:bg-red-900/50"
           >
+            {isPending ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Trash2 className="h-4 w-4" />
+            )}
             {isPending ? "..." : "Remove"}
           </button>
         </form>

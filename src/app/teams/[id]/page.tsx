@@ -1,6 +1,7 @@
 import { redirect, notFound } from "next/navigation";
 import { headers } from "next/headers";
 import Link from "next/link";
+import { Users, Crown, ArrowLeft, UserPlus, Mail, LogOut } from "lucide-react";
 
 import { auth } from "@/lib/auth";
 import { getTeam } from "@/lib/actions/teams";
@@ -36,16 +37,19 @@ export default async function TeamDetailPage({ params }: Props) {
           <div>
             <Link
               href="/teams"
-              className="text-sm text-zinc-600 hover:text-black dark:text-zinc-400 dark:hover:text-white"
+              className="flex items-center gap-1.5 text-sm text-zinc-600 hover:text-black dark:text-zinc-400 dark:hover:text-white"
             >
-              &larr; Back to Teams
+              <ArrowLeft className="h-4 w-4" />
+              Back to Teams
             </Link>
-            <h1 className="mt-1 text-xl font-semibold text-black dark:text-white">
+            <h1 className="mt-1 flex items-center gap-2 text-xl font-semibold text-black dark:text-white">
+              <Users className="h-5 w-5" />
               {team.name}
             </h1>
           </div>
           {team.isCaptain && (
-            <span className="rounded-full bg-zinc-100 px-3 py-1 text-sm font-medium text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+            <span className="flex items-center gap-1 rounded-full bg-zinc-100 px-3 py-1 text-sm font-medium text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+              <Crown className="h-3 w-3" />
               You are the Captain
             </span>
           )}
@@ -55,7 +59,8 @@ export default async function TeamDetailPage({ params }: Props) {
       <main className="mx-auto max-w-4xl px-4 py-8">
         {/* Team Members */}
         <section className="mb-8">
-          <h2 className="mb-4 text-lg font-medium text-black dark:text-white">
+          <h2 className="mb-4 flex items-center gap-2 text-lg font-medium text-black dark:text-white">
+            <Users className="h-5 w-5" />
             Team Members ({team.members.length})
           </h2>
           <TeamMembersList
@@ -69,7 +74,8 @@ export default async function TeamDetailPage({ params }: Props) {
         {/* Invite Member (Captain only) */}
         {team.isCaptain && (
           <section className="mb-8">
-            <h2 className="mb-4 text-lg font-medium text-black dark:text-white">
+            <h2 className="mb-4 flex items-center gap-2 text-lg font-medium text-black dark:text-white">
+              <UserPlus className="h-5 w-5" />
               Invite Member
             </h2>
             <InviteMemberForm teamId={team.id} />
@@ -79,7 +85,8 @@ export default async function TeamDetailPage({ params }: Props) {
         {/* Pending Invitations (Captain only) */}
         {team.isCaptain && team.invitations.length > 0 && (
           <section className="mb-8">
-            <h2 className="mb-4 text-lg font-medium text-black dark:text-white">
+            <h2 className="mb-4 flex items-center gap-2 text-lg font-medium text-black dark:text-white">
+              <Mail className="h-5 w-5" />
               Pending Invitations
             </h2>
             <PendingInvitationsList invitations={team.invitations} />
@@ -88,7 +95,8 @@ export default async function TeamDetailPage({ params }: Props) {
 
         {/* Team Actions */}
         <section>
-          <h2 className="mb-4 text-lg font-medium text-black dark:text-white">
+          <h2 className="mb-4 flex items-center gap-2 text-lg font-medium text-black dark:text-white">
+            <LogOut className="h-5 w-5" />
             Actions
           </h2>
           <TeamActions

@@ -1,5 +1,13 @@
 import Link from "next/link";
 import { headers } from "next/headers";
+import {
+  Trophy,
+  Users,
+  Clock,
+  ChevronRight,
+  Inbox,
+  Target,
+} from "lucide-react";
 
 import { auth } from "@/lib/auth";
 import {
@@ -73,6 +81,7 @@ export default async function HomePage() {
 
                 {myCompetitions.length === 0 ? (
                   <div className="rounded-lg border border-zinc-200 bg-white p-8 text-center dark:border-zinc-800 dark:bg-zinc-900">
+                    <Inbox className="mx-auto mb-3 h-12 w-12 text-zinc-300 dark:text-zinc-600" />
                     <p className="text-zinc-600 dark:text-zinc-400">
                       You are not registered in any active competitions.
                     </p>
@@ -111,6 +120,7 @@ export default async function HomePage() {
 
                 {upcomingMatches.length === 0 ? (
                   <div className="rounded-lg border border-zinc-200 bg-white p-6 text-center dark:border-zinc-800 dark:bg-zinc-900">
+                    <Clock className="mx-auto mb-2 h-8 w-8 text-zinc-300 dark:text-zinc-600" />
                     <p className="text-zinc-500 dark:text-zinc-400">
                       No upcoming matches scheduled.
                     </p>
@@ -140,6 +150,7 @@ export default async function HomePage() {
 
                 {competitions.length === 0 ? (
                   <div className="rounded-lg border border-zinc-200 bg-white p-8 text-center dark:border-zinc-800 dark:bg-zinc-900">
+                    <Trophy className="mx-auto mb-3 h-12 w-12 text-zinc-300 dark:text-zinc-600" />
                     <p className="text-zinc-600 dark:text-zinc-400">
                       No active competitions at the moment.
                     </p>
@@ -161,20 +172,23 @@ export default async function HomePage() {
             <div className="space-y-8">
               {/* Quick Actions */}
               <section>
-                <h2 className="mb-4 text-lg font-semibold text-black dark:text-white">
+                <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-black dark:text-white">
+                  <Target className="h-5 w-5" />
                   Quick Actions
                 </h2>
                 <div className="space-y-3">
                   <Link
                     href="/competitions"
-                    className="block rounded-lg border border-zinc-200 bg-white px-4 py-3 text-center font-medium text-black transition-colors hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-white dark:hover:bg-zinc-800"
+                    className="flex items-center justify-center gap-2 rounded-lg border border-zinc-200 bg-white px-4 py-3 text-center font-medium text-black transition-colors hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-white dark:hover:bg-zinc-800"
                   >
+                    <Trophy className="h-4 w-4" />
                     Browse Competitions
                   </Link>
                   <Link
                     href="/teams"
-                    className="block rounded-lg border border-zinc-200 bg-white px-4 py-3 text-center font-medium text-black transition-colors hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-white dark:hover:bg-zinc-800"
+                    className="flex items-center justify-center gap-2 rounded-lg border border-zinc-200 bg-white px-4 py-3 text-center font-medium text-black transition-colors hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-white dark:hover:bg-zinc-800"
                   >
+                    <Users className="h-4 w-4" />
                     Manage Teams
                   </Link>
                 </div>
@@ -196,6 +210,7 @@ export default async function HomePage() {
 
                 {myTeams.length === 0 ? (
                   <div className="rounded-lg border border-zinc-200 bg-white p-6 text-center dark:border-zinc-800 dark:bg-zinc-900">
+                    <Users className="mx-auto mb-2 h-8 w-8 text-zinc-300 dark:text-zinc-600" />
                     <p className="text-sm text-zinc-500 dark:text-zinc-400">
                       No teams yet.
                     </p>
@@ -229,6 +244,7 @@ export default async function HomePage() {
 
               {competitions.length === 0 ? (
                 <div className="rounded-lg border border-zinc-200 bg-white p-8 text-center dark:border-zinc-800 dark:bg-zinc-900">
+                  <Trophy className="mx-auto mb-3 h-12 w-12 text-zinc-300 dark:text-zinc-600" />
                   <p className="text-zinc-600 dark:text-zinc-400">
                     No active competitions at the moment.
                   </p>
@@ -255,19 +271,7 @@ export default async function HomePage() {
                   className="inline-flex items-center text-sm text-zinc-600 hover:text-black dark:text-zinc-400 dark:hover:text-white"
                 >
                   <span>View competition archive</span>
-                  <svg
-                    className="ml-1 h-4 w-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
+                  <ChevronRight className="ml-1 h-4 w-4" />
                 </Link>
               </div>
             </div>
@@ -302,6 +306,13 @@ function CompetitionCard({
     completed: "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
   };
 
+  const statusIcons: Record<string, React.ReactNode> = {
+    registration: <Target className="h-3 w-3" />,
+    group_stage: <Users className="h-3 w-3" />,
+    knockout: <Trophy className="h-3 w-3" />,
+    completed: <ChevronRight className="h-3 w-3" />,
+  };
+
   return (
     <Link
       href={`/competitions/${competition.competitionId}?tab=standings`}
@@ -317,8 +328,9 @@ function CompetitionCard({
           </p>
         </div>
         <span
-          className={`rounded-full px-2 py-0.5 text-xs font-medium ${statusStyles[competition.competitionStatus] ?? statusStyles.registration}`}
+          className={`flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${statusStyles[competition.competitionStatus] ?? statusStyles.registration}`}
         >
+          {statusIcons[competition.competitionStatus]}
           {competition.competitionStatus.replace("_", " ")}
         </span>
       </div>
@@ -343,6 +355,13 @@ function PublicCompetitionCard({
     completed: "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
   };
 
+  const statusIcons: Record<string, React.ReactNode> = {
+    registration: <Target className="h-3 w-3" />,
+    group_stage: <Users className="h-3 w-3" />,
+    knockout: <Trophy className="h-3 w-3" />,
+    completed: <ChevronRight className="h-3 w-3" />,
+  };
+
   return (
     <Link
       href={`/competitions/${competition.id}`}
@@ -358,15 +377,18 @@ function PublicCompetitionCard({
       )}
       <div className="mt-3 flex flex-wrap gap-2">
         <span
-          className={`rounded-full px-2 py-0.5 text-xs font-medium ${statusStyles[competition.status] ?? statusStyles.registration}`}
+          className={`flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${statusStyles[competition.status] ?? statusStyles.registration}`}
         >
+          {statusIcons[competition.status]}
           {competition.status.replace("_", " ")}
         </span>
-        <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs font-medium text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+        <span className="flex items-center gap-1 rounded-full bg-zinc-100 px-2 py-0.5 text-xs font-medium text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+          <Users className="h-3 w-3" />
           {competition.teamSize} players/team
         </span>
       </div>
-      <div className="mt-2 text-xs text-zinc-500 dark:text-zinc-500">
+      <div className="mt-2 flex items-center gap-1 text-xs text-zinc-500 dark:text-zinc-500">
+        <Users className="h-3 w-3" />
         {competition.registeredTeamCount} team
         {competition.registeredTeamCount !== 1 ? "s" : ""} registered
       </div>
@@ -398,6 +420,11 @@ function MatchCard({ match }: Readonly<{ match: MatchData }>) {
       "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
   };
 
+  const statusIcons: Record<string, React.ReactNode> = {
+    scheduled: <Clock className="h-3 w-3" />,
+    in_progress: <Target className="h-3 w-3" />,
+  };
+
   return (
     <Link
       href={`/matches/${match.id}`}
@@ -405,12 +432,14 @@ function MatchCard({ match }: Readonly<{ match: MatchData }>) {
     >
       <div className="flex items-center gap-2 text-xs">
         <span
-          className={`rounded-full px-2 py-0.5 font-medium ${statusStyles[match.status] ?? statusStyles.scheduled}`}
+          className={`flex items-center gap-1 rounded-full px-2 py-0.5 font-medium ${statusStyles[match.status] ?? statusStyles.scheduled}`}
         >
+          {statusIcons[match.status]}
           {match.status.replace("_", " ")}
         </span>
         {match.isKnockout && (
-          <span className="rounded-full bg-purple-100 px-2 py-0.5 font-medium text-purple-700 dark:bg-purple-900/30 dark:text-purple-400">
+          <span className="flex items-center gap-1 rounded-full bg-purple-100 px-2 py-0.5 font-medium text-purple-700 dark:bg-purple-900/30 dark:text-purple-400">
+            <Trophy className="h-3 w-3" />
             Knockout
           </span>
         )}
@@ -456,19 +485,7 @@ function TeamCard({ team }: Readonly<{ team: TeamData }>) {
           {team.members.length} member{team.members.length !== 1 ? "s" : ""}
         </p>
       </div>
-      <svg
-        className="h-5 w-5 text-zinc-400"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M9 5l7 7-7 7"
-        />
-      </svg>
+      <ChevronRight className="h-5 w-5 text-zinc-400" />
     </Link>
   );
 }

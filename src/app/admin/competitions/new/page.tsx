@@ -4,6 +4,15 @@ import { useActionState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useEffect } from "react";
+import {
+  Trophy,
+  Type,
+  AlignLeft,
+  Users,
+  Calendar,
+  ArrowLeft,
+  Loader2,
+} from "lucide-react";
 
 import { createCompetition } from "@/lib/actions/competitions-admin";
 
@@ -35,13 +44,17 @@ export default function NewCompetitionPage() {
       <div className="mb-6">
         <Link
           href="/admin/competitions"
-          className="text-sm text-zinc-600 hover:text-black dark:text-zinc-400 dark:hover:text-white"
+          className="flex items-center gap-1.5 text-sm text-zinc-600 hover:text-black dark:text-zinc-400 dark:hover:text-white"
         >
-          &larr; Back to Competitions
+          <ArrowLeft className="h-4 w-4" />
+          Back to Competitions
         </Link>
-        <h2 className="mt-2 text-2xl font-semibold text-black dark:text-white">
-          Create Competition
-        </h2>
+        <div className="mt-2 flex items-center gap-2">
+          <Trophy className="h-6 w-6" />
+          <h2 className="text-2xl font-semibold text-black dark:text-white">
+            Create Competition
+          </h2>
+        </div>
       </div>
 
       <form
@@ -51,8 +64,9 @@ export default function NewCompetitionPage() {
         <div>
           <label
             htmlFor="name"
-            className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+            className="mb-1 flex items-center gap-1.5 text-sm font-medium text-zinc-700 dark:text-zinc-300"
           >
+            <Type className="h-4 w-4" />
             Competition Name *
           </label>
           <input
@@ -70,8 +84,9 @@ export default function NewCompetitionPage() {
         <div>
           <label
             htmlFor="description"
-            className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+            className="mb-1 flex items-center gap-1.5 text-sm font-medium text-zinc-700 dark:text-zinc-300"
           >
+            <AlignLeft className="h-4 w-4" />
             Description
           </label>
           <textarea
@@ -86,8 +101,9 @@ export default function NewCompetitionPage() {
         <div>
           <label
             htmlFor="teamSize"
-            className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+            className="mb-1 flex items-center gap-1.5 text-sm font-medium text-zinc-700 dark:text-zinc-300"
           >
+            <Users className="h-4 w-4" />
             Team Size *
           </label>
           <select
@@ -106,8 +122,9 @@ export default function NewCompetitionPage() {
           <div>
             <label
               htmlFor="startDate"
-              className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+              className="mb-1 flex items-center gap-1.5 text-sm font-medium text-zinc-700 dark:text-zinc-300"
             >
+              <Calendar className="h-4 w-4" />
               Start Date
             </label>
             <input
@@ -120,8 +137,9 @@ export default function NewCompetitionPage() {
           <div>
             <label
               htmlFor="endDate"
-              className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+              className="mb-1 flex items-center gap-1.5 text-sm font-medium text-zinc-700 dark:text-zinc-300"
             >
+              <Calendar className="h-4 w-4" />
               End Date
             </label>
             <input
@@ -143,14 +161,20 @@ export default function NewCompetitionPage() {
           <button
             type="submit"
             disabled={isPending}
-            className="rounded-md bg-black px-4 py-2 font-medium text-white transition-colors hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
+            className="flex items-center gap-1.5 rounded-md bg-black px-4 py-2 font-medium text-white transition-colors hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
           >
+            {isPending ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Trophy className="h-4 w-4" />
+            )}
             {isPending ? "Creating..." : "Create Competition"}
           </button>
           <Link
             href="/admin/competitions"
-            className="rounded-md border border-zinc-300 px-4 py-2 font-medium text-zinc-700 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
+            className="flex items-center gap-1.5 rounded-md border border-zinc-300 px-4 py-2 font-medium text-zinc-700 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
           >
+            <ArrowLeft className="h-4 w-4" />
             Cancel
           </Link>
         </div>

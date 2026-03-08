@@ -1,4 +1,13 @@
 import Link from "next/link";
+import {
+  Clock,
+  PlayCircle,
+  CheckCircle2,
+  Trophy,
+  XCircle,
+  Inbox,
+  ChevronRight,
+} from "lucide-react";
 
 import { getUpcomingMatches } from "@/lib/actions/matches";
 
@@ -7,12 +16,14 @@ export default async function MatchesPage() {
 
   return (
     <div>
-      <h2 className="mb-6 text-lg font-medium text-black dark:text-white">
+      <h2 className="mb-6 flex items-center gap-2 text-lg font-medium text-black dark:text-white">
+        <Clock className="h-5 w-5" />
         Upcoming Matches
       </h2>
 
       {matches.length === 0 ? (
         <div className="rounded-lg border border-zinc-200 bg-white p-8 text-center dark:border-zinc-800 dark:bg-zinc-900">
+          <Inbox className="mx-auto mb-3 h-12 w-12 text-zinc-300 dark:text-zinc-600" />
           <p className="text-zinc-600 dark:text-zinc-400">
             No upcoming matches for your teams.
           </p>
@@ -44,6 +55,13 @@ function MatchCard({ match }: Readonly<{ match: MatchData }>) {
     cancelled: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
   };
 
+  const statusIcons: Record<string, React.ReactNode> = {
+    scheduled: <Clock className="h-3 w-3" />,
+    in_progress: <PlayCircle className="h-3 w-3" />,
+    completed: <CheckCircle2 className="h-3 w-3" />,
+    cancelled: <XCircle className="h-3 w-3" />,
+  };
+
   return (
     <Link
       href={`/matches/${match.id}`}
@@ -53,12 +71,14 @@ function MatchCard({ match }: Readonly<{ match: MatchData }>) {
         <div className="flex-1">
           <div className="flex items-center gap-2">
             <span
-              className={`rounded-full px-2 py-0.5 text-xs font-medium ${statusStyles[match.status] ?? statusStyles.scheduled}`}
+              className={`flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${statusStyles[match.status] ?? statusStyles.scheduled}`}
             >
+              {statusIcons[match.status]}
               {match.status.replace("_", " ")}
             </span>
             {match.isKnockout && (
-              <span className="rounded-full bg-purple-100 px-2 py-0.5 text-xs font-medium text-purple-700 dark:bg-purple-900/30 dark:text-purple-400">
+              <span className="flex items-center gap-1 rounded-full bg-purple-100 px-2 py-0.5 text-xs font-medium text-purple-700 dark:bg-purple-900/30 dark:text-purple-400">
+                <Trophy className="h-3 w-3" />
                 Knockout
               </span>
             )}
@@ -127,19 +147,7 @@ function MatchCard({ match }: Readonly<{ match: MatchData }>) {
         </div>
 
         <div className="ml-4">
-          <svg
-            className="h-5 w-5 text-zinc-400"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 5l7 7-7 7"
-            />
-          </svg>
+          <ChevronRight className="h-5 w-5 text-zinc-400" />
         </div>
       </div>
     </Link>

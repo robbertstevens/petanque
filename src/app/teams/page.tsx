@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 import Link from "next/link";
+import { Users, ArrowLeft, Crown, Mail, Inbox } from "lucide-react";
 
 import { auth } from "@/lib/auth";
 import { getMyTeams, getMyInvitations } from "@/lib/actions/teams";
@@ -25,13 +26,15 @@ export default async function TeamsPage() {
     <div className="min-h-screen bg-zinc-50 font-sans dark:bg-black">
       <header className="border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-          <h1 className="text-xl font-semibold text-black dark:text-white">
+          <h1 className="flex items-center gap-2 text-xl font-semibold text-black dark:text-white">
+            <Users className="h-5 w-5" />
             My Teams
           </h1>
           <Link
             href="/"
-            className="text-sm text-zinc-600 hover:text-black dark:text-zinc-400 dark:hover:text-white"
+            className="flex items-center gap-1.5 text-sm text-zinc-600 hover:text-black dark:text-zinc-400 dark:hover:text-white"
           >
+            <ArrowLeft className="h-4 w-4" />
             Back to Home
           </Link>
         </div>
@@ -41,7 +44,8 @@ export default async function TeamsPage() {
         {/* Pending Invitations */}
         {invitations.length > 0 && (
           <section className="mb-8">
-            <h2 className="mb-4 text-lg font-medium text-black dark:text-white">
+            <h2 className="mb-4 flex items-center gap-2 text-lg font-medium text-black dark:text-white">
+              <Mail className="h-5 w-5" />
               Pending Invitations
             </h2>
             <InvitationsList invitations={invitations} />
@@ -50,7 +54,8 @@ export default async function TeamsPage() {
 
         {/* Create Team Form */}
         <section className="mb-8">
-          <h2 className="mb-4 text-lg font-medium text-black dark:text-white">
+          <h2 className="mb-4 flex items-center gap-2 text-lg font-medium text-black dark:text-white">
+            <Users className="h-5 w-5" />
             Create a New Team
           </h2>
           <CreateTeamForm />
@@ -58,13 +63,17 @@ export default async function TeamsPage() {
 
         {/* Teams List */}
         <section>
-          <h2 className="mb-4 text-lg font-medium text-black dark:text-white">
+          <h2 className="mb-4 flex items-center gap-2 text-lg font-medium text-black dark:text-white">
+            <Users className="h-5 w-5" />
             Your Teams
           </h2>
           {teams.length === 0 ? (
-            <p className="text-zinc-600 dark:text-zinc-400">
-              You are not a member of any teams yet. Create one above!
-            </p>
+            <div className="rounded-lg border border-zinc-200 bg-white p-8 text-center dark:border-zinc-800 dark:bg-zinc-900">
+              <Inbox className="mx-auto mb-3 h-12 w-12 text-zinc-300 dark:text-zinc-600" />
+              <p className="text-zinc-600 dark:text-zinc-400">
+                You are not a member of any teams yet. Create one above!
+              </p>
+            </div>
           ) : (
             <div className="grid gap-4 sm:grid-cols-2">
               {teams.map((team) => (
@@ -84,7 +93,8 @@ export default async function TeamsPage() {
                       </p>
                     </div>
                     {team.isCaptain && (
-                      <span className="rounded-full bg-zinc-100 px-2 py-1 text-xs font-medium text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+                      <span className="flex items-center gap-1 rounded-full bg-zinc-100 px-2 py-1 text-xs font-medium text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+                        <Crown className="h-3 w-3" />
                         Captain
                       </span>
                     )}

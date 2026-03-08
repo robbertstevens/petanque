@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { headers } from "next/headers";
+import { Trophy, Users, Shield, LogIn } from "lucide-react";
 
 import { auth } from "@/lib/auth";
 import { isCurrentUserAdmin } from "@/lib/actions/competitions-admin";
@@ -29,8 +30,9 @@ export async function Header() {
           <nav className="flex items-center gap-6">
             <Link
               href="/competitions"
-              className="text-sm text-zinc-600 transition-colors hover:text-black dark:text-zinc-400 dark:hover:text-white"
+              className="flex items-center gap-1.5 text-sm text-zinc-600 transition-colors hover:text-black dark:text-zinc-400 dark:hover:text-white"
             >
+              <Trophy className="h-4 w-4" />
               Competitions
             </Link>
 
@@ -38,15 +40,17 @@ export async function Header() {
               <>
                 <Link
                   href="/teams"
-                  className="text-sm text-zinc-600 transition-colors hover:text-black dark:text-zinc-400 dark:hover:text-white"
+                  className="flex items-center gap-1.5 text-sm text-zinc-600 transition-colors hover:text-black dark:text-zinc-400 dark:hover:text-white"
                 >
+                  <Users className="h-4 w-4" />
                   Teams
                 </Link>
                 {isAdmin && (
                   <Link
                     href="/admin"
-                    className="text-sm font-medium text-purple-600 transition-colors hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
+                    className="flex items-center gap-1.5 text-sm font-medium text-purple-600 transition-colors hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
                   >
+                    <Shield className="h-4 w-4" />
                     Admin
                   </Link>
                 )}
@@ -58,8 +62,9 @@ export async function Header() {
             ) : (
               <Link
                 href="/"
-                className="rounded-md bg-black px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
+                className="flex items-center gap-1.5 rounded-md bg-black px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
               >
+                <LogIn className="h-4 w-4" />
                 Sign In
               </Link>
             )}
