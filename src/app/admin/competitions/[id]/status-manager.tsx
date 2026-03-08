@@ -63,7 +63,7 @@ export function StatusManager({
   );
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
       <span
         className={`rounded-full px-3 py-1 text-sm font-medium ${statusStyles[currentStatus]}`}
       >
@@ -71,11 +71,14 @@ export function StatusManager({
       </span>
 
       {availableTransitions.length > 0 && (
-        <form action={formAction} className="flex items-center gap-2">
+        <form
+          action={formAction}
+          className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center"
+        >
           <select
             name="status"
             disabled={isPending}
-            className="rounded-md border border-zinc-300 px-2 py-1 text-sm text-black dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+            className="w-full rounded-md border border-zinc-300 px-2 py-1 text-sm text-black sm:w-auto dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
           >
             {availableTransitions.map((status) => (
               <option key={status} value={status}>
@@ -86,7 +89,7 @@ export function StatusManager({
           <button
             type="submit"
             disabled={isPending}
-            className="rounded-md bg-black px-3 py-1 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:opacity-50 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
+            className="w-full rounded-md bg-black px-3 py-1 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:opacity-50 sm:w-auto dark:bg-white dark:text-black dark:hover:bg-zinc-200"
           >
             {isPending ? "..." : "Update"}
           </button>

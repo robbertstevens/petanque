@@ -20,7 +20,6 @@ type Props = Readonly<{
 }>;
 
 const tabs = [
-  { key: "overview", label: "Overview" },
   { key: "teams", label: "Teams" },
   { key: "schedule", label: "Schedule" },
   { key: "standings", label: "Standings" },
@@ -32,7 +31,7 @@ export default async function CompetitionDetailPage({
 }: Props) {
   const { id } = await params;
   const { tab } = await searchParams;
-  const currentTab = tab && tabs.some((t) => t.key === tab) ? tab : "overview";
+  const currentTab = tab && tabs.some((t) => t.key === tab) ? tab : "teams";
 
   // Check auth status
   const session = await auth.api.getSession({
@@ -139,15 +138,6 @@ export default async function CompetitionDetailPage({
 
       {/* Tab Content */}
       <div className="min-h-[300px]">
-        {currentTab === "overview" && (
-          <OverviewTab
-            competition={competition}
-            eligibleTeams={eligibleTeams}
-            alreadyRegisteredTeams={alreadyRegisteredTeams}
-            isAuthenticated={isAuthenticated}
-          />
-        )}
-
         {currentTab === "teams" && (
           <TeamsTab
             competition={competition}
@@ -192,121 +182,6 @@ export default async function CompetitionDetailPage({
 
 type Competition = Awaited<ReturnType<typeof getPublicCompetition>>;
 type Team = Awaited<ReturnType<typeof getMyTeamsAsCaptain>>[number];
-
-function OverviewTab({
-  competition,
-  eligibleTeams,
-  alreadyRegisteredTeams,
-  isAuthenticated,
-}: {
-  competition: NonNullable<Competition>;
-  eligibleTeams: Team[];
-  alreadyRegisteredTeams: Team[];
-  isAuthenticated: boolean;
-}) {
-  return (
-    <div className="space-y-8">
-      {/* Registration Section */}
-      {competition.status === "registration" && (
-        <section>
-          <h3 className="mb-4 text-lg font-medium text-black dark:text-white">
-            Register Your Team
-          </h3>
-
-          {isAuthenticated ? (
-            <>
-              {alreadyRegisteredTeams.length > 0 && (
-                <div className="mb-4 rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-900 dark:bg-green-900/20">
-                  <p className="text-sm font-medium text-green-800 dark:text-green-400">
-                    Your registered teams:
-                  </p>
-                  <ul className="mt-1 text-sm text-green-700 dark:text-green-400/80">
-                    {alreadyRegisteredTeams.map((team) => (
-                      <li key={team.id}>• {team.name}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {eligibleTeams.length > 0 ? (
-                <RegisterTeamForm
-                  competitionId={competition.id}
-                  teams={eligibleTeams}
-                />
-              ) : (
-                <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
-                  <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                    You need to be a captain of a team with at least{" "}
-                    {competition.teamSize} members to register.
-                  </p>
-                  <Link
-                    href="/teams"
-                    className="mt-2 inline-block text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
-                  >
-                    Manage Teams →
-                  </Link>
-                </div>
-              )}
-            </>
-          ) : (
-            <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                Sign in to register your team for this competition.
-              </p>
-              <Link
-                href="/"
-                className="mt-2 inline-block text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
-              >
-                Sign In →
-              </Link>
-            </div>
-          )}
-        </section>
-      )}
-
-      {competition.status !== "registration" && (
-        <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
-          <p className="text-sm text-zinc-600 dark:text-zinc-400">
-            Registration is closed for this competition.
-          </p>
-        </div>
-      )}
-
-      {/* Quick Stats */}
-      <section>
-        <h3 className="mb-4 text-lg font-medium text-black dark:text-white">
-          Quick Stats
-        </h3>
-        <div className="grid gap-4 sm:grid-cols-3">
-          <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
-            <p className="text-2xl font-bold text-black dark:text-white">
-              {competition.registeredTeams.length}
-            </p>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">
-              Registered Teams
-            </p>
-          </div>
-          <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
-            <p className="text-2xl font-bold text-black dark:text-white">
-              {competition.teamSize}
-            </p>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">
-              Players per Team
-            </p>
-          </div>
-          <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
-            <p className="text-2xl font-bold text-black dark:text-white">
-              {competition.registeredTeams.length * competition.teamSize}
-            </p>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">
-              Total Players
-            </p>
-          </div>
-        </div>
-      </section>
-    </div>
-  );
-}
 
 function TeamsTab({
   competition,

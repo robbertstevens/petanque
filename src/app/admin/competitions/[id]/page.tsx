@@ -45,6 +45,34 @@ export default async function CompetitionDetailPage({ params }: Props) {
             currentStatus={competition.status}
           />
         </div>
+
+        {/* Quick Stats */}
+        <div className="mt-6 grid gap-4 sm:grid-cols-3">
+          <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
+            <p className="text-sm text-zinc-600 dark:text-zinc-400">
+              Registered Teams
+            </p>
+            <p className="text-2xl font-bold text-black dark:text-white">
+              {competition.competitionTeams.length}
+            </p>
+          </div>
+          <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
+            <p className="text-sm text-zinc-600 dark:text-zinc-400">
+              Players per Team
+            </p>
+            <p className="text-2xl font-bold text-black dark:text-white">
+              {competition.teamSize}
+            </p>
+          </div>
+          <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
+            <p className="text-sm text-zinc-600 dark:text-zinc-400">
+              Total Players
+            </p>
+            <p className="text-2xl font-bold text-black dark:text-white">
+              {competition.competitionTeams.length * competition.teamSize}
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* Competition Info */}
