@@ -35,10 +35,10 @@ export default async function CompetitionsLayout({
             )}
           </div>
           <nav className="mt-4 flex gap-4">
-            <NavLink href="/competitions">Browse</NavLink>
             {session && (
               <NavLink href="/competitions/my">My Competitions</NavLink>
             )}
+            <NavLink href="/competitions">Browse</NavLink>
             <NavLink href="/competitions/archive">Archive</NavLink>
           </nav>
         </div>

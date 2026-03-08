@@ -27,14 +27,6 @@ export async function Header() {
 
           {/* Navigation */}
           <nav className="flex items-center gap-6">
-            {session?.user && (
-              <Link
-                href="/competitions/my"
-                className="text-sm text-zinc-600 transition-colors hover:text-black dark:text-zinc-400 dark:hover:text-white"
-              >
-                My Competitions
-              </Link>
-            )}
             <Link
               href="/competitions"
               className="text-sm text-zinc-600 transition-colors hover:text-black dark:text-zinc-400 dark:hover:text-white"
