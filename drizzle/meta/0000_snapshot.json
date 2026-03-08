@@ -103,9 +103,7 @@
       "indexes": {
         "account_userId_idx": {
           "name": "account_userId_idx",
-          "columns": [
-            "user_id"
-          ],
+          "columns": ["user_id"],
           "isUnique": false
         }
       },
@@ -114,12 +112,8 @@
           "name": "account_user_id_user_id_fk",
           "tableFrom": "account",
           "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -192,16 +186,12 @@
       "indexes": {
         "session_token_unique": {
           "name": "session_token_unique",
-          "columns": [
-            "token"
-          ],
+          "columns": ["token"],
           "isUnique": true
         },
         "session_userId_idx": {
           "name": "session_userId_idx",
-          "columns": [
-            "user_id"
-          ],
+          "columns": ["user_id"],
           "isUnique": false
         }
       },
@@ -210,12 +200,8 @@
           "name": "session_user_id_user_id_fk",
           "tableFrom": "session",
           "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -297,16 +283,12 @@
       "indexes": {
         "user_email_unique": {
           "name": "user_email_unique",
-          "columns": [
-            "email"
-          ],
+          "columns": ["email"],
           "isUnique": true
         },
         "user_username_unique": {
           "name": "user_username_unique",
-          "columns": [
-            "username"
-          ],
+          "columns": ["username"],
           "isUnique": true
         }
       },
@@ -366,9 +348,7 @@
       "indexes": {
         "verification_identifier_idx": {
           "name": "verification_identifier_idx",
-          "columns": [
-            "identifier"
-          ],
+          "columns": ["identifier"],
           "isUnique": false
         }
       },
@@ -458,16 +438,12 @@
       "indexes": {
         "competition_status_idx": {
           "name": "competition_status_idx",
-          "columns": [
-            "status"
-          ],
+          "columns": ["status"],
           "isUnique": false
         },
         "competition_createdByUserId_idx": {
           "name": "competition_createdByUserId_idx",
-          "columns": [
-            "created_by_user_id"
-          ],
+          "columns": ["created_by_user_id"],
           "isUnique": false
         }
       },
@@ -476,12 +452,8 @@
           "name": "competition_created_by_user_id_user_id_fk",
           "tableFrom": "competition",
           "tableTo": "user",
-          "columnsFrom": [
-            "created_by_user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["created_by_user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -533,31 +505,22 @@
       "indexes": {
         "competition_team_competitionId_idx": {
           "name": "competition_team_competitionId_idx",
-          "columns": [
-            "competition_id"
-          ],
+          "columns": ["competition_id"],
           "isUnique": false
         },
         "competition_team_teamId_idx": {
           "name": "competition_team_teamId_idx",
-          "columns": [
-            "team_id"
-          ],
+          "columns": ["team_id"],
           "isUnique": false
         },
         "competition_team_groupId_idx": {
           "name": "competition_team_groupId_idx",
-          "columns": [
-            "group_id"
-          ],
+          "columns": ["group_id"],
           "isUnique": false
         },
         "competition_team_unique": {
           "name": "competition_team_unique",
-          "columns": [
-            "competition_id",
-            "team_id"
-          ],
+          "columns": ["competition_id", "team_id"],
           "isUnique": true
         }
       },
@@ -566,12 +529,8 @@
           "name": "competition_team_competition_id_competition_id_fk",
           "tableFrom": "competition_team",
           "tableTo": "competition",
-          "columnsFrom": [
-            "competition_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["competition_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -579,12 +538,8 @@
           "name": "competition_team_team_id_team_id_fk",
           "tableFrom": "competition_team",
           "tableTo": "team",
-          "columnsFrom": [
-            "team_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["team_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -592,12 +547,8 @@
           "name": "competition_team_group_id_group_id_fk",
           "tableFrom": "competition_team",
           "tableTo": "group",
-          "columnsFrom": [
-            "group_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["group_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -642,9 +593,7 @@
       "indexes": {
         "group_competitionId_idx": {
           "name": "group_competitionId_idx",
-          "columns": [
-            "competition_id"
-          ],
+          "columns": ["competition_id"],
           "isUnique": false
         }
       },
@@ -653,12 +602,8 @@
           "name": "group_competition_id_competition_id_fk",
           "tableFrom": "group",
           "tableTo": "competition",
-          "columnsFrom": [
-            "competition_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["competition_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -756,37 +701,27 @@
       "indexes": {
         "match_competitionId_idx": {
           "name": "match_competitionId_idx",
-          "columns": [
-            "competition_id"
-          ],
+          "columns": ["competition_id"],
           "isUnique": false
         },
         "match_groupId_idx": {
           "name": "match_groupId_idx",
-          "columns": [
-            "group_id"
-          ],
+          "columns": ["group_id"],
           "isUnique": false
         },
         "match_homeTeamId_idx": {
           "name": "match_homeTeamId_idx",
-          "columns": [
-            "home_team_id"
-          ],
+          "columns": ["home_team_id"],
           "isUnique": false
         },
         "match_awayTeamId_idx": {
           "name": "match_awayTeamId_idx",
-          "columns": [
-            "away_team_id"
-          ],
+          "columns": ["away_team_id"],
           "isUnique": false
         },
         "match_status_idx": {
           "name": "match_status_idx",
-          "columns": [
-            "status"
-          ],
+          "columns": ["status"],
           "isUnique": false
         }
       },
@@ -795,12 +730,8 @@
           "name": "match_competition_id_competition_id_fk",
           "tableFrom": "match",
           "tableTo": "competition",
-          "columnsFrom": [
-            "competition_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["competition_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -808,12 +739,8 @@
           "name": "match_group_id_group_id_fk",
           "tableFrom": "match",
           "tableTo": "group",
-          "columnsFrom": [
-            "group_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["group_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -821,12 +748,8 @@
           "name": "match_home_team_id_team_id_fk",
           "tableFrom": "match",
           "tableTo": "team",
-          "columnsFrom": [
-            "home_team_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["home_team_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -834,12 +757,8 @@
           "name": "match_away_team_id_team_id_fk",
           "tableFrom": "match",
           "tableTo": "team",
-          "columnsFrom": [
-            "away_team_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["away_team_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -912,16 +831,12 @@
       "indexes": {
         "match_score_match_id_unique": {
           "name": "match_score_match_id_unique",
-          "columns": [
-            "match_id"
-          ],
+          "columns": ["match_id"],
           "isUnique": true
         },
         "match_score_matchId_idx": {
           "name": "match_score_matchId_idx",
-          "columns": [
-            "match_id"
-          ],
+          "columns": ["match_id"],
           "isUnique": false
         }
       },
@@ -930,12 +845,8 @@
           "name": "match_score_match_id_match_id_fk",
           "tableFrom": "match_score",
           "tableTo": "match",
-          "columnsFrom": [
-            "match_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["match_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -943,12 +854,8 @@
           "name": "match_score_submitted_by_user_id_user_id_fk",
           "tableFrom": "match_score",
           "tableTo": "user",
-          "columnsFrom": [
-            "submitted_by_user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["submitted_by_user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -956,12 +863,8 @@
           "name": "match_score_confirmed_by_user_id_user_id_fk",
           "tableFrom": "match_score",
           "tableTo": "user",
-          "columnsFrom": [
-            "confirmed_by_user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["confirmed_by_user_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -1014,16 +917,12 @@
       "indexes": {
         "team_name_unique": {
           "name": "team_name_unique",
-          "columns": [
-            "name"
-          ],
+          "columns": ["name"],
           "isUnique": true
         },
         "team_captainUserId_idx": {
           "name": "team_captainUserId_idx",
-          "columns": [
-            "captain_user_id"
-          ],
+          "columns": ["captain_user_id"],
           "isUnique": false
         }
       },
@@ -1032,12 +931,8 @@
           "name": "team_captain_user_id_user_id_fk",
           "tableFrom": "team",
           "tableTo": "user",
-          "columnsFrom": [
-            "captain_user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["captain_user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1104,16 +999,12 @@
       "indexes": {
         "team_invitation_teamId_idx": {
           "name": "team_invitation_teamId_idx",
-          "columns": [
-            "team_id"
-          ],
+          "columns": ["team_id"],
           "isUnique": false
         },
         "team_invitation_invitedUserId_idx": {
           "name": "team_invitation_invitedUserId_idx",
-          "columns": [
-            "invited_user_id"
-          ],
+          "columns": ["invited_user_id"],
           "isUnique": false
         }
       },
@@ -1122,12 +1013,8 @@
           "name": "team_invitation_team_id_team_id_fk",
           "tableFrom": "team_invitation",
           "tableTo": "team",
-          "columnsFrom": [
-            "team_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["team_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1135,12 +1022,8 @@
           "name": "team_invitation_invited_user_id_user_id_fk",
           "tableFrom": "team_invitation",
           "tableTo": "user",
-          "columnsFrom": [
-            "invited_user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["invited_user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1148,12 +1031,8 @@
           "name": "team_invitation_invited_by_user_id_user_id_fk",
           "tableFrom": "team_invitation",
           "tableTo": "user",
-          "columnsFrom": [
-            "invited_by_user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["invited_by_user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1198,24 +1077,17 @@
       "indexes": {
         "team_member_teamId_idx": {
           "name": "team_member_teamId_idx",
-          "columns": [
-            "team_id"
-          ],
+          "columns": ["team_id"],
           "isUnique": false
         },
         "team_member_userId_idx": {
           "name": "team_member_userId_idx",
-          "columns": [
-            "user_id"
-          ],
+          "columns": ["user_id"],
           "isUnique": false
         },
         "team_member_unique": {
           "name": "team_member_unique",
-          "columns": [
-            "team_id",
-            "user_id"
-          ],
+          "columns": ["team_id", "user_id"],
           "isUnique": true
         }
       },
@@ -1224,12 +1096,8 @@
           "name": "team_member_team_id_team_id_fk",
           "tableFrom": "team_member",
           "tableTo": "team",
-          "columnsFrom": [
-            "team_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["team_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1237,12 +1105,8 @@
           "name": "team_member_user_id_user_id_fk",
           "tableFrom": "team_member",
           "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1287,16 +1151,12 @@
       "indexes": {
         "user_role_user_id_unique": {
           "name": "user_role_user_id_unique",
-          "columns": [
-            "user_id"
-          ],
+          "columns": ["user_id"],
           "isUnique": true
         },
         "user_role_userId_idx": {
           "name": "user_role_userId_idx",
-          "columns": [
-            "user_id"
-          ],
+          "columns": ["user_id"],
           "isUnique": false
         }
       },
@@ -1305,12 +1165,8 @@
           "name": "user_role_user_id_user_id_fk",
           "tableFrom": "user_role",
           "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }

@@ -43,8 +43,7 @@ function PendingInvitationCard({
           @{invitation.invitedUser.username}
         </p>
         <p className="text-sm text-zinc-600 dark:text-zinc-400">
-          Invited{" "}
-          {new Date(invitation.createdAt).toLocaleDateString()}
+          Invited {new Date(invitation.createdAt).toLocaleDateString()}
         </p>
         {state?.error && (
           <p className="mt-1 text-sm text-red-600 dark:text-red-400">
