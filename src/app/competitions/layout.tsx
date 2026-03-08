@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 
 import { auth } from "@/lib/auth";
@@ -11,10 +10,6 @@ export default async function CompetitionsLayout({
     headers: await headers(),
   });
 
-  if (!session) {
-    redirect("/");
-  }
-
   return (
     <div className="min-h-screen bg-zinc-50 font-sans dark:bg-black">
       <header className="border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
@@ -23,16 +18,27 @@ export default async function CompetitionsLayout({
             <h1 className="text-xl font-semibold text-black dark:text-white">
               Competitions
             </h1>
-            <Link
-              href="/dashboard"
-              className="text-sm text-zinc-600 hover:text-black dark:text-zinc-400 dark:hover:text-white"
-            >
-              ← Back to Dashboard
-            </Link>
+            {session ? (
+              <Link
+                href="/dashboard"
+                className="text-sm text-zinc-600 hover:text-black dark:text-zinc-400 dark:hover:text-white"
+              >
+                ← Back to Dashboard
+              </Link>
+            ) : (
+              <Link
+                href="/"
+                className="text-sm text-zinc-600 hover:text-black dark:text-zinc-400 dark:hover:text-white"
+              >
+                Sign In
+              </Link>
+            )}
           </div>
           <nav className="mt-4 flex gap-4">
             <NavLink href="/competitions">Browse</NavLink>
-            <NavLink href="/competitions/my">My Competitions</NavLink>
+            {session && (
+              <NavLink href="/competitions/my">My Competitions</NavLink>
+            )}
             <NavLink href="/competitions/archive">Archive</NavLink>
           </nav>
         </div>

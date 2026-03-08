@@ -1,6 +1,6 @@
 "use server";
 
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { db } from "@/db";
@@ -32,11 +32,21 @@ export type TeamStanding = {
 };
 import { getCurrentUser } from "./auth-utils";
 
-export async function getAvailableCompetitions() {
-  await getCurrentUser();
+export async function getCompetitionsByStatus(
+  status:
+    | "registration"
+    | "group_stage"
+    | "knockout"
+    | "completed"
+    | "all-active",
+) {
+  const whereClause =
+    status === "all-active"
+      ? inArray(competition.status, ["registration", "group_stage", "knockout"])
+      : eq(competition.status, status);
 
   const competitions = await db.query.competition.findMany({
-    where: eq(competition.status, "registration"),
+    where: whereClause,
     orderBy: desc(competition.createdAt),
     with: {
       competitionTeams: true,
@@ -442,32 +452,6 @@ export async function getCompetitionStandings(competitionId: string) {
     groupStandings,
     knockoutMatches,
   };
-}
-
-export async function getCompletedCompetitions() {
-  await getCurrentUser();
-
-  const competitions = await db.query.competition.findMany({
-    where: eq(competition.status, "completed"),
-    orderBy: desc(competition.endDate),
-    with: {
-      competitionTeams: {
-        with: {
-          team: true,
-        },
-      },
-    },
-  });
-
-  return competitions.map((c) => ({
-    id: c.id,
-    name: c.name,
-    description: c.description,
-    teamSize: c.teamSize,
-    startDate: c.startDate,
-    endDate: c.endDate,
-    teamCount: c.competitionTeams.length,
-  }));
 }
 
 export async function getActiveCompetitions() {

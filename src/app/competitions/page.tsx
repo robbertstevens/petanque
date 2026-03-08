@@ -1,23 +1,23 @@
 import Link from "next/link";
 
-import { getAvailableCompetitions } from "@/lib/actions/competitions-user";
+import { getCompetitionsByStatus } from "@/lib/actions/competitions-user";
 
 export default async function CompetitionsBrowsePage() {
-  const competitions = await getAvailableCompetitions();
+  const competitions = await getCompetitionsByStatus("all-active");
 
   return (
     <div>
       <h2 className="mb-6 text-lg font-medium text-black dark:text-white">
-        Available Competitions
+        Active Competitions
       </h2>
 
       {competitions.length === 0 ? (
         <div className="rounded-lg border border-zinc-200 bg-white p-8 text-center dark:border-zinc-800 dark:bg-zinc-900">
           <p className="text-zinc-600 dark:text-zinc-400">
-            No competitions are currently open for registration.
+            No active competitions at the moment.
           </p>
           <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-500">
-            Check back later for new competitions.
+            Check back later or view the archive for completed competitions.
           </p>
         </div>
       ) : (
@@ -37,9 +37,21 @@ export default async function CompetitionsBrowsePage() {
                 </p>
               )}
               <div className="mt-3 flex flex-wrap gap-2">
-                <span className="rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700 dark:bg-green-900/30 dark:text-green-400">
-                  Open for Registration
-                </span>
+                {competition.status === "registration" && (
+                  <span className="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+                    Open for Registration
+                  </span>
+                )}
+                {competition.status === "group_stage" && (
+                  <span className="rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                    Group Stage
+                  </span>
+                )}
+                {competition.status === "knockout" && (
+                  <span className="rounded-full bg-purple-100 px-2 py-1 text-xs font-medium text-purple-700 dark:bg-purple-900/30 dark:text-purple-400">
+                    Knockout Stage
+                  </span>
+                )}
                 <span className="rounded-full bg-zinc-100 px-2 py-1 text-xs font-medium text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
                   {competition.teamSize} players/team
                 </span>

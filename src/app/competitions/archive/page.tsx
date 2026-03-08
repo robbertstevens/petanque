@@ -1,9 +1,9 @@
 import Link from "next/link";
 
-import { getCompletedCompetitions } from "@/lib/actions/competitions-user";
+import { getCompetitionsByStatus } from "@/lib/actions/competitions-user";
 
 export default async function CompetitionArchivePage() {
-  const competitions = await getCompletedCompetitions();
+  const competitions = await getCompetitionsByStatus("completed");
 
   return (
     <div>
@@ -43,7 +43,7 @@ export default async function CompetitionArchivePage() {
                     </p>
                   )}
                   <div className="mt-2 flex items-center gap-4 text-xs text-zinc-500 dark:text-zinc-500">
-                    <span>{competition.teamCount} teams</span>
+                    <span>{competition.registeredTeamCount} teams</span>
                     <span>{competition.teamSize}-player teams</span>
                     {competition.startDate && competition.endDate && (
                       <span>
