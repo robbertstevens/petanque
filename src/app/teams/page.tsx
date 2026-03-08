@@ -24,20 +24,20 @@ export default async function TeamsPage() {
   return (
     <div className="min-h-screen bg-zinc-50 font-sans dark:bg-black">
       <header className="border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-        <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
           <h1 className="text-xl font-semibold text-black dark:text-white">
             My Teams
           </h1>
           <Link
-            href="/dashboard"
+            href="/"
             className="text-sm text-zinc-600 hover:text-black dark:text-zinc-400 dark:hover:text-white"
           >
-            Back to Dashboard
+            Back to Home
           </Link>
         </div>
       </header>
 
-      <main className="mx-auto max-w-4xl px-4 py-8">
+      <main className="mx-auto max-w-6xl px-4 py-8">
         {/* Pending Invitations */}
         {invitations.length > 0 && (
           <section className="mb-8">

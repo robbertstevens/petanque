@@ -18,16 +18,16 @@ export default async function MatchesLayout({
   return (
     <div className="min-h-screen bg-zinc-50 font-sans dark:bg-black">
       <header className="border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-        <div className="mx-auto max-w-4xl px-4 py-4">
+        <div className="mx-auto max-w-6xl px-4 py-4">
           <div className="flex items-center justify-between">
             <h1 className="text-xl font-semibold text-black dark:text-white">
               Matches
             </h1>
             <Link
-              href="/dashboard"
+              href="/"
               className="text-sm text-zinc-600 hover:text-black dark:text-zinc-400 dark:hover:text-white"
             >
-              ← Back to Dashboard
+              ← Back to Home
             </Link>
           </div>
           <nav className="mt-4 flex gap-4">
@@ -36,7 +36,7 @@ export default async function MatchesLayout({
           </nav>
         </div>
       </header>
-      <main className="mx-auto max-w-4xl px-4 py-8">{children}</main>
+      <main className="mx-auto max-w-6xl px-4 py-8">{children}</main>
     </div>
   );
 }

@@ -61,7 +61,7 @@ export default async function AdminLayout({
             </nav>
           </div>
           <Link
-            href="/dashboard"
+            href="/"
             className="text-sm text-zinc-600 hover:text-black dark:text-zinc-400 dark:hover:text-white"
           >
             Back to App
