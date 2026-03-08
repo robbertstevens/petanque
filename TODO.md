@@ -58,24 +58,24 @@
 
 Transform existing competition pages into public-facing pages with conditional auth-gated features.
 
-- [ ] Refactor `/competitions` page for public access
-  - [ ] Show all non-draft competitions to everyone
-  - [ ] Show "Register Team" button only if authenticated + team captain
-  - [ ] Show "Login to Register" CTA for anonymous users
+- [x] Refactor `/competitions` page for public access
+  - [x] Show all non-draft competitions to everyone
+  - [x] Show "Login to Register" CTA for anonymous users
   - [ ] Add competition search & filtering
-- [ ] Refactor `/competitions/[id]` page for public access
-  - [ ] Show competition details, groups, standings publicly
-  - [ ] Show bracket visualization read-only
-  - [ ] Show match history with scores
-  - [ ] Conditional "My Matches" section (authenticated + participating only)
-  - [ ] Conditional "Register/Withdraw" buttons (authenticated only)
+- [x] Refactor `/competitions/[id]` page for public access
+  - [x] Show competition details, groups, standings publicly
+  - [x] Show bracket visualization read-only
+  - [x] Show match history with scores
+  - [x] Conditional registration section (anonymous vs authenticated captains)
+  - [x] Match cards non-clickable for anonymous users
+- [x] Create not-found.tsx for competition detail pages
 - [ ] Add active competitions overview to homepage (`src/app/page.tsx`)
   - [ ] Display 3-5 active competitions (registration/group_stage/knockout)
   - [ ] Quick links to competition details
   - [ ] "View All Competitions" link
-- [ ] Remove draft competitions from public listing (admin-only)
+- [x] Remove draft competitions from public listing (admin-only)
 - [ ] Update navigation: Add public "Competitions" link
-- [ ] Ensure admin routes remain at `/admin/competitions/*`
+- [x] Ensure admin routes remain at `/admin/competitions/*`
 
 ## Future Enhancements (Nice to Have)
 
