@@ -9,11 +9,12 @@
  * Test Accounts (all passwords are "password"):
  * - superadmin: Super admin user (can manage other admins)
  * - admin: Admin user
- * - alice: Captain of "Les Boulistes" and "Solo Warriors"
- * - bob: Captain of "Boule de Feu"
+ * - alice: Captain of "Les Boulistes", "Solo Warriors", "Team Juliet"
+ * - bob: Captain of "Boule de Feu", "Team Kilo"
  * - eve: Captain of "Les Cochonnets"
  * - charlie, diana, frank: Team members
- * - grace: Has pending invitation to "Les Boulistes"
+ * - grace: Captain of "Team Alpha"
+ * - henry, iris, jack, karen, leo, maya, noah, olivia: Captains of additional teams
  */
 
 import "dotenv/config";
@@ -132,6 +133,15 @@ async function seedUsers(): Promise<Map<string, User>> {
     { username: "eve", email: "eve@example.com", name: "Eve Wilson" },
     { username: "frank", email: "frank@example.com", name: "Frank Miller" },
     { username: "grace", email: "grace@example.com", name: "Grace Lee" },
+    // Additional users for 12-team competition
+    { username: "henry", email: "henry@example.com", name: "Henry Davis" },
+    { username: "iris", email: "iris@example.com", name: "Iris Wong" },
+    { username: "jack", email: "jack@example.com", name: "Jack Taylor" },
+    { username: "karen", email: "karen@example.com", name: "Karen White" },
+    { username: "leo", email: "leo@example.com", name: "Leo Martinez" },
+    { username: "maya", email: "maya@example.com", name: "Maya Patel" },
+    { username: "noah", email: "noah@example.com", name: "Noah Garcia" },
+    { username: "olivia", email: "olivia@example.com", name: "Olivia Kim" },
   ];
 
   const users = new Map<string, User>();
@@ -233,6 +243,18 @@ async function seedTeams(users: Map<string, User>): Promise<Map<string, Team>> {
       captainUsername: "alice",
       members: ["alice"], // Only 1 member - can't register for 2-player comps
     },
+    // Teams for 12-team tournament (Championship 2025)
+    { name: "Team Alpha", captainUsername: "grace", members: ["grace"] },
+    { name: "Team Bravo", captainUsername: "henry", members: ["henry"] },
+    { name: "Team Charlie", captainUsername: "iris", members: ["iris"] },
+    { name: "Team Delta", captainUsername: "jack", members: ["jack"] },
+    { name: "Team Echo", captainUsername: "karen", members: ["karen"] },
+    { name: "Team Foxtrot", captainUsername: "leo", members: ["leo"] },
+    { name: "Team Golf", captainUsername: "maya", members: ["maya"] },
+    { name: "Team Hotel", captainUsername: "noah", members: ["noah"] },
+    { name: "Team India", captainUsername: "olivia", members: ["olivia"] },
+    { name: "Team Juliet", captainUsername: "alice", members: ["alice"] },
+    { name: "Team Kilo", captainUsername: "bob", members: ["bob"] },
   ];
 
   for (const teamData of teamsToCreate) {
@@ -287,20 +309,20 @@ async function seedInvitations(
 ) {
   console.log("\nCreating pending invitations...");
 
-  const grace = users.get("grace");
+  const henry = users.get("henry");
   const alice = users.get("alice");
   const lesBoulistes = teams.get("Les Boulistes");
 
-  if (grace && alice && lesBoulistes) {
+  if (henry && alice && lesBoulistes) {
     await db.insert(schema.teamInvitation).values({
       id: generateUUID(),
       teamId: lesBoulistes.id,
-      invitedUserId: grace.id,
+      invitedUserId: henry.id,
       invitedByUserId: alice.id,
       status: "pending",
     });
 
-    console.log(`  Grace has a pending invitation to join Les Boulistes.`);
+    console.log(`  Henry has a pending invitation to join Les Boulistes.`);
   }
 }
 
@@ -361,6 +383,16 @@ async function seedCompetitions(
       teamSize: 3,
       startDate: null,
       endDate: null,
+    },
+    // 12-team tournament with 2 groups
+    {
+      name: "Championship 2025",
+      description:
+        "Large tournament with 12 teams divided into 2 groups of 6 teams each.",
+      status: "group_stage" as const,
+      teamSize: 2,
+      startDate: twoWeeksAgo,
+      endDate: twoWeeksFromNow,
     },
   ];
 
@@ -444,6 +476,31 @@ async function seedGroups(
     });
 
     console.log(`  Created groups for Winter Tournament 2024: Group A`);
+  }
+
+  // Championship 2025 - group_stage - has 2 groups with 6 teams each
+  const championship2025 = competitions.get("Championship 2025");
+  if (championship2025) {
+    const groupA = generateUUID();
+    const groupB = generateUUID();
+
+    await db.insert(schema.group).values([
+      { id: groupA, competitionId: championship2025.id, name: "Group A" },
+      { id: groupB, competitionId: championship2025.id, name: "Group B" },
+    ]);
+
+    groups.set("Championship 2025 - Group A", {
+      id: groupA,
+      competitionId: championship2025.id,
+      name: "Group A",
+    });
+    groups.set("Championship 2025 - Group B", {
+      id: groupB,
+      competitionId: championship2025.id,
+      name: "Group B",
+    });
+
+    console.log(`  Created groups for Championship 2025: Group A, Group B`);
   }
 
   return groups;
@@ -568,6 +625,62 @@ async function seedCompetitionTeams(
 
     console.log(
       `  Registered for Winter Tournament 2024: Les Boulistes, Boule de Feu, Les Cochonnets (all Group A)`,
+    );
+  }
+
+  // Championship 2025 (group_stage) - 12 teams, 6 in each group
+  const championship2025 = competitions.get("Championship 2025");
+  const champGroupA = groups.get("Championship 2025 - Group A");
+  const champGroupB = groups.get("Championship 2025 - Group B");
+
+  if (championship2025 && champGroupA && champGroupB) {
+    const groupATeams = [
+      "Team Alpha",
+      "Team Bravo",
+      "Team Charlie",
+      "Team Delta",
+      "Team Echo",
+      "Team Foxtrot",
+    ];
+    const groupBTeams = [
+      "Team Golf",
+      "Team Hotel",
+      "Team India",
+      "Team Juliet",
+      "Team Kilo",
+      "Les Boulistes",
+    ];
+
+    for (const teamName of groupATeams) {
+      const team = teams.get(teamName);
+      if (team) {
+        const ctId = generateUUID();
+        await db.insert(schema.competitionTeam).values({
+          id: ctId,
+          competitionId: championship2025.id,
+          teamId: team.id,
+          groupId: champGroupA.id,
+        });
+        competitionTeamIds.set(`${championship2025.name}-${team.name}`, ctId);
+      }
+    }
+
+    for (const teamName of groupBTeams) {
+      const team = teams.get(teamName);
+      if (team) {
+        const ctId = generateUUID();
+        await db.insert(schema.competitionTeam).values({
+          id: ctId,
+          competitionId: championship2025.id,
+          teamId: team.id,
+          groupId: champGroupB.id,
+        });
+        competitionTeamIds.set(`${championship2025.name}-${team.name}`, ctId);
+      }
+    }
+
+    console.log(
+      `  Registered for Championship 2025: 6 teams in Group A, 6 teams in Group B`,
     );
   }
 
@@ -794,12 +907,16 @@ function printSummary() {
   console.log("  charlie  - Member of 'Les Boulistes'");
   console.log("  diana    - Member of 'Boule de Feu'");
   console.log("  frank    - Member of 'Les Cochonnets'");
-  console.log("  grace    - Has pending invitation to 'Les Boulistes'");
+  console.log("  grace    - Captain of 'Team Alpha'");
+  console.log(
+    "  Additional captains: henry, iris, jack, karen, leo, maya, noah, olivia",
+  );
   console.log("\nCompetitions:");
   console.log("  Summer Championship 2025 - Open for registration");
   console.log("  Spring Cup 2025          - Group stage in progress");
   console.log("  Winter Tournament 2024   - Completed");
   console.log("  Autumn Classic 2025      - Draft (not visible to users)");
+  console.log("  Championship 2025        - 12 teams, 2 groups in group stage");
   console.log("\n" + "=".repeat(60));
 }
 
