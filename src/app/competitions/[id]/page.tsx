@@ -40,33 +40,31 @@ export default async function CompetitionDetailPage({
   });
   const isAuthenticated = !!session;
 
-  // Fetch public data
-  const [competition, standings, matches] = await Promise.all([
+  // Fetch public data and authenticated data in parallel
+  const [competition, standings, matches, myTeams] = await Promise.all([
     getPublicCompetition(id),
     getPublicCompetitionStandings(id),
     getPublicCompetitionMatches(id),
+    isAuthenticated ? getMyTeamsAsCaptain() : Promise.resolve([]),
   ]);
 
   if (!competition) {
     notFound();
   }
 
-  // Fetch authenticated data only if user is logged in
-  let myTeams: Awaited<ReturnType<typeof getMyTeamsAsCaptain>> = [];
-  if (isAuthenticated) {
-    myTeams = await getMyTeamsAsCaptain();
-  }
+  // Type guard - after notFound(), competition is guaranteed to be non-null
+  const comp = competition;
 
   // Filter teams that are eligible for registration
   const eligibleTeams = myTeams.filter(
     (team) =>
-      team.memberCount >= competition.teamSize &&
-      !team.registeredCompetitionIds.includes(competition.id),
+      team.memberCount >= comp.teamSize &&
+      !team.registeredCompetitionIds.includes(comp.id),
   );
 
   // Teams that are already registered
   const alreadyRegisteredTeams = myTeams.filter((team) =>
-    team.registeredCompetitionIds.includes(competition.id),
+    team.registeredCompetitionIds.includes(comp.id),
   );
 
   return (
@@ -81,17 +79,17 @@ export default async function CompetitionDetailPage({
       {/* Competition Header */}
       <div className="mb-6 rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
         <h2 className="text-xl font-semibold text-black dark:text-white">
-          {competition.name}
+          {comp.name}
         </h2>
-        {competition.description && (
+        {comp.description && (
           <p className="mt-2 text-zinc-600 dark:text-zinc-400">
-            {competition.description}
+            {comp.description}
           </p>
         )}
 
         {/* Progress Indicator */}
         <div className="mt-4">
-          <CompetitionProgress status={competition.status} />
+          <CompetitionProgress status={comp.status} />
         </div>
 
         <div className="mt-2 flex flex-wrap gap-4 text-sm text-zinc-600 dark:text-zinc-400">
@@ -99,7 +97,7 @@ export default async function CompetitionDetailPage({
             <span className="font-medium text-black dark:text-white">
               Team Size:
             </span>{" "}
-            {competition.teamSize} players
+            {comp.teamSize} players
           </div>
           {competition.startDate && (
             <div>

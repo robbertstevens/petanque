@@ -11,6 +11,11 @@ import {
   team,
   teamMember,
 } from "@/db/competition-schema";
+import { getCurrentUser } from "./auth-utils";
+
+// ============================================================================
+// Type Definitions
+// ============================================================================
 
 export type GroupStandings = {
   groupId: string;
@@ -30,44 +35,72 @@ export type TeamStanding = {
   conceded: number;
   difference: number;
 };
-import { getCurrentUser } from "./auth-utils";
 
-export async function getCompetitionsByStatus(
-  status:
-    | "registration"
-    | "group_stage"
-    | "knockout"
-    | "completed"
-    | "all-active",
-) {
-  const whereClause =
-    status === "all-active"
-      ? inArray(competition.status, ["registration", "group_stage", "knockout"])
-      : eq(competition.status, status);
+// Unified return types
+export type CompetitionData = {
+  id: string;
+  name: string;
+  description: string | null;
+  teamSize: number;
+  startDate: Date | null;
+  endDate: Date | null;
+  status: "draft" | "registration" | "group_stage" | "knockout" | "completed";
+  registeredTeams: {
+    id: string;
+    teamId: string;
+    teamName: string;
+    registeredAt: Date;
+  }[];
+};
 
-  const competitions = await db.query.competition.findMany({
-    where: whereClause,
-    orderBy: desc(competition.createdAt),
-    with: {
-      competitionTeams: true,
-    },
-  });
+export type MatchData = {
+  id: string;
+  round: number;
+  isKnockout: boolean;
+  status: "scheduled" | "in_progress" | "completed" | "cancelled";
+  scheduledAt: Date | null;
+  homeTeam: { id: string; name: string };
+  awayTeam: { id: string; name: string };
+  group: { id: string; name: string } | null;
+  score: { homeScore: number; awayScore: number } | null;
+};
 
-  return competitions.map((c) => ({
-    id: c.id,
-    name: c.name,
-    description: c.description,
-    teamSize: c.teamSize,
-    startDate: c.startDate,
-    endDate: c.endDate,
-    status: c.status,
-    registeredTeamCount: c.competitionTeams.length,
-  }));
-}
+export type MatchesData = {
+  upcoming: MatchData[];
+  completed: MatchData[];
+};
 
-export async function getCompetition(competitionId: string) {
-  await getCurrentUser();
+export type KnockoutMatchData = {
+  id: string;
+  round: number;
+  homeTeamId: string;
+  homeTeamName: string;
+  awayTeamId: string;
+  awayTeamName: string;
+  status: string;
+  homeScore: number | null;
+  awayScore: number | null;
+  winnerId: string | null;
+};
 
+export type StandingsData = {
+  id: string;
+  name: string;
+  description: string | null;
+  status: "draft" | "registration" | "group_stage" | "knockout" | "completed";
+  startDate: Date | null;
+  endDate: Date | null;
+  groupStandings: GroupStandings[];
+  knockoutMatches: KnockoutMatchData[];
+};
+
+// ============================================================================
+// Internal Helper Functions
+// ============================================================================
+
+async function _fetchCompetitionData(
+  competitionId: string,
+): Promise<CompetitionData | null> {
   const comp = await db.query.competition.findFirst({
     where: eq(competition.id, competitionId),
     with: {
@@ -100,17 +133,7 @@ export async function getCompetition(competitionId: string) {
   };
 }
 
-export async function getCompetitionMatches(competitionId: string) {
-  await getCurrentUser();
-
-  const comp = await db.query.competition.findFirst({
-    where: eq(competition.id, competitionId),
-  });
-
-  if (!comp) {
-    return null;
-  }
-
+async function _fetchMatchData(competitionId: string): Promise<MatchesData> {
   const matches = await db.query.match.findMany({
     where: eq(match.competitionId, competitionId),
     with: {
@@ -180,6 +203,215 @@ export async function getCompetitionMatches(competitionId: string) {
   };
 }
 
+async function _fetchCompetitionWithRelations(competitionId: string) {
+  return await db.query.competition.findFirst({
+    where: eq(competition.id, competitionId),
+    with: {
+      groups: {
+        with: {
+          competitionTeams: {
+            with: {
+              team: true,
+            },
+          },
+          matches: {
+            with: {
+              homeTeam: true,
+              awayTeam: true,
+              score: true,
+            },
+          },
+        },
+      },
+      matches: {
+        with: {
+          homeTeam: true,
+          awayTeam: true,
+          score: true,
+        },
+      },
+    },
+  });
+}
+
+function _calculateStandingsData(
+  comp: NonNullable<Awaited<ReturnType<typeof _fetchCompetitionWithRelations>>>,
+): StandingsData {
+  const groupStandings =
+    comp.groups?.map((grp) => {
+      const rawStandings = calculateGroupStandings(grp);
+      const teamMap = new Map(
+        grp.competitionTeams.map((ct) => [ct.teamId, ct.team.name]),
+      );
+
+      return {
+        groupId: grp.id,
+        groupName: grp.name,
+        standings: rawStandings.map((s) => ({
+          teamId: s.teamId,
+          teamName: teamMap.get(s.teamId) || "Unknown",
+          points: s.points,
+          wins: s.wins,
+          losses: s.losses,
+          draws: s.draws,
+          played: s.wins + s.losses + s.draws,
+          scored: s.scored,
+          conceded: s.conceded,
+          difference: s.scored - s.conceded,
+        })),
+      };
+    }) ?? [];
+
+  const knockoutMatches =
+    comp.matches
+      ?.filter((m) => m.isKnockout)
+      .map((m) => ({
+        id: m.id,
+        round: m.round,
+        homeTeamId: m.homeTeamId,
+        homeTeamName: m.homeTeam.name,
+        awayTeamId: m.awayTeamId,
+        awayTeamName: m.awayTeam.name,
+        status: m.status,
+        homeScore: m.score?.homeScore ?? null,
+        awayScore: m.score?.awayScore ?? null,
+        winnerId:
+          m.score && m.status === "completed"
+            ? m.score.homeScore > m.score.awayScore
+              ? m.homeTeamId
+              : m.awayTeamId
+            : null,
+      }))
+      .sort((a, b) => a.round - b.round) ?? [];
+
+  return {
+    id: comp.id,
+    name: comp.name,
+    description: comp.description,
+    status: comp.status,
+    startDate: comp.startDate,
+    endDate: comp.endDate,
+    groupStandings,
+    knockoutMatches,
+  };
+}
+
+// ============================================================================
+// Exported Functions - Auth Required
+// ============================================================================
+
+export async function getCompetitionsByStatus(
+  status:
+    | "registration"
+    | "group_stage"
+    | "knockout"
+    | "completed"
+    | "all-active",
+) {
+  const whereClause =
+    status === "all-active"
+      ? inArray(competition.status, ["registration", "group_stage", "knockout"])
+      : eq(competition.status, status);
+
+  const competitions = await db.query.competition.findMany({
+    where: whereClause,
+    orderBy: desc(competition.createdAt),
+    with: {
+      competitionTeams: true,
+    },
+  });
+
+  return competitions.map((c) => ({
+    id: c.id,
+    name: c.name,
+    description: c.description,
+    teamSize: c.teamSize,
+    startDate: c.startDate,
+    endDate: c.endDate,
+    status: c.status,
+    registeredTeamCount: c.competitionTeams.length,
+  }));
+}
+
+export async function getCompetition(competitionId: string) {
+  await getCurrentUser();
+  return _fetchCompetitionData(competitionId);
+}
+
+export async function getCompetitionMatches(competitionId: string) {
+  await getCurrentUser();
+
+  const comp = await _fetchCompetitionData(competitionId);
+  if (!comp) {
+    return null;
+  }
+
+  return _fetchMatchData(competitionId);
+}
+
+export async function getCompetitionStandings(competitionId: string) {
+  await getCurrentUser();
+
+  const comp = await _fetchCompetitionWithRelations(competitionId);
+  if (!comp || comp.status === "draft") {
+    return null;
+  }
+
+  return _calculateStandingsData(comp);
+}
+
+export async function getActiveCompetitions() {
+  await getCurrentUser();
+
+  const competitions = await db.query.competition.findMany({
+    orderBy: desc(competition.createdAt),
+    with: {
+      competitionTeams: true,
+    },
+  });
+
+  return competitions
+    .filter((c) => c.status !== "draft")
+    .map((c) => ({
+      id: c.id,
+      name: c.name,
+      description: c.description,
+      teamSize: c.teamSize,
+      startDate: c.startDate,
+      endDate: c.endDate,
+      status: c.status,
+      teamCount: c.competitionTeams.length,
+    }));
+}
+
+// ============================================================================
+// Exported Functions - Public (No Auth Required)
+// ============================================================================
+
+export async function getPublicCompetition(competitionId: string) {
+  const data = await _fetchCompetitionData(competitionId);
+  if (data?.status === "draft") {
+    return null;
+  }
+  return data;
+}
+
+export async function getPublicCompetitionMatches(competitionId: string) {
+  return _fetchMatchData(competitionId);
+}
+
+export async function getPublicCompetitionStandings(competitionId: string) {
+  const comp = await _fetchCompetitionWithRelations(competitionId);
+  if (!comp || comp.status === "draft") {
+    return null;
+  }
+  return _calculateStandingsData(comp);
+}
+
+// ============================================================================
+// Exported Functions - User Teams & Registration
+// ============================================================================
+
 export async function getMyTeamsAsCaptain() {
   const currentUser = await getCurrentUser();
 
@@ -196,6 +428,52 @@ export async function getMyTeamsAsCaptain() {
     name: t.name,
     memberCount: t.members.length,
     registeredCompetitionIds: t.competitionTeams.map((ct) => ct.competitionId),
+  }));
+}
+
+export async function getMyCompetitions() {
+  const currentUser = await getCurrentUser();
+
+  const memberships = await db.query.teamMember.findMany({
+    where: eq(teamMember.userId, currentUser.id),
+  });
+
+  const teamIds = memberships.map((m) => m.teamId);
+
+  if (teamIds.length === 0) {
+    return [];
+  }
+
+  const registrations = await db.query.competitionTeam.findMany({
+    with: {
+      competition: true,
+      team: true,
+    },
+  });
+
+  const myRegistrations = registrations.filter((r) =>
+    teamIds.includes(r.teamId),
+  );
+
+  const teamsWithCaptainInfo = await db.query.team.findMany({
+    where: eq(team.captainUserId, currentUser.id),
+  });
+  const captainTeamIds = teamsWithCaptainInfo.map((t) => t.id);
+
+  return myRegistrations.map((r) => ({
+    registrationId: r.id,
+    competitionId: r.competition.id,
+    competitionName: r.competition.name,
+    competitionStatus: r.competition.status,
+    competitionStartDate: r.competition.startDate,
+    competitionEndDate: r.competition.endDate,
+    teamId: r.team.id,
+    teamName: r.team.name,
+    registeredAt: r.registeredAt,
+    isCaptain: captainTeamIds.includes(r.teamId),
+    canWithdraw:
+      r.competition.status === "registration" &&
+      captainTeamIds.includes(r.teamId),
   }));
 }
 
@@ -311,366 +589,9 @@ export async function withdrawTeamFromCompetition(
   return { success: true };
 }
 
-export async function getMyCompetitions() {
-  const currentUser = await getCurrentUser();
-
-  const memberships = await db.query.teamMember.findMany({
-    where: eq(teamMember.userId, currentUser.id),
-  });
-
-  const teamIds = memberships.map((m) => m.teamId);
-
-  if (teamIds.length === 0) {
-    return [];
-  }
-
-  const registrations = await db.query.competitionTeam.findMany({
-    with: {
-      competition: true,
-      team: true,
-    },
-  });
-
-  const myRegistrations = registrations.filter((r) =>
-    teamIds.includes(r.teamId),
-  );
-
-  const teamsWithCaptainInfo = await db.query.team.findMany({
-    where: eq(team.captainUserId, currentUser.id),
-  });
-  const captainTeamIds = teamsWithCaptainInfo.map((t) => t.id);
-
-  return myRegistrations.map((r) => ({
-    registrationId: r.id,
-    competitionId: r.competition.id,
-    competitionName: r.competition.name,
-    competitionStatus: r.competition.status,
-    competitionStartDate: r.competition.startDate,
-    competitionEndDate: r.competition.endDate,
-    teamId: r.team.id,
-    teamName: r.team.name,
-    registeredAt: r.registeredAt,
-    isCaptain: captainTeamIds.includes(r.teamId),
-    canWithdraw:
-      r.competition.status === "registration" &&
-      captainTeamIds.includes(r.teamId),
-  }));
-}
-
-export async function getCompetitionStandings(competitionId: string) {
-  await getCurrentUser();
-
-  const comp = await db.query.competition.findFirst({
-    where: eq(competition.id, competitionId),
-    with: {
-      groups: {
-        with: {
-          competitionTeams: {
-            with: {
-              team: true,
-            },
-          },
-          matches: {
-            with: {
-              homeTeam: true,
-              awayTeam: true,
-              score: true,
-            },
-          },
-        },
-      },
-      matches: {
-        with: {
-          homeTeam: true,
-          awayTeam: true,
-          score: true,
-        },
-      },
-    },
-  });
-
-  if (!comp) {
-    return null;
-  }
-
-  if (comp.status === "draft") {
-    return null;
-  }
-
-  const groupStandings = comp.groups.map((grp) => {
-    const rawStandings = calculateGroupStandings(grp);
-    const teamMap = new Map(
-      grp.competitionTeams.map((ct) => [ct.teamId, ct.team.name]),
-    );
-
-    return {
-      groupId: grp.id,
-      groupName: grp.name,
-      standings: rawStandings.map((s) => ({
-        teamId: s.teamId,
-        teamName: teamMap.get(s.teamId) || "Unknown",
-        points: s.points,
-        wins: s.wins,
-        losses: s.losses,
-        draws: s.draws,
-        played: s.wins + s.losses + s.draws,
-        scored: s.scored,
-        conceded: s.conceded,
-        difference: s.scored - s.conceded,
-      })),
-    };
-  });
-
-  const knockoutMatches = comp.matches
-    .filter((m) => m.isKnockout)
-    .map((m) => ({
-      id: m.id,
-      round: m.round,
-      homeTeamId: m.homeTeamId,
-      homeTeamName: m.homeTeam.name,
-      awayTeamId: m.awayTeamId,
-      awayTeamName: m.awayTeam.name,
-      status: m.status,
-      homeScore: m.score?.homeScore ?? null,
-      awayScore: m.score?.awayScore ?? null,
-      winnerId:
-        m.score && m.status === "completed"
-          ? m.score.homeScore > m.score.awayScore
-            ? m.homeTeamId
-            : m.awayTeamId
-          : null,
-    }))
-    .sort((a, b) => a.round - b.round);
-
-  return {
-    id: comp.id,
-    name: comp.name,
-    description: comp.description,
-    status: comp.status,
-    startDate: comp.startDate,
-    endDate: comp.endDate,
-    groupStandings,
-    knockoutMatches,
-  };
-}
-
-export async function getActiveCompetitions() {
-  await getCurrentUser();
-
-  const competitions = await db.query.competition.findMany({
-    orderBy: desc(competition.createdAt),
-    with: {
-      competitionTeams: true,
-    },
-  });
-
-  return competitions
-    .filter((c) => c.status !== "draft")
-    .map((c) => ({
-      id: c.id,
-      name: c.name,
-      description: c.description,
-      teamSize: c.teamSize,
-      startDate: c.startDate,
-      endDate: c.endDate,
-      status: c.status,
-      teamCount: c.competitionTeams.length,
-    }));
-}
-
-export async function getPublicCompetition(competitionId: string) {
-  const comp = await db.query.competition.findFirst({
-    where: eq(competition.id, competitionId),
-    with: {
-      competitionTeams: {
-        with: {
-          team: true,
-        },
-      },
-    },
-  });
-
-  if (!comp || comp.status === "draft") {
-    return null;
-  }
-
-  return {
-    id: comp.id,
-    name: comp.name,
-    description: comp.description,
-    teamSize: comp.teamSize,
-    startDate: comp.startDate,
-    endDate: comp.endDate,
-    status: comp.status,
-    registeredTeams: comp.competitionTeams.map((ct) => ({
-      id: ct.id,
-      teamId: ct.team.id,
-      teamName: ct.team.name,
-      registeredAt: ct.registeredAt,
-    })),
-  };
-}
-
-export async function getPublicCompetitionMatches(competitionId: string) {
-  const matches = await db.query.match.findMany({
-    where: eq(match.competitionId, competitionId),
-    with: {
-      homeTeam: true,
-      awayTeam: true,
-      group: true,
-      score: true,
-    },
-    orderBy: [desc(match.round), match.createdAt],
-  });
-
-  const upcomingMatches = matches.filter(
-    (m) => m.status === "scheduled" || m.status === "in_progress",
-  );
-  const completedMatches = matches.filter((m) => m.status === "completed");
-
-  return {
-    upcoming: upcomingMatches.map((m) => ({
-      id: m.id,
-      round: m.round,
-      isKnockout: m.isKnockout,
-      status: m.status,
-      scheduledAt: m.scheduledAt,
-      homeTeam: {
-        id: m.homeTeam.id,
-        name: m.homeTeam.name,
-      },
-      awayTeam: {
-        id: m.awayTeam.id,
-        name: m.awayTeam.name,
-      },
-      group: m.group
-        ? {
-            id: m.group.id,
-            name: m.group.name,
-          }
-        : null,
-      score: null,
-    })),
-    completed: completedMatches.map((m) => ({
-      id: m.id,
-      round: m.round,
-      isKnockout: m.isKnockout,
-      status: m.status,
-      scheduledAt: m.scheduledAt,
-      homeTeam: {
-        id: m.homeTeam.id,
-        name: m.homeTeam.name,
-      },
-      awayTeam: {
-        id: m.awayTeam.id,
-        name: m.awayTeam.name,
-      },
-      group: m.group
-        ? {
-            id: m.group.id,
-            name: m.group.name,
-          }
-        : null,
-      score: m.score
-        ? {
-            homeScore: m.score.homeScore,
-            awayScore: m.score.awayScore,
-          }
-        : null,
-    })),
-  };
-}
-
-export async function getPublicCompetitionStandings(competitionId: string) {
-  const comp = await db.query.competition.findFirst({
-    where: eq(competition.id, competitionId),
-    with: {
-      groups: {
-        with: {
-          competitionTeams: {
-            with: {
-              team: true,
-            },
-          },
-          matches: {
-            with: {
-              homeTeam: true,
-              awayTeam: true,
-              score: true,
-            },
-          },
-        },
-      },
-      matches: {
-        with: {
-          homeTeam: true,
-          awayTeam: true,
-          score: true,
-        },
-      },
-    },
-  });
-
-  if (!comp || comp.status === "draft") {
-    return null;
-  }
-
-  const groupStandings = comp.groups.map((grp) => {
-    const rawStandings = calculateGroupStandings(grp);
-    const teamMap = new Map(
-      grp.competitionTeams.map((ct) => [ct.teamId, ct.team.name]),
-    );
-
-    return {
-      groupId: grp.id,
-      groupName: grp.name,
-      standings: rawStandings.map((s) => ({
-        teamId: s.teamId,
-        teamName: teamMap.get(s.teamId) || "Unknown",
-        points: s.points,
-        wins: s.wins,
-        losses: s.losses,
-        draws: s.draws,
-        played: s.wins + s.losses + s.draws,
-        scored: s.scored,
-        conceded: s.conceded,
-        difference: s.scored - s.conceded,
-      })),
-    };
-  });
-
-  const knockoutMatches = comp.matches
-    .filter((m) => m.isKnockout)
-    .map((m) => ({
-      id: m.id,
-      round: m.round,
-      homeTeamId: m.homeTeamId,
-      homeTeamName: m.homeTeam.name,
-      awayTeamId: m.awayTeamId,
-      awayTeamName: m.awayTeam.name,
-      status: m.status,
-      homeScore: m.score?.homeScore ?? null,
-      awayScore: m.score?.awayScore ?? null,
-      winnerId:
-        m.score && m.status === "completed"
-          ? m.score.homeScore > m.score.awayScore
-            ? m.homeTeamId
-            : m.awayTeamId
-          : null,
-    }))
-    .sort((a, b) => a.round - b.round);
-
-  return {
-    id: comp.id,
-    name: comp.name,
-    description: comp.description,
-    status: comp.status,
-    startDate: comp.startDate,
-    endDate: comp.endDate,
-    groupStandings,
-    knockoutMatches,
-  };
-}
+// ============================================================================
+// Helper Types & Functions for Standings Calculation
+// ============================================================================
 
 type GroupStanding = {
   competitionTeams: { teamId: string }[];
