@@ -3,10 +3,10 @@ import type { GroupStandings } from "@/lib/actions/competitions-user";
 type KnockoutMatch = {
   id: string;
   round: number;
-  homeTeamId: string;
-  homeTeamName: string;
-  awayTeamId: string;
-  awayTeamName: string;
+  homeTeamId: string | null;
+  homeTeamName: string | null;
+  awayTeamId: string | null;
+  awayTeamName: string | null;
   status: string;
   homeScore: number | null;
   awayScore: number | null;
@@ -152,7 +152,9 @@ function getRunnerUp(
         finalMatch.winnerId === finalMatch.homeTeamId
           ? finalMatch.awayTeamName
           : finalMatch.homeTeamName;
-      return { teamId: loserId, teamName: loserName };
+      if (loserId && loserName) {
+        return { teamId: loserId, teamName: loserName };
+      }
     }
   }
 

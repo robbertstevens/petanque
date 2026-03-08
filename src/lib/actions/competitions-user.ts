@@ -59,8 +59,8 @@ export type MatchData = {
   isKnockout: boolean;
   status: "scheduled" | "in_progress" | "completed" | "cancelled";
   scheduledAt: Date | null;
-  homeTeam: { id: string; name: string };
-  awayTeam: { id: string; name: string };
+  homeTeam: { id: string; name: string } | null;
+  awayTeam: { id: string; name: string } | null;
   group: { id: string; name: string } | null;
   score: { homeScore: number; awayScore: number } | null;
 };
@@ -73,10 +73,10 @@ export type MatchesData = {
 export type KnockoutMatchData = {
   id: string;
   round: number;
-  homeTeamId: string;
-  homeTeamName: string;
-  awayTeamId: string;
-  awayTeamName: string;
+  homeTeamId: string | null;
+  homeTeamName: string | null;
+  awayTeamId: string | null;
+  awayTeamName: string | null;
   status: string;
   homeScore: number | null;
   awayScore: number | null;
@@ -157,14 +157,18 @@ async function _fetchMatchData(competitionId: string): Promise<MatchesData> {
       isKnockout: m.isKnockout,
       status: m.status,
       scheduledAt: m.scheduledAt,
-      homeTeam: {
-        id: m.homeTeam.id,
-        name: m.homeTeam.name,
-      },
-      awayTeam: {
-        id: m.awayTeam.id,
-        name: m.awayTeam.name,
-      },
+      homeTeam: m.homeTeam
+        ? {
+            id: m.homeTeam.id,
+            name: m.homeTeam.name,
+          }
+        : null,
+      awayTeam: m.awayTeam
+        ? {
+            id: m.awayTeam.id,
+            name: m.awayTeam.name,
+          }
+        : null,
       group: m.group
         ? {
             id: m.group.id,
@@ -179,14 +183,18 @@ async function _fetchMatchData(competitionId: string): Promise<MatchesData> {
       isKnockout: m.isKnockout,
       status: m.status,
       scheduledAt: m.scheduledAt,
-      homeTeam: {
-        id: m.homeTeam.id,
-        name: m.homeTeam.name,
-      },
-      awayTeam: {
-        id: m.awayTeam.id,
-        name: m.awayTeam.name,
-      },
+      homeTeam: m.homeTeam
+        ? {
+            id: m.homeTeam.id,
+            name: m.homeTeam.name,
+          }
+        : null,
+      awayTeam: m.awayTeam
+        ? {
+            id: m.awayTeam.id,
+            name: m.awayTeam.name,
+          }
+        : null,
       group: m.group
         ? {
             id: m.group.id,
@@ -269,9 +277,9 @@ function _calculateStandingsData(
         id: m.id,
         round: m.round,
         homeTeamId: m.homeTeamId,
-        homeTeamName: m.homeTeam.name,
+        homeTeamName: m.homeTeam?.name ?? null,
         awayTeamId: m.awayTeamId,
-        awayTeamName: m.awayTeam.name,
+        awayTeamName: m.awayTeam?.name ?? null,
         status: m.status,
         homeScore: m.score?.homeScore ?? null,
         awayScore: m.score?.awayScore ?? null,
@@ -596,8 +604,8 @@ export async function withdrawTeamFromCompetition(
 type GroupStanding = {
   competitionTeams: { teamId: string }[];
   matches: {
-    homeTeamId: string;
-    awayTeamId: string;
+    homeTeamId: string | null;
+    awayTeamId: string | null;
     score: { homeScore: number; awayScore: number } | null;
   }[];
 };
@@ -643,6 +651,7 @@ function calculateGroupStandings(grp: GroupStanding): TeamStandingResult[] {
 
   for (const m of grp.matches) {
     if (!m.score) continue;
+    if (!m.homeTeamId || !m.awayTeamId) continue;
 
     const home = standings.get(m.homeTeamId);
     const away = standings.get(m.awayTeamId);

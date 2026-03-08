@@ -1,10 +1,10 @@
 type KnockoutMatch = {
   id: string;
   round: number;
-  homeTeamId: string;
-  homeTeamName: string;
-  awayTeamId: string;
-  awayTeamName: string;
+  homeTeamId: string | null;
+  homeTeamName: string | null;
+  awayTeamId: string | null;
+  awayTeamName: string | null;
   status: string;
   homeScore: number | null;
   awayScore: number | null;
@@ -103,13 +103,13 @@ function MatchCard({ match }: Readonly<{ match: KnockoutMatch }>) {
       {/* Teams */}
       <div className="divide-y divide-zinc-200 dark:divide-zinc-800">
         <TeamRow
-          teamName={match.homeTeamName}
+          teamName={match.homeTeamName ?? "TBH"}
           score={match.homeScore}
           isWinner={match.winnerId === match.homeTeamId}
           isCompleted={isCompleted}
         />
         <TeamRow
-          teamName={match.awayTeamName}
+          teamName={match.awayTeamName ?? "TBH"}
           score={match.awayScore}
           isWinner={match.winnerId === match.awayTeamId}
           isCompleted={isCompleted}

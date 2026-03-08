@@ -421,48 +421,107 @@ export async function generateKnockoutBracket(competitionId: string) {
   }
 
   const bracketSize = Math.pow(2, Math.ceil(Math.log2(qualifiedTeams.length)));
+  const totalRounds = Math.log2(bracketSize);
   const byes = bracketSize - qualifiedTeams.length;
 
   const shuffled = [...qualifiedTeams].sort(() => Math.random() - 0.5);
 
-  const firstRoundMatches: { homeTeamId: string; awayTeamId: string }[] = [];
+  // Generate all rounds
+  const allMatches: {
+    id: string;
+    competitionId: string;
+    groupId: null;
+    homeTeamId: string | null;
+    awayTeamId: string | null;
+    round: number;
+    isKnockout: true;
+    status: "scheduled";
+  }[] = [];
+
+  // Round 1: First round with actual matchups
+  const round1Matches: {
+    homeTeamId: string | null;
+    awayTeamId: string | null;
+  }[] = [];
   let teamIndex = 0;
 
   for (let i = 0; i < bracketSize / 2; i++) {
     if (i < byes) {
+      // Team gets a bye - they'll be placed in round 2
       teamIndex++;
     } else {
-      const home = shuffled[teamIndex++];
-      const away = shuffled[teamIndex++];
-      if (home && away) {
-        firstRoundMatches.push({ homeTeamId: home, awayTeamId: away });
+      const home = shuffled[teamIndex++] ?? null;
+      const away = shuffled[teamIndex++] ?? null;
+      round1Matches.push({ homeTeamId: home, awayTeamId: away });
+    }
+  }
+
+  // Generate subsequent rounds with TBH placeholders
+  const rounds: { homeTeamId: string | null; awayTeamId: string | null }[][] = [
+    round1Matches,
+  ];
+
+  for (let round = 2; round <= totalRounds; round++) {
+    const prevRoundMatchCount = rounds[round - 2].length;
+    const currentRoundMatches: {
+      homeTeamId: string | null;
+      awayTeamId: string | null;
+    }[] = [];
+
+    for (let i = 0; i < prevRoundMatchCount / 2; i++) {
+      currentRoundMatches.push({ homeTeamId: null, awayTeamId: null });
+    }
+
+    rounds.push(currentRoundMatches);
+  }
+
+  // Handle byes - place teams with byes directly into round 2
+  for (let i = 0; i < byes; i++) {
+    const byeTeam = shuffled[i];
+    if (byeTeam && rounds.length > 1) {
+      const round2MatchIndex = Math.floor(i / 2);
+      const isHomeSlot = i % 2 === 0;
+
+      if (rounds[1][round2MatchIndex]) {
+        if (isHomeSlot) {
+          rounds[1][round2MatchIndex].homeTeamId = byeTeam;
+        } else {
+          rounds[1][round2MatchIndex].awayTeamId = byeTeam;
+        }
       }
     }
   }
 
-  if (firstRoundMatches.length > 0) {
-    await db.insert(match).values(
-      firstRoundMatches.map((m) => ({
+  // Insert all matches
+  for (let roundNum = 1; roundNum <= rounds.length; roundNum++) {
+    const roundMatches = rounds[roundNum - 1];
+    for (const matchData of roundMatches) {
+      allMatches.push({
+        id: crypto.randomUUID(),
         competitionId,
         groupId: null,
-        homeTeamId: m.homeTeamId,
-        awayTeamId: m.awayTeamId,
-        round: 1,
+        homeTeamId: matchData.homeTeamId,
+        awayTeamId: matchData.awayTeamId,
+        round: roundNum,
         isKnockout: true,
-        status: "scheduled" as const,
-      })),
-    );
+        status: "scheduled",
+      });
+    }
+  }
+
+  if (allMatches.length > 0) {
+    await db.insert(match).values(allMatches);
   }
 
   revalidatePath(`/admin/competitions/${competitionId}`);
-  return { success: true, matchCount: firstRoundMatches.length };
+  return { success: true, matchCount: allMatches.length };
 }
 
 function calculateGroupStandings(grp: {
   competitionTeams: { teamId: string }[];
   matches: {
-    homeTeamId: string;
-    awayTeamId: string;
+    homeTeamId: string | null;
+    awayTeamId: string | null;
     score: { homeScore: number; awayScore: number } | null;
   }[];
 }) {
@@ -493,6 +552,7 @@ function calculateGroupStandings(grp: {
 
   for (const m of grp.matches) {
     if (!m.score) continue;
+    if (!m.homeTeamId || !m.awayTeamId) continue;
 
     const home = standings.get(m.homeTeamId);
     const away = standings.get(m.awayTeamId);
@@ -527,6 +587,80 @@ function calculateGroupStandings(grp: {
     if (diffB !== diffA) return diffB - diffA;
     return b.scored - a.scored;
   });
+}
+
+async function advanceKnockoutWinner(
+  competitionId: string,
+  matchId: string,
+  winnerId: string,
+) {
+  const completedMatch = await db.query.match.findFirst({
+    where: eq(match.id, matchId),
+  });
+
+  if (!completedMatch || !completedMatch.isKnockout) return;
+
+  const currentRound = completedMatch.round;
+  const nextRound = currentRound + 1;
+
+  // Find all matches in the next round
+  const nextRoundMatches = await db.query.match.findMany({
+    where: and(
+      eq(match.competitionId, competitionId),
+      eq(match.isKnockout, true),
+      eq(match.round, nextRound),
+    ),
+    orderBy: match.id,
+  });
+
+  if (nextRoundMatches.length === 0) return; // No next round (this was the final)
+
+  // Calculate which match in the next round this winner should go to
+  // Round 1 matches: 0, 1, 2, 3... map to Round 2 matches: 0, 0, 1, 1...
+  const allCurrentRoundMatches = await db.query.match.findMany({
+    where: and(
+      eq(match.competitionId, competitionId),
+      eq(match.isKnockout, true),
+      eq(match.round, currentRound),
+    ),
+    orderBy: match.id,
+  });
+
+  const matchIndexInRound = allCurrentRoundMatches.findIndex(
+    (m) => m.id === matchId,
+  );
+  if (matchIndexInRound === -1) return;
+
+  const nextRoundMatchIndex = Math.floor(matchIndexInRound / 2);
+  const isHomeSlot = matchIndexInRound % 2 === 0;
+
+  const nextMatch = nextRoundMatches[nextRoundMatchIndex];
+  if (!nextMatch) return;
+
+  // Update the next match with the winner
+  if (isHomeSlot) {
+    await db
+      .update(match)
+      .set({ homeTeamId: winnerId })
+      .where(eq(match.id, nextMatch.id));
+  } else {
+    await db
+      .update(match)
+      .set({ awayTeamId: winnerId })
+      .where(eq(match.id, nextMatch.id));
+  }
+
+  // If both teams are now set, ensure the match is scheduled
+  const updatedMatch = await db.query.match.findFirst({
+    where: eq(match.id, nextMatch.id),
+  });
+
+  if (updatedMatch?.homeTeamId && updatedMatch?.awayTeamId) {
+    await db
+      .update(match)
+      .set({ status: "scheduled" })
+      .where(eq(match.id, nextMatch.id));
+  }
 }
 
 export async function updateMatchScore(
@@ -576,6 +710,13 @@ export async function updateMatchScore(
     .update(match)
     .set({ status: "completed" })
     .where(eq(match.id, matchId));
+
+  // For knockout matches, advance the winner to the next round
+  if (matchData.isKnockout && matchData.homeTeamId && matchData.awayTeamId) {
+    const winnerId =
+      homeScore > awayScore ? matchData.homeTeamId : matchData.awayTeamId;
+    await advanceKnockoutWinner(matchData.competitionId, matchId, winnerId);
+  }
 
   revalidatePath(`/admin/competitions/${matchData.competitionId}`);
   return { success: true };

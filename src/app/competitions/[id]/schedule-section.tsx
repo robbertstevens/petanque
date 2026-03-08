@@ -9,11 +9,11 @@ type Match = {
   homeTeam: {
     id: string;
     name: string;
-  };
+  } | null;
   awayTeam: {
     id: string;
     name: string;
-  };
+  } | null;
   group: { id: string; name: string } | null;
   score: { homeScore: number; awayScore: number } | null;
 };
@@ -171,7 +171,7 @@ function MatchCard({
                 : "text-black dark:text-white"
             }
           >
-            {match.homeTeam.name}
+            {match.homeTeam?.name ?? "TBH"}
           </span>
         </div>
         <div className="flex items-center gap-2 px-3 text-lg font-bold">
@@ -209,7 +209,7 @@ function MatchCard({
                 : "text-black dark:text-white"
             }
           >
-            {match.awayTeam.name}
+            {match.awayTeam?.name ?? "TBH"}
           </span>
         </div>
       </div>

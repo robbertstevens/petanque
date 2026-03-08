@@ -56,7 +56,7 @@ export default async function MatchDetailPage({
         <div className="mt-4 flex items-center justify-center gap-8">
           <div className="flex-1 text-right">
             <div className="text-xl font-semibold text-black dark:text-white">
-              {match.homeTeam.name}
+              {match.homeTeam?.name ?? "TBH"}
             </div>
             {match.isHomeMember && (
               <div className="mt-1 text-xs text-green-600 dark:text-green-400">
@@ -95,7 +95,7 @@ export default async function MatchDetailPage({
 
           <div className="flex-1 text-left">
             <div className="text-xl font-semibold text-black dark:text-white">
-              {match.awayTeam.name}
+              {match.awayTeam?.name ?? "TBH"}
             </div>
             {match.isAwayMember && (
               <div className="mt-1 text-xs text-green-600 dark:text-green-400">
@@ -130,7 +130,7 @@ export default async function MatchDetailPage({
       )}
 
       {/* Score Form */}
-      {match.canSubmitScore && (
+      {match.canSubmitScore && match.homeTeam && match.awayTeam && (
         <div className="rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
           <h3 className="mb-4 text-lg font-medium text-black dark:text-white">
             {match.score ? "Update Score" : "Submit Score"}
@@ -146,51 +146,55 @@ export default async function MatchDetailPage({
       )}
 
       {/* Team Members */}
-      <div className="grid gap-6 md:grid-cols-2">
-        <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
-          <h4 className="mb-3 font-medium text-black dark:text-white">
-            {match.homeTeam.name}
-          </h4>
-          <ul className="space-y-2">
-            {match.homeTeam.members.map((member) => (
-              <li
-                key={member.id}
-                className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400"
-              >
-                <span className="h-2 w-2 rounded-full bg-zinc-400" />
-                {member.name || member.username}
-                {member.id === match.homeTeam.captainUserId && (
-                  <span className="rounded-full bg-yellow-100 px-2 py-0.5 text-xs font-medium text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400">
-                    Captain
-                  </span>
-                )}
-              </li>
-            ))}
-          </ul>
-        </div>
+      {match.homeTeam && (
+        <div className="grid gap-6 md:grid-cols-2">
+          <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
+            <h4 className="mb-3 font-medium text-black dark:text-white">
+              {match.homeTeam.name}
+            </h4>
+            <ul className="space-y-2">
+              {match.homeTeam.members.map((member) => (
+                <li
+                  key={member.id}
+                  className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400"
+                >
+                  <span className="h-2 w-2 rounded-full bg-zinc-400" />
+                  {member.name || member.username}
+                  {member.id === match.homeTeam?.captainUserId && (
+                    <span className="rounded-full bg-yellow-100 px-2 py-0.5 text-xs font-medium text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400">
+                      Captain
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
 
-        <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
-          <h4 className="mb-3 font-medium text-black dark:text-white">
-            {match.awayTeam.name}
-          </h4>
-          <ul className="space-y-2">
-            {match.awayTeam.members.map((member) => (
-              <li
-                key={member.id}
-                className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400"
-              >
-                <span className="h-2 w-2 rounded-full bg-zinc-400" />
-                {member.name || member.username}
-                {member.id === match.awayTeam.captainUserId && (
-                  <span className="rounded-full bg-yellow-100 px-2 py-0.5 text-xs font-medium text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400">
-                    Captain
-                  </span>
-                )}
-              </li>
-            ))}
-          </ul>
+          {match.awayTeam && (
+            <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
+              <h4 className="mb-3 font-medium text-black dark:text-white">
+                {match.awayTeam.name}
+              </h4>
+              <ul className="space-y-2">
+                {match.awayTeam.members.map((member) => (
+                  <li
+                    key={member.id}
+                    className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400"
+                  >
+                    <span className="h-2 w-2 rounded-full bg-zinc-400" />
+                    {member.name || member.username}
+                    {member.id === match.awayTeam?.captainUserId && (
+                      <span className="rounded-full bg-yellow-100 px-2 py-0.5 text-xs font-medium text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400">
+                        Captain
+                      </span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
-      </div>
+      )}
     </div>
   );
 }

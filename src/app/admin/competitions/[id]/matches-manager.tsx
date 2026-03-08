@@ -11,8 +11,8 @@ type Match = {
   round: number;
   isKnockout: boolean;
   status: string;
-  homeTeam: { id: string; name: string };
-  awayTeam: { id: string; name: string };
+  homeTeam: { id: string; name: string } | null;
+  awayTeam: { id: string; name: string } | null;
   score: { homeScore: number; awayScore: number } | null;
 };
 
@@ -171,7 +171,7 @@ function MatchRow({
         {match.round}
       </td>
       <td className="px-4 py-2 text-sm font-medium text-black dark:text-white">
-        {match.homeTeam.name}
+        {match.homeTeam?.name ?? "TBH"}
       </td>
       <td className="px-4 py-2 text-center">
         {isEditing ? (
@@ -201,7 +201,7 @@ function MatchRow({
         )}
       </td>
       <td className="px-4 py-2 text-sm font-medium text-black dark:text-white">
-        {match.awayTeam.name}
+        {match.awayTeam?.name ?? "TBH"}
       </td>
       <td className="px-4 py-2">
         <span

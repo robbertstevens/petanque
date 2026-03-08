@@ -5,10 +5,10 @@ import { KnockoutBracket } from "../standings/[id]/knockout-bracket";
 type KnockoutMatch = {
   id: string;
   round: number;
-  homeTeamId: string;
-  homeTeamName: string;
-  awayTeamId: string;
-  awayTeamName: string;
+  homeTeamId: string | null;
+  homeTeamName: string | null;
+  awayTeamId: string | null;
+  awayTeamName: string | null;
   status: string;
   homeScore: number | null;
   awayScore: number | null;
@@ -95,9 +95,11 @@ function getWinner(
     );
 
     if (finalMatch && finalMatch.winnerId) {
-      return finalMatch.winnerId === finalMatch.homeTeamId
-        ? finalMatch.homeTeamName
-        : finalMatch.awayTeamName;
+      const winnerName =
+        finalMatch.winnerId === finalMatch.homeTeamId
+          ? finalMatch.homeTeamName
+          : finalMatch.awayTeamName;
+      return winnerName ?? null;
     }
   }
 

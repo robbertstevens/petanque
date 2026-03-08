@@ -65,14 +65,18 @@ export async function getMyMatches(
     isKnockout: m.isKnockout,
     status: m.status,
     scheduledAt: m.scheduledAt,
-    homeTeam: {
-      id: m.homeTeam.id,
-      name: m.homeTeam.name,
-    },
-    awayTeam: {
-      id: m.awayTeam.id,
-      name: m.awayTeam.name,
-    },
+    homeTeam: m.homeTeam
+      ? {
+          id: m.homeTeam.id,
+          name: m.homeTeam.name,
+        }
+      : null,
+    awayTeam: m.awayTeam
+      ? {
+          id: m.awayTeam.id,
+          name: m.awayTeam.name,
+        }
+      : null,
     competition: {
       id: m.competition.id,
       name: m.competition.name,
@@ -92,7 +96,7 @@ export async function getMyMatches(
       : null,
     // User's team in this match
     myTeamId: teamIds.find((id) => id === m.homeTeamId || id === m.awayTeamId),
-    isMyTeamHome: teamIds.includes(m.homeTeamId),
+    isMyTeamHome: m.homeTeamId !== null && teamIds.includes(m.homeTeamId),
     // Can submit score if user is member of either team
     canSubmitScore:
       (m.competition.status === "group_stage" ||
@@ -100,8 +104,8 @@ export async function getMyMatches(
       (m.status === "scheduled" || m.status === "in_progress"),
     // Is captain of one of the teams
     isCaptain:
-      captainTeamIds.includes(m.homeTeamId) ||
-      captainTeamIds.includes(m.awayTeamId),
+      (m.homeTeamId !== null && captainTeamIds.includes(m.homeTeamId)) ||
+      (m.awayTeamId !== null && captainTeamIds.includes(m.awayTeamId)),
   }));
 }
 
@@ -149,17 +153,17 @@ export async function getMatch(matchId: string) {
   }
 
   // Check if user is a member of either team
-  const isHomeMember = matchData.homeTeam.members.some(
-    (m) => m.userId === currentUser.id,
-  );
-  const isAwayMember = matchData.awayTeam.members.some(
-    (m) => m.userId === currentUser.id,
-  );
+  const isHomeMember =
+    matchData.homeTeam?.members.some((m) => m.userId === currentUser.id) ??
+    false;
+  const isAwayMember =
+    matchData.awayTeam?.members.some((m) => m.userId === currentUser.id) ??
+    false;
   const isMember = isHomeMember || isAwayMember;
 
   // Check if user is captain of either team
-  const isHomeCaptain = matchData.homeTeam.captainUserId === currentUser.id;
-  const isAwayCaptain = matchData.awayTeam.captainUserId === currentUser.id;
+  const isHomeCaptain = matchData.homeTeam?.captainUserId === currentUser.id;
+  const isAwayCaptain = matchData.awayTeam?.captainUserId === currentUser.id;
   const isCaptain = isHomeCaptain || isAwayCaptain;
 
   // Determine if user can submit/update score
@@ -176,26 +180,30 @@ export async function getMatch(matchId: string) {
     status: matchData.status,
     scheduledAt: matchData.scheduledAt,
     createdAt: matchData.createdAt,
-    homeTeam: {
-      id: matchData.homeTeam.id,
-      name: matchData.homeTeam.name,
-      captainUserId: matchData.homeTeam.captainUserId,
-      members: matchData.homeTeam.members.map((m) => ({
-        id: m.user.id,
-        name: m.user.name,
-        username: m.user.username,
-      })),
-    },
-    awayTeam: {
-      id: matchData.awayTeam.id,
-      name: matchData.awayTeam.name,
-      captainUserId: matchData.awayTeam.captainUserId,
-      members: matchData.awayTeam.members.map((m) => ({
-        id: m.user.id,
-        name: m.user.name,
-        username: m.user.username,
-      })),
-    },
+    homeTeam: matchData.homeTeam
+      ? {
+          id: matchData.homeTeam.id,
+          name: matchData.homeTeam.name,
+          captainUserId: matchData.homeTeam.captainUserId,
+          members: matchData.homeTeam.members.map((m) => ({
+            id: m.user.id,
+            name: m.user.name,
+            username: m.user.username,
+          })),
+        }
+      : null,
+    awayTeam: matchData.awayTeam
+      ? {
+          id: matchData.awayTeam.id,
+          name: matchData.awayTeam.name,
+          captainUserId: matchData.awayTeam.captainUserId,
+          members: matchData.awayTeam.members.map((m) => ({
+            id: m.user.id,
+            name: m.user.name,
+            username: m.user.username,
+          })),
+        }
+      : null,
     competition: {
       id: matchData.competition.id,
       name: matchData.competition.name,
@@ -269,12 +277,12 @@ export async function submitMatchScore(
   }
 
   // Check if user is a member of either team
-  const isHomeMember = matchData.homeTeam.members.some(
-    (m) => m.userId === currentUser.id,
-  );
-  const isAwayMember = matchData.awayTeam.members.some(
-    (m) => m.userId === currentUser.id,
-  );
+  const isHomeMember =
+    matchData.homeTeam?.members.some((m) => m.userId === currentUser.id) ??
+    false;
+  const isAwayMember =
+    matchData.awayTeam?.members.some((m) => m.userId === currentUser.id) ??
+    false;
 
   if (!isHomeMember && !isAwayMember) {
     return { error: "You must be a team member to submit scores" };
@@ -369,12 +377,12 @@ export async function startMatch(matchId: string) {
   }
 
   // Check if user is a member of either team
-  const isHomeMember = matchData.homeTeam.members.some(
-    (m) => m.userId === currentUser.id,
-  );
-  const isAwayMember = matchData.awayTeam.members.some(
-    (m) => m.userId === currentUser.id,
-  );
+  const isHomeMember =
+    matchData.homeTeam?.members.some((m) => m.userId === currentUser.id) ??
+    false;
+  const isAwayMember =
+    matchData.awayTeam?.members.some((m) => m.userId === currentUser.id) ??
+    false;
 
   if (!isHomeMember && !isAwayMember) {
     return { error: "You must be a team member to start a match" };
@@ -431,12 +439,12 @@ export async function completeMatch(matchId: string) {
   }
 
   // Check if user is a member of either team
-  const isHomeMember = matchData.homeTeam.members.some(
-    (m) => m.userId === currentUser.id,
-  );
-  const isAwayMember = matchData.awayTeam.members.some(
-    (m) => m.userId === currentUser.id,
-  );
+  const isHomeMember =
+    matchData.homeTeam?.members.some((m) => m.userId === currentUser.id) ??
+    false;
+  const isAwayMember =
+    matchData.awayTeam?.members.some((m) => m.userId === currentUser.id) ??
+    false;
 
   if (!isHomeMember && !isAwayMember) {
     return { error: "You must be a team member to complete a match" };

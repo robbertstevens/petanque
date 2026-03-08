@@ -100,7 +100,7 @@ function MatchCard({ match }: Readonly<{ match: MatchData }>) {
                     : "text-zinc-600 dark:text-zinc-400"
                 }
               >
-                {match.homeTeam.name}
+                {match.homeTeam?.name ?? "TBH"}
               </span>
               {match.isMyTeamHome && (
                 <span className="ml-2 text-xs text-zinc-500">(Your team)</span>
@@ -136,7 +136,7 @@ function MatchCard({ match }: Readonly<{ match: MatchData }>) {
                     : "text-zinc-600 dark:text-zinc-400"
                 }
               >
-                {match.awayTeam.name}
+                {match.awayTeam?.name ?? "TBH"}
               </span>
             </div>
           </div>

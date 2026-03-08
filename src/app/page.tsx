@@ -402,8 +402,8 @@ type MatchData = {
   isKnockout: boolean;
   status: "scheduled" | "in_progress" | "completed" | "cancelled";
   scheduledAt: Date | null;
-  homeTeam: { id: string; name: string };
-  awayTeam: { id: string; name: string };
+  homeTeam: { id: string; name: string } | null;
+  awayTeam: { id: string; name: string } | null;
   competition: { id: string; name: string; status: string };
   group: { id: string; name: string } | null;
   score: { homeScore: number; awayScore: number } | null;
@@ -452,7 +452,7 @@ function MatchCard({ match }: Readonly<{ match: MatchData }>) {
               : "text-zinc-600 dark:text-zinc-400"
           }
         >
-          {match.homeTeam.name}
+          {match.homeTeam?.name ?? "TBH"}
         </span>
         <span className="px-2 text-zinc-400">vs</span>
         <span
@@ -462,7 +462,7 @@ function MatchCard({ match }: Readonly<{ match: MatchData }>) {
               : "text-zinc-600 dark:text-zinc-400"
           }
         >
-          {match.awayTeam.name}
+          {match.awayTeam?.name ?? "TBH"}
         </span>
       </div>
     </Link>

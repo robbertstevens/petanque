@@ -221,12 +221,12 @@ export const match = sqliteTable(
     groupId: text("group_id").references(() => group.id, {
       onDelete: "set null",
     }),
-    homeTeamId: text("home_team_id")
-      .notNull()
-      .references(() => team.id, { onDelete: "cascade" }),
-    awayTeamId: text("away_team_id")
-      .notNull()
-      .references(() => team.id, { onDelete: "cascade" }),
+    homeTeamId: text("home_team_id").references(() => team.id, {
+      onDelete: "cascade",
+    }),
+    awayTeamId: text("away_team_id").references(() => team.id, {
+      onDelete: "cascade",
+    }),
     round: integer("round").notNull().default(1),
     isKnockout: integer("is_knockout", { mode: "boolean" })
       .default(false)
