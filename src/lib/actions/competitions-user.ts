@@ -478,6 +478,200 @@ export async function getActiveCompetitions() {
     }));
 }
 
+export async function getPublicCompetition(competitionId: string) {
+  const comp = await db.query.competition.findFirst({
+    where: eq(competition.id, competitionId),
+    with: {
+      competitionTeams: {
+        with: {
+          team: true,
+        },
+      },
+    },
+  });
+
+  if (!comp || comp.status === "draft") {
+    return null;
+  }
+
+  return {
+    id: comp.id,
+    name: comp.name,
+    description: comp.description,
+    teamSize: comp.teamSize,
+    startDate: comp.startDate,
+    endDate: comp.endDate,
+    status: comp.status,
+    registeredTeams: comp.competitionTeams.map((ct) => ({
+      id: ct.id,
+      teamId: ct.team.id,
+      teamName: ct.team.name,
+      registeredAt: ct.registeredAt,
+    })),
+  };
+}
+
+export async function getPublicCompetitionMatches(competitionId: string) {
+  const matches = await db.query.match.findMany({
+    where: eq(match.competitionId, competitionId),
+    with: {
+      homeTeam: true,
+      awayTeam: true,
+      group: true,
+      score: true,
+    },
+    orderBy: [desc(match.round), match.createdAt],
+  });
+
+  const upcomingMatches = matches.filter(
+    (m) => m.status === "scheduled" || m.status === "in_progress",
+  );
+  const completedMatches = matches.filter((m) => m.status === "completed");
+
+  return {
+    upcoming: upcomingMatches.map((m) => ({
+      id: m.id,
+      round: m.round,
+      isKnockout: m.isKnockout,
+      status: m.status,
+      scheduledAt: m.scheduledAt,
+      homeTeam: {
+        id: m.homeTeam.id,
+        name: m.homeTeam.name,
+      },
+      awayTeam: {
+        id: m.awayTeam.id,
+        name: m.awayTeam.name,
+      },
+      group: m.group
+        ? {
+            id: m.group.id,
+            name: m.group.name,
+          }
+        : null,
+      score: null,
+    })),
+    completed: completedMatches.map((m) => ({
+      id: m.id,
+      round: m.round,
+      isKnockout: m.isKnockout,
+      status: m.status,
+      scheduledAt: m.scheduledAt,
+      homeTeam: {
+        id: m.homeTeam.id,
+        name: m.homeTeam.name,
+      },
+      awayTeam: {
+        id: m.awayTeam.id,
+        name: m.awayTeam.name,
+      },
+      group: m.group
+        ? {
+            id: m.group.id,
+            name: m.group.name,
+          }
+        : null,
+      score: m.score
+        ? {
+            homeScore: m.score.homeScore,
+            awayScore: m.score.awayScore,
+          }
+        : null,
+    })),
+  };
+}
+
+export async function getPublicCompetitionStandings(competitionId: string) {
+  const comp = await db.query.competition.findFirst({
+    where: eq(competition.id, competitionId),
+    with: {
+      groups: {
+        with: {
+          competitionTeams: {
+            with: {
+              team: true,
+            },
+          },
+          matches: {
+            with: {
+              homeTeam: true,
+              awayTeam: true,
+              score: true,
+            },
+          },
+        },
+      },
+      matches: {
+        with: {
+          homeTeam: true,
+          awayTeam: true,
+          score: true,
+        },
+      },
+    },
+  });
+
+  if (!comp || comp.status === "draft") {
+    return null;
+  }
+
+  const groupStandings = comp.groups.map((grp) => {
+    const rawStandings = calculateGroupStandings(grp);
+    const teamMap = new Map(
+      grp.competitionTeams.map((ct) => [ct.teamId, ct.team.name]),
+    );
+
+    return {
+      groupId: grp.id,
+      groupName: grp.name,
+      standings: rawStandings.map((s) => ({
+        teamId: s.teamId,
+        teamName: teamMap.get(s.teamId) || "Unknown",
+        points: s.points,
+        wins: s.wins,
+        losses: s.losses,
+        draws: s.draws,
+        played: s.wins + s.losses + s.draws,
+        scored: s.scored,
+        conceded: s.conceded,
+        difference: s.scored - s.conceded,
+      })),
+    };
+  });
+
+  const knockoutMatches = comp.matches
+    .filter((m) => m.isKnockout)
+    .map((m) => ({
+      id: m.id,
+      round: m.round,
+      homeTeamId: m.homeTeamId,
+      homeTeamName: m.homeTeam.name,
+      awayTeamId: m.awayTeamId,
+      awayTeamName: m.awayTeam.name,
+      status: m.status,
+      homeScore: m.score?.homeScore ?? null,
+      awayScore: m.score?.awayScore ?? null,
+      winnerId:
+        m.score && m.status === "completed"
+          ? m.score.homeScore > m.score.awayScore
+            ? m.homeTeamId
+            : m.awayTeamId
+          : null,
+    }))
+    .sort((a, b) => a.round - b.round);
+
+  return {
+    id: comp.id,
+    name: comp.name,
+    description: comp.description,
+    status: comp.status,
+    startDate: comp.startDate,
+    endDate: comp.endDate,
+    groupStandings,
+    knockoutMatches,
+  };
+}
+
 type GroupStanding = {
   competitionTeams: { teamId: string }[];
   matches: {

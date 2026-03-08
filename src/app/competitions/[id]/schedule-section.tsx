@@ -21,9 +21,14 @@ type Match = {
 type Props = Readonly<{
   upcoming: Match[];
   completed: Match[];
+  isAuthenticated?: boolean;
 }>;
 
-export function ScheduleSection({ upcoming, completed }: Props) {
+export function ScheduleSection({
+  upcoming,
+  completed,
+  isAuthenticated = false,
+}: Props) {
   if (upcoming.length === 0 && completed.length === 0) {
     return (
       <div className="rounded-lg border border-zinc-200 bg-white p-8 text-center dark:border-zinc-800 dark:bg-zinc-900">
@@ -56,7 +61,11 @@ export function ScheduleSection({ upcoming, completed }: Props) {
               </h4>
               <div className="space-y-3">
                 {matches.map((match) => (
-                  <MatchCard key={match.id} match={match} />
+                  <MatchCard
+                    key={match.id}
+                    match={match}
+                    isAuthenticated={isAuthenticated}
+                  />
                 ))}
               </div>
             </div>
@@ -77,7 +86,11 @@ export function ScheduleSection({ upcoming, completed }: Props) {
               </h4>
               <div className="space-y-3">
                 {matches.map((match) => (
-                  <MatchCard key={match.id} match={match} />
+                  <MatchCard
+                    key={match.id}
+                    match={match}
+                    isAuthenticated={isAuthenticated}
+                  />
                 ))}
               </div>
             </div>
@@ -111,7 +124,10 @@ function getKnockoutRoundName(round: number): string {
   return names[round] || `Round ${round}`;
 }
 
-function MatchCard({ match }: Readonly<{ match: Match }>) {
+function MatchCard({
+  match,
+  isAuthenticated = false,
+}: Readonly<{ match: Match; isAuthenticated?: boolean }>) {
   const statusStyles: Record<string, string> = {
     scheduled: "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
     in_progress:
@@ -124,11 +140,8 @@ function MatchCard({ match }: Readonly<{ match: Match }>) {
   const homeWon = match.score && match.score.homeScore > match.score.awayScore;
   const awayWon = match.score && match.score.awayScore > match.score.homeScore;
 
-  return (
-    <Link
-      href={`/matches/${match.id}`}
-      className="block rounded-lg border border-zinc-200 bg-white p-4 transition-colors hover:border-zinc-300 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-700 dark:hover:bg-zinc-800"
-    >
+  const content = (
+    <>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 text-xs">
           <span
@@ -200,6 +213,23 @@ function MatchCard({ match }: Readonly<{ match: Match }>) {
           </span>
         </div>
       </div>
-    </Link>
+    </>
+  );
+
+  if (isAuthenticated) {
+    return (
+      <Link
+        href={`/matches/${match.id}`}
+        className="block rounded-lg border border-zinc-200 bg-white p-4 transition-colors hover:border-zinc-300 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-700 dark:hover:bg-zinc-800"
+      >
+        {content}
+      </Link>
+    );
+  }
+
+  return (
+    <div className="block rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
+      {content}
+    </div>
   );
 }

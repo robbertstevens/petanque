@@ -1,11 +1,13 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { headers } from "next/headers";
 
+import { auth } from "@/lib/auth";
 import {
-  getCompetition,
+  getPublicCompetition,
   getMyTeamsAsCaptain,
-  getCompetitionStandings,
-  getCompetitionMatches,
+  getPublicCompetitionStandings,
+  getPublicCompetitionMatches,
 } from "@/lib/actions/competitions-user";
 import { RegisterTeamForm } from "./register-team-form";
 import { CompetitionProgress } from "./competition-progress";
@@ -32,15 +34,27 @@ export default async function CompetitionDetailPage({
   const { tab } = await searchParams;
   const currentTab = tab && tabs.some((t) => t.key === tab) ? tab : "overview";
 
-  const [competition, myTeams, standings, matches] = await Promise.all([
-    getCompetition(id),
-    getMyTeamsAsCaptain(),
-    getCompetitionStandings(id),
-    getCompetitionMatches(id),
+  // Check auth status
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  const isAuthenticated = !!session;
+
+  // Fetch public data
+  const [competition, standings, matches] = await Promise.all([
+    getPublicCompetition(id),
+    getPublicCompetitionStandings(id),
+    getPublicCompetitionMatches(id),
   ]);
 
   if (!competition) {
     notFound();
+  }
+
+  // Fetch authenticated data only if user is logged in
+  let myTeams: Awaited<ReturnType<typeof getMyTeamsAsCaptain>> = [];
+  if (isAuthenticated) {
+    myTeams = await getMyTeamsAsCaptain();
   }
 
   // Filter teams that are eligible for registration
@@ -132,6 +146,7 @@ export default async function CompetitionDetailPage({
             competition={competition}
             eligibleTeams={eligibleTeams}
             alreadyRegisteredTeams={alreadyRegisteredTeams}
+            isAuthenticated={isAuthenticated}
           />
         )}
 
@@ -141,6 +156,7 @@ export default async function CompetitionDetailPage({
             eligibleTeams={eligibleTeams}
             alreadyRegisteredTeams={alreadyRegisteredTeams}
             myTeams={myTeams}
+            isAuthenticated={isAuthenticated}
           />
         )}
 
@@ -148,6 +164,7 @@ export default async function CompetitionDetailPage({
           <ScheduleSection
             upcoming={matches.upcoming}
             completed={matches.completed}
+            isAuthenticated={isAuthenticated}
           />
         )}
 
@@ -175,17 +192,19 @@ export default async function CompetitionDetailPage({
 // Tab Components
 // ============================================================================
 
-type Competition = Awaited<ReturnType<typeof getCompetition>>;
+type Competition = Awaited<ReturnType<typeof getPublicCompetition>>;
 type Team = Awaited<ReturnType<typeof getMyTeamsAsCaptain>>[number];
 
 function OverviewTab({
   competition,
   eligibleTeams,
   alreadyRegisteredTeams,
+  isAuthenticated,
 }: {
   competition: NonNullable<Competition>;
   eligibleTeams: Team[];
   alreadyRegisteredTeams: Team[];
+  isAuthenticated: boolean;
 }) {
   return (
     <div className="space-y-8">
@@ -196,35 +215,51 @@ function OverviewTab({
             Register Your Team
           </h3>
 
-          {alreadyRegisteredTeams.length > 0 && (
-            <div className="mb-4 rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-900 dark:bg-green-900/20">
-              <p className="text-sm font-medium text-green-800 dark:text-green-400">
-                Your registered teams:
-              </p>
-              <ul className="mt-1 text-sm text-green-700 dark:text-green-400/80">
-                {alreadyRegisteredTeams.map((team) => (
-                  <li key={team.id}>• {team.name}</li>
-                ))}
-              </ul>
-            </div>
-          )}
+          {isAuthenticated ? (
+            <>
+              {alreadyRegisteredTeams.length > 0 && (
+                <div className="mb-4 rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-900 dark:bg-green-900/20">
+                  <p className="text-sm font-medium text-green-800 dark:text-green-400">
+                    Your registered teams:
+                  </p>
+                  <ul className="mt-1 text-sm text-green-700 dark:text-green-400/80">
+                    {alreadyRegisteredTeams.map((team) => (
+                      <li key={team.id}>• {team.name}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
-          {eligibleTeams.length > 0 ? (
-            <RegisterTeamForm
-              competitionId={competition.id}
-              teams={eligibleTeams}
-            />
+              {eligibleTeams.length > 0 ? (
+                <RegisterTeamForm
+                  competitionId={competition.id}
+                  teams={eligibleTeams}
+                />
+              ) : (
+                <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
+                  <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                    You need to be a captain of a team with at least{" "}
+                    {competition.teamSize} members to register.
+                  </p>
+                  <Link
+                    href="/teams"
+                    className="mt-2 inline-block text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+                  >
+                    Manage Teams →
+                  </Link>
+                </div>
+              )}
+            </>
           ) : (
             <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
               <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                You need to be a captain of a team with at least{" "}
-                {competition.teamSize} members to register.
+                Sign in to register your team for this competition.
               </p>
               <Link
-                href="/teams"
+                href="/"
                 className="mt-2 inline-block text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
               >
-                Manage Teams →
+                Sign In →
               </Link>
             </div>
           )}
@@ -280,11 +315,13 @@ function TeamsTab({
   eligibleTeams,
   alreadyRegisteredTeams,
   myTeams,
+  isAuthenticated,
 }: {
   competition: NonNullable<Competition>;
   eligibleTeams: Team[];
   alreadyRegisteredTeams: Team[];
   myTeams: Team[];
+  isAuthenticated: boolean;
 }) {
   return (
     <div className="space-y-8">
@@ -295,44 +332,60 @@ function TeamsTab({
             Register Your Team
           </h3>
 
-          {alreadyRegisteredTeams.length > 0 && (
-            <div className="mb-4 rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-900 dark:bg-green-900/20">
-              <p className="text-sm font-medium text-green-800 dark:text-green-400">
-                Your registered teams:
-              </p>
-              <ul className="mt-1 text-sm text-green-700 dark:text-green-400/80">
-                {alreadyRegisteredTeams.map((team) => (
-                  <li key={team.id}>• {team.name}</li>
-                ))}
-              </ul>
-            </div>
-          )}
+          {isAuthenticated ? (
+            <>
+              {alreadyRegisteredTeams.length > 0 && (
+                <div className="mb-4 rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-900 dark:bg-green-900/20">
+                  <p className="text-sm font-medium text-green-800 dark:text-green-400">
+                    Your registered teams:
+                  </p>
+                  <ul className="mt-1 text-sm text-green-700 dark:text-green-400/80">
+                    {alreadyRegisteredTeams.map((team) => (
+                      <li key={team.id}>• {team.name}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
-          {eligibleTeams.length > 0 ? (
-            <RegisterTeamForm
-              competitionId={competition.id}
-              teams={eligibleTeams}
-            />
-          ) : myTeams.length === 0 ? (
-            <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                You are not a captain of any teams.{" "}
-                <Link
-                  href="/teams"
-                  className="text-black underline hover:no-underline dark:text-white"
-                >
-                  Create a team
-                </Link>{" "}
-                to register for this competition.
-              </p>
-            </div>
+              {eligibleTeams.length > 0 ? (
+                <RegisterTeamForm
+                  competitionId={competition.id}
+                  teams={eligibleTeams}
+                />
+              ) : myTeams.length === 0 ? (
+                <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
+                  <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                    You are not a captain of any teams.{" "}
+                    <Link
+                      href="/teams"
+                      className="text-black underline hover:no-underline dark:text-white"
+                    >
+                      Create a team
+                    </Link>{" "}
+                    to register for this competition.
+                  </p>
+                </div>
+              ) : (
+                <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
+                  <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                    No eligible teams available. Teams need at least{" "}
+                    {competition.teamSize} members and must not already be
+                    registered.
+                  </p>
+                </div>
+              )}
+            </>
           ) : (
             <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
               <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                No eligible teams available. Teams need at least{" "}
-                {competition.teamSize} members and must not already be
-                registered.
+                Sign in to register your team for this competition.
               </p>
+              <Link
+                href="/"
+                className="mt-2 inline-block text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+              >
+                Sign In →
+              </Link>
             </div>
           )}
         </section>
