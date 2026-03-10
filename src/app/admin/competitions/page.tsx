@@ -32,8 +32,8 @@ export default async function CompetitionsPage() {
           </Link>
         </div>
       ) : (
-        <div className="overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-800">
-          <table className="w-full">
+        <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
+          <table className="min-w-full">
             <thead className="bg-zinc-50 dark:bg-zinc-800/50">
               <tr>
                 <th className="px-4 py-3 text-left text-sm font-medium text-zinc-700 dark:text-zinc-300">
