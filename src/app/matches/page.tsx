@@ -16,7 +16,7 @@ export default async function MatchesPage() {
 
   return (
     <div>
-      <h2 className="text-foreground mb-6 flex items-center gap-2 text-lg font-medium">
+      <h2 className="font-display text-foreground mb-6 flex items-center gap-2 text-lg font-medium">
         <Clock className="text-primary h-5 w-5" />
         Upcoming Matches
       </h2>

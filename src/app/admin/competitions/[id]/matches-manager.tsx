@@ -42,7 +42,7 @@ export function MatchesManager({
       {/* Group Stage Matches */}
       {groups.map((group) => (
         <div key={group.id}>
-          <h4 className="mb-3 font-medium text-black dark:text-white">
+          <h4 className="font-display text-foreground mb-3 font-medium">
             {group.name}
           </h4>
           {group.matches.length === 0 ? (
@@ -61,7 +61,7 @@ export function MatchesManager({
       {/* Knockout Matches */}
       {knockoutMatches.length > 0 && (
         <div>
-          <h4 className="mb-3 font-medium text-black dark:text-white">
+          <h4 className="font-display text-foreground mb-3 font-medium">
             Knockout Stage
           </h4>
           <MatchesTable

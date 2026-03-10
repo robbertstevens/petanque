@@ -21,7 +21,7 @@ export async function Header() {
           {/* Logo */}
           <Link
             href="/"
-            className="text-primary hover:text-primary/80 text-lg font-semibold transition-colors"
+            className="text-primary hover:text-primary/80 font-display text-3xl font-semibold uppercase transition-colors"
           >
             Pétanque
           </Link>

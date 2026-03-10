@@ -26,7 +26,7 @@ export default async function TeamsPage() {
     <div className="min-h-screen">
       <header className="border-primary-light bg-surface border-b">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-          <h1 className="text-foreground flex items-center gap-2 text-xl font-semibold">
+          <h1 className="font-display text-foreground flex items-center gap-2 text-xl font-semibold">
             <Users className="text-accent h-5 w-5" />
             My Teams
           </h1>
@@ -44,7 +44,7 @@ export default async function TeamsPage() {
         {/* Pending Invitations */}
         {invitations.length > 0 && (
           <section className="mb-8">
-            <h2 className="text-foreground mb-4 flex items-center gap-2 text-lg font-medium">
+            <h2 className="font-display text-foreground mb-4 flex items-center gap-2 text-lg font-medium">
               <Mail className="text-primary h-5 w-5" />
               Pending Invitations
             </h2>
@@ -84,7 +84,7 @@ export default async function TeamsPage() {
                 >
                   <div className="flex items-start justify-between">
                     <div>
-                      <h3 className="text-foreground font-medium">
+                      <h3 className="font-display text-foreground font-medium">
                         {team.name}
                       </h3>
                       <p className="text-muted mt-1 text-sm">

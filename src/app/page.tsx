@@ -51,7 +51,7 @@ export default async function HomePage() {
       {/* Hero Section */}
       <section className="border-primary-light bg-surface border-b px-4 py-12 dark:bg-[var(--surface)]">
         <div className="mx-auto max-w-6xl px-4">
-          <h1 className="text-foreground mb-4 text-3xl font-bold">
+          <h1 className="font-display text-foreground mb-4 text-3xl font-bold">
             Pétanque Competition Management
           </h1>
           <p className="text-muted max-w-2xl text-lg">
@@ -70,7 +70,7 @@ export default async function HomePage() {
             <div className="space-y-8 lg:col-span-2">
               <section>
                 <div className="mb-4 flex items-center justify-between">
-                  <h2 className="text-foreground text-xl font-semibold">
+                  <h2 className="font-display text-foreground text-xl font-semibold">
                     My Active Competitions
                   </h2>
                   <Link
@@ -109,7 +109,7 @@ export default async function HomePage() {
               {/* Upcoming Matches */}
               <section>
                 <div className="mb-4 flex items-center justify-between">
-                  <h2 className="text-foreground text-xl font-semibold">
+                  <h2 className="font-display text-foreground text-xl font-semibold">
                     Upcoming Matches
                   </h2>
                   <Link
@@ -137,7 +137,7 @@ export default async function HomePage() {
               {/* Public Competitions Section */}
               <section>
                 <div className="mb-4 flex items-center justify-between">
-                  <h2 className="text-foreground text-xl font-semibold">
+                  <h2 className="font-display text-foreground text-xl font-semibold">
                     All Active Competitions
                   </h2>
                   <Link
@@ -172,7 +172,7 @@ export default async function HomePage() {
             <div className="space-y-8">
               {/* Quick Actions */}
               <section>
-                <h2 className="text-foreground mb-4 flex items-center gap-2 text-lg font-semibold">
+                <h2 className="font-display text-foreground mb-4 flex items-center gap-2 text-lg font-semibold">
                   <Target className="text-primary h-5 w-5" />
                   Quick Actions
                 </h2>
@@ -197,7 +197,7 @@ export default async function HomePage() {
               {/* My Teams */}
               <section>
                 <div className="mb-4 flex items-center justify-between">
-                  <h2 className="text-foreground text-lg font-semibold">
+                  <h2 className="font-display text-foreground text-lg font-semibold">
                     My Teams
                   </h2>
                   <Link
@@ -229,7 +229,7 @@ export default async function HomePage() {
             {/* Main Content - Active Competitions */}
             <div className="lg:col-span-2">
               <div className="mb-6 flex items-center justify-between">
-                <h2 className="text-foreground text-xl font-semibold">
+                <h2 className="font-display text-foreground text-xl font-semibold">
                   Active Competitions
                 </h2>
                 <Link
@@ -338,7 +338,7 @@ function CompetitionCard({
     >
       <div className="flex items-start justify-between">
         <div>
-          <h3 className="text-foreground font-medium">
+          <h3 className="font-display text-foreground font-medium">
             {competition.competitionName}
           </h3>
           <p className="text-muted mt-1 text-sm">

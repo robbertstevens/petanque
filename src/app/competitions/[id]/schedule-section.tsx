@@ -51,12 +51,12 @@ export function ScheduleSection({
       {/* Upcoming Matches */}
       {upcoming.length > 0 && (
         <section>
-          <h3 className="mb-4 text-lg font-medium text-black dark:text-white">
+          <h3 className="font-display text-foreground mb-4 text-lg font-medium">
             Upcoming Matches
           </h3>
           {Object.entries(upcomingByRound).map(([round, matches]) => (
             <div key={`upcoming-${round}`} className="mb-6">
-              <h4 className="mb-3 text-sm font-medium text-zinc-600 dark:text-zinc-400">
+              <h4 className="font-display text-muted-foreground mb-3 text-sm font-medium">
                 Round {round}
               </h4>
               <div className="space-y-3">
@@ -76,12 +76,12 @@ export function ScheduleSection({
       {/* Completed Matches */}
       {completed.length > 0 && (
         <section>
-          <h3 className="mb-4 text-lg font-medium text-black dark:text-white">
+          <h3 className="font-display text-foreground mb-4 text-lg font-medium">
             Completed Matches
           </h3>
           {Object.entries(completedByRound).map(([round, matches]) => (
             <div key={`completed-${round}`} className="mb-6">
-              <h4 className="mb-3 text-sm font-medium text-zinc-600 dark:text-zinc-400">
+              <h4 className="font-display text-muted-foreground mb-3 text-sm font-medium">
                 Round {round}
               </h4>
               <div className="space-y-3">

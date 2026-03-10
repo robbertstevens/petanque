@@ -38,7 +38,7 @@ export function CompetitionResults({
 
   return (
     <section className="mb-8">
-      <h3 className="mb-4 text-lg font-medium text-black dark:text-white">
+      <h3 className="font-display text-foreground mb-4 text-lg font-medium">
         Final Results
       </h3>
 
@@ -90,7 +90,7 @@ export function CompetitionResults({
 
         {/* Stats Summary */}
         <div className="p-4">
-          <h4 className="mb-3 text-sm font-medium text-zinc-600 dark:text-zinc-400">
+          <h4 className="font-display text-muted-foreground mb-3 text-sm font-medium">
             Competition Stats
           </h4>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">

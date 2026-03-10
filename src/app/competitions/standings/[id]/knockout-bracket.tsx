@@ -67,7 +67,7 @@ export function KnockoutBracket({ matches }: Props) {
     <div className="space-y-6">
       {rounds.map((roundData) => (
         <div key={roundData.round}>
-          <h4 className="mb-3 text-sm font-medium text-zinc-600 dark:text-zinc-400">
+          <h4 className="font-display text-muted-foreground mb-3 text-sm font-medium">
             {roundData.name}
           </h4>
           <div className="grid gap-4 sm:grid-cols-2">

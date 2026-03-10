@@ -3,7 +3,7 @@ import Link from "next/link";
 export default function CompetitionNotFound() {
   return (
     <div className="py-12 text-center">
-      <h2 className="text-xl font-semibold text-black dark:text-white">
+      <h2 className="font-display text-foreground text-xl font-semibold">
         Competition Not Found
       </h2>
       <p className="mt-2 text-zinc-600 dark:text-zinc-400">

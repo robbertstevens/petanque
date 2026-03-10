@@ -7,7 +7,7 @@ export default async function MatchHistoryPage() {
 
   return (
     <div>
-      <h2 className="mb-6 text-lg font-medium text-black dark:text-white">
+      <h2 className="font-display text-foreground mb-6 text-lg font-medium">
         Match History
       </h2>
 

@@ -77,7 +77,9 @@ export default async function CompetitionDetailPage({
 
       {/* Competition Header */}
       <div className="border-primary-light bg-surface mb-6 rounded-lg border p-6">
-        <h2 className="text-foreground text-xl font-semibold">{comp.name}</h2>
+        <h2 className="font-display text-foreground text-xl font-semibold">
+          {comp.name}
+        </h2>
         {comp.description && (
           <p className="text-muted mt-2">{comp.description}</p>
         )}
@@ -191,7 +193,7 @@ function TeamsTab({
       {/* Registration Section */}
       {competition.status === "registration" && (
         <section>
-          <h3 className="text-foreground mb-4 text-lg font-medium">
+          <h3 className="font-display text-foreground mb-4 text-lg font-medium">
             Register Your Team
           </h3>
 
@@ -269,7 +271,7 @@ function TeamsTab({
 
       {/* Registered Teams */}
       <section>
-        <h3 className="text-foreground mb-4 text-lg font-medium">
+        <h3 className="font-display text-foreground mb-4 text-lg font-medium">
           Registered Teams ({competition.registeredTeams.length})
         </h3>
 

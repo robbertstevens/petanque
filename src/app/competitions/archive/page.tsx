@@ -7,7 +7,7 @@ export default async function CompetitionArchivePage() {
 
   return (
     <div>
-      <h2 className="mb-6 text-xl font-semibold text-black dark:text-white">
+      <h2 className="font-display text-foreground mb-6 text-xl font-semibold">
         Competition Archive
       </h2>
 
@@ -34,7 +34,7 @@ export default async function CompetitionArchivePage() {
             >
               <div className="flex items-start justify-between">
                 <div>
-                  <h3 className="font-medium text-black dark:text-white">
+                  <h3 className="font-display text-foreground font-medium">
                     {competition.name}
                   </h3>
                   {competition.description && (

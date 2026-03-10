@@ -34,7 +34,7 @@ export default async function AdminLayout({
       <header className="border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
           <div className="flex items-center gap-6">
-            <h1 className="text-xl font-semibold text-black dark:text-white">
+            <h1 className="font-display text-foreground text-xl font-semibold">
               Admin Panel
             </h1>
             <nav className="flex gap-4">

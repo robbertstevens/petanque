@@ -31,7 +31,7 @@ export default async function CompetitionDetailPage({ params }: Props) {
         </Link>
         <div className="mt-2 flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-semibold text-black dark:text-white">
+            <h2 className="font-display text-foreground text-2xl font-semibold">
               {competition.name}
             </h2>
             {competition.description && (
@@ -107,7 +107,7 @@ export default async function CompetitionDetailPage({ params }: Props) {
 
       {/* Groups Section */}
       <section className="mb-8">
-        <h3 className="mb-4 text-lg font-medium text-black dark:text-white">
+        <h3 className="font-display text-foreground mb-4 text-lg font-medium">
           Groups
         </h3>
         <GroupsManager
@@ -119,7 +119,7 @@ export default async function CompetitionDetailPage({ params }: Props) {
 
       {/* Teams Section */}
       <section className="mb-8">
-        <h3 className="mb-4 text-lg font-medium text-black dark:text-white">
+        <h3 className="font-display text-foreground mb-4 text-lg font-medium">
           Registered Teams
         </h3>
         <TeamsManager
@@ -132,7 +132,7 @@ export default async function CompetitionDetailPage({ params }: Props) {
 
       {/* Matches Section */}
       <section className="mb-8">
-        <h3 className="mb-4 text-lg font-medium text-black dark:text-white">
+        <h3 className="font-display text-foreground mb-4 text-lg font-medium">
           Matches
         </h3>
         <MatchesManager
@@ -145,7 +145,7 @@ export default async function CompetitionDetailPage({ params }: Props) {
 
       {/* Actions Section */}
       <section>
-        <h3 className="mb-4 text-lg font-medium text-black dark:text-white">
+        <h3 className="font-display text-foreground mb-4 text-lg font-medium">
           Actions
         </h3>
         <CompetitionActions

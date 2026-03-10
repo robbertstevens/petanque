@@ -51,7 +51,7 @@ export default function NewCompetitionPage() {
         </Link>
         <div className="mt-2 flex items-center gap-2">
           <Trophy className="h-6 w-6" />
-          <h2 className="text-2xl font-semibold text-black dark:text-white">
+          <h2 className="font-display text-foreground text-2xl font-semibold">
             Create Competition
           </h2>
         </div>

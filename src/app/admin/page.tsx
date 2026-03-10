@@ -30,7 +30,7 @@ export default async function AdminDashboard() {
     <main className="mx-auto max-w-6xl px-4 py-8">
       <div className="mb-6 flex items-center gap-2">
         <Trophy className="text-primary h-6 w-6" />
-        <h2 className="text-foreground text-2xl font-semibold">
+        <h2 className="font-display text-foreground text-2xl font-semibold">
           Admin Dashboard
         </h2>
       </div>
@@ -80,7 +80,7 @@ export default async function AdminDashboard() {
 
       {/* Quick Actions */}
       <div className="mb-8">
-        <h3 className="text-foreground mb-4 flex items-center gap-2 text-lg font-medium">
+        <h3 className="font-display text-foreground mb-4 flex items-center gap-2 text-lg font-medium">
           <Trophy className="text-primary h-5 w-5" />
           Quick Actions
         </h3>
@@ -104,7 +104,7 @@ export default async function AdminDashboard() {
 
       {/* Recent Competitions */}
       <div>
-        <h3 className="text-foreground mb-4 flex items-center gap-2 text-lg font-medium">
+        <h3 className="font-display text-foreground mb-4 flex items-center gap-2 text-lg font-medium">
           <FileText className="text-primary h-5 w-5" />
           Recent Competitions
         </h3>

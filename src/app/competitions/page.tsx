@@ -8,7 +8,7 @@ export default async function CompetitionsBrowsePage() {
 
   return (
     <div>
-      <h2 className="text-foreground mb-6 flex items-center gap-2 text-lg font-medium">
+      <h2 className="font-display text-foreground mb-6 flex items-center gap-2 text-lg font-medium">
         <Trophy className="text-primary h-5 w-5" />
         Active Competitions
       </h2>
@@ -31,7 +31,7 @@ export default async function CompetitionsBrowsePage() {
               href={`/competitions/${competition.id}`}
               className="border-primary-light bg-surface hover:border-primary hover:bg-primary-light block rounded-lg border p-4 transition-colors"
             >
-              <h3 className="text-foreground font-medium">
+              <h3 className="font-display text-foreground font-medium">
                 {competition.name}
               </h3>
               {competition.description && (

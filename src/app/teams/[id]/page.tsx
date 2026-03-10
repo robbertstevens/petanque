@@ -42,7 +42,7 @@ export default async function TeamDetailPage({ params }: Props) {
               <ArrowLeft className="h-4 w-4" />
               Back to Teams
             </Link>
-            <h1 className="mt-1 flex items-center gap-2 text-xl font-semibold text-black dark:text-white">
+            <h1 className="font-display text-foreground mt-1 flex items-center gap-2 text-xl font-semibold">
               <Users className="h-5 w-5" />
               {team.name}
             </h1>
@@ -59,7 +59,7 @@ export default async function TeamDetailPage({ params }: Props) {
       <main className="mx-auto max-w-4xl px-4 py-8">
         {/* Team Members */}
         <section className="mb-8">
-          <h2 className="mb-4 flex items-center gap-2 text-lg font-medium text-black dark:text-white">
+          <h2 className="font-display text-foreground mb-4 flex items-center gap-2 text-lg font-medium">
             <Users className="h-5 w-5" />
             Team Members ({team.members.length})
           </h2>
@@ -74,7 +74,7 @@ export default async function TeamDetailPage({ params }: Props) {
         {/* Invite Member (Captain only) */}
         {team.isCaptain && (
           <section className="mb-8">
-            <h2 className="mb-4 flex items-center gap-2 text-lg font-medium text-black dark:text-white">
+            <h2 className="font-display text-foreground mb-4 flex items-center gap-2 text-lg font-medium">
               <UserPlus className="h-5 w-5" />
               Invite Member
             </h2>
@@ -85,7 +85,7 @@ export default async function TeamDetailPage({ params }: Props) {
         {/* Pending Invitations (Captain only) */}
         {team.isCaptain && team.invitations.length > 0 && (
           <section className="mb-8">
-            <h2 className="mb-4 flex items-center gap-2 text-lg font-medium text-black dark:text-white">
+            <h2 className="font-display text-foreground mb-4 flex items-center gap-2 text-lg font-medium">
               <Mail className="h-5 w-5" />
               Pending Invitations
             </h2>
@@ -95,7 +95,7 @@ export default async function TeamDetailPage({ params }: Props) {
 
         {/* Team Actions */}
         <section>
-          <h2 className="mb-4 flex items-center gap-2 text-lg font-medium text-black dark:text-white">
+          <h2 className="font-display text-foreground mb-4 flex items-center gap-2 text-lg font-medium">
             <LogOut className="h-5 w-5" />
             Actions
           </h2>

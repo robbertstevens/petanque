@@ -47,7 +47,7 @@ export function StandingsSection({
       {/* Group Standings */}
       {groupStandings.length > 0 && (
         <section>
-          <h3 className="mb-4 text-lg font-medium text-black dark:text-white">
+          <h3 className="font-display text-foreground mb-4 text-lg font-medium">
             Group Standings
           </h3>
           <div className="space-y-6">
@@ -61,7 +61,7 @@ export function StandingsSection({
       {/* Knockout Bracket */}
       {knockoutMatches.length > 0 && (
         <section>
-          <h3 className="mb-4 text-lg font-medium text-black dark:text-white">
+          <h3 className="font-display text-foreground mb-4 text-lg font-medium">
             Knockout Bracket
           </h3>
           <KnockoutBracket matches={knockoutMatches} />

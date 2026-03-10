@@ -46,7 +46,7 @@ export function CompetitionActions({
       {/* Generate Knockout Bracket */}
       {(status === "group_stage" || status === "knockout") && (
         <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
-          <h4 className="font-medium text-black dark:text-white">
+          <h4 className="font-display text-foreground font-medium">
             Generate Knockout Bracket
           </h4>
           <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
@@ -80,7 +80,7 @@ export function CompetitionActions({
       {/* Delete Competition */}
       {status === "draft" && (
         <div className="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-900 dark:bg-red-900/20">
-          <h4 className="font-medium text-red-800 dark:text-red-400">
+          <h4 className="font-display font-medium text-red-800 dark:text-red-400">
             Delete Competition
           </h4>
           <p className="mt-1 text-sm text-red-700 dark:text-red-400/80">

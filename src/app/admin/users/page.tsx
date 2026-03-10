@@ -16,7 +16,7 @@ export default async function UsersPage() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
       <div className="mb-6">
-        <h2 className="text-xl font-semibold text-black dark:text-white">
+        <h2 className="font-display text-foreground text-xl font-semibold">
           User Management
         </h2>
         <p className="text-sm text-zinc-600 dark:text-zinc-400">

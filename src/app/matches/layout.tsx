@@ -20,7 +20,7 @@ export default async function MatchesLayout({
       <header className="border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
         <div className="mx-auto max-w-6xl px-4 py-4">
           <div className="flex items-center justify-between">
-            <h1 className="text-xl font-semibold text-black dark:text-white">
+            <h1 className="font-display text-foreground text-xl font-semibold">
               Matches
             </h1>
             <Link

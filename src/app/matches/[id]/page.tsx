@@ -160,7 +160,7 @@ export default async function MatchDetailPage({
       {/* Score Form */}
       {match.canSubmitScore && match.homeTeam && match.awayTeam && (
         <div className="rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
-          <h3 className="mb-4 text-lg font-medium text-black dark:text-white">
+          <h3 className="font-display text-foreground mb-4 text-lg font-medium">
             {match.score ? "Update Score" : "Submit Score"}
           </h3>
           <MatchScoreForm
@@ -177,7 +177,7 @@ export default async function MatchDetailPage({
       {match.homeTeam && (
         <div className="grid gap-6 md:grid-cols-2">
           <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
-            <h4 className="mb-3 font-medium text-black dark:text-white">
+            <h4 className="font-display text-foreground mb-3 font-medium">
               {match.homeTeam.name}
             </h4>
             <ul className="space-y-2">
@@ -206,7 +206,7 @@ export default async function MatchDetailPage({
 
           {match.awayTeam && (
             <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
-              <h4 className="mb-3 font-medium text-black dark:text-white">
+              <h4 className="font-display text-foreground mb-3 font-medium">
                 {match.awayTeam.name}
               </h4>
               <ul className="space-y-2">

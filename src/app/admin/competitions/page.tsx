@@ -8,7 +8,7 @@ export default async function CompetitionsPage() {
   return (
     <main className="mx-auto max-w-6xl px-4 py-8">
       <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-2xl font-semibold text-black dark:text-white">
+        <h2 className="font-display text-foreground text-2xl font-semibold">
           Competitions
         </h2>
         <Link

@@ -151,7 +151,7 @@ function GroupCard({
         <>
           <div className="flex items-start justify-between">
             <div>
-              <h4 className="font-medium text-black dark:text-white">
+              <h4 className="font-display text-foreground font-medium">
                 {group.name}
               </h4>
               <p className="text-sm text-zinc-600 dark:text-zinc-400">
