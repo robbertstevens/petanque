@@ -44,11 +44,24 @@ export function UserRow({ user }: Readonly<{ user: User }>) {
   const isPending = isPromoting || isDemoting;
   const error = promoteState?.error ?? demoteState?.error;
 
-  const roleStyles: Record<string, string> = {
-    admin:
-      "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400",
-    super_admin:
-      "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
+  const getRoleStyle = (role: string) => {
+    switch (role) {
+      case "admin":
+        return {
+          backgroundColor: "var(--badge-group-bg)",
+          color: "var(--badge-group-text)",
+        };
+      case "super_admin":
+        return {
+          backgroundColor: "var(--badge-knockout-bg)",
+          color: "var(--badge-knockout-text)",
+        };
+      default:
+        return {
+          backgroundColor: "var(--badge-draft-bg)",
+          color: "var(--badge-draft-text)",
+        };
+    }
   };
 
   const formatDate = (date: Date) => {
@@ -79,7 +92,8 @@ export function UserRow({ user }: Readonly<{ user: User }>) {
       <td className="px-4 py-3">
         {user.role ? (
           <span
-            className={`rounded-full px-2 py-1 text-xs font-medium ${roleStyles[user.role]}`}
+            className="rounded-full px-2 py-1 text-xs font-medium"
+            style={getRoleStyle(user.role)}
           >
             {user.role.replace("_", " ")}
           </span>

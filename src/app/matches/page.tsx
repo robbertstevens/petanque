@@ -16,18 +16,16 @@ export default async function MatchesPage() {
 
   return (
     <div>
-      <h2 className="mb-6 flex items-center gap-2 text-lg font-medium text-black dark:text-white">
-        <Clock className="h-5 w-5" />
+      <h2 className="text-foreground mb-6 flex items-center gap-2 text-lg font-medium">
+        <Clock className="text-primary h-5 w-5" />
         Upcoming Matches
       </h2>
 
       {matches.length === 0 ? (
-        <div className="rounded-lg border border-zinc-200 bg-white p-8 text-center dark:border-zinc-800 dark:bg-zinc-900">
-          <Inbox className="mx-auto mb-3 h-12 w-12 text-zinc-300 dark:text-zinc-600" />
-          <p className="text-zinc-600 dark:text-zinc-400">
-            No upcoming matches for your teams.
-          </p>
-          <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-500">
+        <div className="border-primary-light bg-surface rounded-lg border p-8 text-center">
+          <Inbox className="text-muted mx-auto mb-3 h-12 w-12" />
+          <p className="text-foreground">No upcoming matches for your teams.</p>
+          <p className="text-muted mt-2 text-sm">
             Matches will appear here once your teams are registered in active
             competitions.
           </p>
@@ -46,13 +44,34 @@ export default async function MatchesPage() {
 type MatchData = Awaited<ReturnType<typeof getUpcomingMatches>>[number];
 
 function MatchCard({ match }: Readonly<{ match: MatchData }>) {
-  const statusStyles: Record<string, string> = {
-    scheduled: "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
-    in_progress:
-      "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-    completed:
-      "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-    cancelled: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
+  const getStatusStyle = (status: string) => {
+    switch (status) {
+      case "scheduled":
+        return {
+          backgroundColor: "var(--badge-scheduled-bg)",
+          color: "var(--badge-scheduled-text)",
+        };
+      case "in_progress":
+        return {
+          backgroundColor: "var(--badge-registration-bg)",
+          color: "var(--badge-registration-text)",
+        };
+      case "completed":
+        return {
+          backgroundColor: "var(--badge-group-bg)",
+          color: "var(--badge-group-text)",
+        };
+      case "cancelled":
+        return {
+          backgroundColor: "var(--badge-completed-bg)",
+          color: "var(--badge-completed-text)",
+        };
+      default:
+        return {
+          backgroundColor: "var(--badge-scheduled-bg)",
+          color: "var(--badge-scheduled-text)",
+        };
+    }
   };
 
   const statusIcons: Record<string, React.ReactNode> = {
@@ -65,25 +84,32 @@ function MatchCard({ match }: Readonly<{ match: MatchData }>) {
   return (
     <Link
       href={`/matches/${match.id}`}
-      className="block rounded-lg border border-zinc-200 bg-white p-4 transition-colors hover:border-zinc-300 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-700 dark:hover:bg-zinc-800"
+      className="border-primary-light bg-surface hover:border-primary hover:bg-primary-light block rounded-lg border p-4 transition-colors"
     >
       <div className="flex items-center justify-between">
         <div className="flex-1">
           <div className="flex items-center gap-2">
             <span
-              className={`flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${statusStyles[match.status] ?? statusStyles.scheduled}`}
+              className="flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium"
+              style={getStatusStyle(match.status)}
             >
               {statusIcons[match.status]}
               {match.status.replace("_", " ")}
             </span>
             {match.isKnockout && (
-              <span className="flex items-center gap-1 rounded-full bg-purple-100 px-2 py-0.5 text-xs font-medium text-purple-700 dark:bg-purple-900/30 dark:text-purple-400">
+              <span
+                className="flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium"
+                style={{
+                  backgroundColor: "var(--badge-knockout-bg)",
+                  color: "var(--badge-knockout-text)",
+                }}
+              >
                 <Trophy className="h-3 w-3" />
                 Knockout
               </span>
             )}
             {match.group && (
-              <span className="text-xs text-zinc-500 dark:text-zinc-500">
+              <span className="text-muted text-xs">
                 {match.group.name} • Round {match.round}
               </span>
             )}
@@ -95,31 +121,29 @@ function MatchCard({ match }: Readonly<{ match: MatchData }>) {
             >
               <span
                 className={
-                  match.isMyTeamHome
-                    ? "text-black dark:text-white"
-                    : "text-zinc-600 dark:text-zinc-400"
+                  match.isMyTeamHome ? "text-foreground" : "text-muted"
                 }
               >
                 {match.homeTeam?.name ?? "TBH"}
               </span>
               {match.isMyTeamHome && (
-                <span className="ml-2 text-xs text-zinc-500">(Your team)</span>
+                <span className="text-muted ml-2 text-xs">(Your team)</span>
               )}
             </div>
 
             <div className="flex items-center gap-2 text-lg font-bold">
               {match.score ? (
                 <>
-                  <span className="text-black dark:text-white">
+                  <span className="text-foreground">
                     {match.score.homeScore}
                   </span>
-                  <span className="text-zinc-400">-</span>
-                  <span className="text-black dark:text-white">
+                  <span className="text-muted">-</span>
+                  <span className="text-foreground">
                     {match.score.awayScore}
                   </span>
                 </>
               ) : (
-                <span className="text-zinc-400">vs</span>
+                <span className="text-muted">vs</span>
               )}
             </div>
 
@@ -127,13 +151,11 @@ function MatchCard({ match }: Readonly<{ match: MatchData }>) {
               className={`flex-1 text-left ${!match.isMyTeamHome ? "font-semibold" : ""}`}
             >
               {!match.isMyTeamHome && (
-                <span className="mr-2 text-xs text-zinc-500">(Your team)</span>
+                <span className="text-muted mr-2 text-xs">(Your team)</span>
               )}
               <span
                 className={
-                  !match.isMyTeamHome
-                    ? "text-black dark:text-white"
-                    : "text-zinc-600 dark:text-zinc-400"
+                  !match.isMyTeamHome ? "text-foreground" : "text-muted"
                 }
               >
                 {match.awayTeam?.name ?? "TBH"}
@@ -141,13 +163,13 @@ function MatchCard({ match }: Readonly<{ match: MatchData }>) {
             </div>
           </div>
 
-          <div className="mt-3 text-xs text-zinc-500 dark:text-zinc-500">
+          <div className="text-muted mt-3 text-xs">
             {match.competition.name}
           </div>
         </div>
 
         <div className="ml-4">
-          <ChevronRight className="h-5 w-5 text-zinc-400" />
+          <ChevronRight className="text-muted h-5 w-5" />
         </div>
       </div>
     </Link>

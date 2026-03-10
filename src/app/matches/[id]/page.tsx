@@ -16,13 +16,34 @@ export default async function MatchDetailPage({
     notFound();
   }
 
-  const statusStyles: Record<string, string> = {
-    scheduled: "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
-    in_progress:
-      "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-    completed:
-      "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-    cancelled: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
+  const getMatchStatusStyle = (status: string) => {
+    switch (status) {
+      case "scheduled":
+        return {
+          backgroundColor: "var(--badge-scheduled-bg)",
+          color: "var(--badge-scheduled-text)",
+        };
+      case "in_progress":
+        return {
+          backgroundColor: "var(--badge-group-bg)",
+          color: "var(--badge-group-text)",
+        };
+      case "completed":
+        return {
+          backgroundColor: "var(--badge-completed-bg)",
+          color: "var(--badge-completed-text)",
+        };
+      case "cancelled":
+        return {
+          backgroundColor: "var(--badge-draft-bg)",
+          color: "var(--badge-draft-text)",
+        };
+      default:
+        return {
+          backgroundColor: "var(--badge-scheduled-bg)",
+          color: "var(--badge-scheduled-text)",
+        };
+    }
   };
 
   return (
@@ -32,12 +53,19 @@ export default async function MatchDetailPage({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span
-              className={`rounded-full px-3 py-1 text-sm font-medium ${statusStyles[match.status] ?? statusStyles.scheduled}`}
+              className="rounded-full px-3 py-1 text-sm font-medium"
+              style={getMatchStatusStyle(match.status)}
             >
               {match.status.replace("_", " ")}
             </span>
             {match.isKnockout && (
-              <span className="rounded-full bg-purple-100 px-3 py-1 text-sm font-medium text-purple-700 dark:bg-purple-900/30 dark:text-purple-400">
+              <span
+                className="rounded-full px-3 py-1 text-sm font-medium"
+                style={{
+                  backgroundColor: "var(--badge-knockout-bg)",
+                  color: "var(--badge-knockout-text)",
+                }}
+              >
                 Knockout
               </span>
             )}
@@ -161,7 +189,13 @@ export default async function MatchDetailPage({
                   <span className="h-2 w-2 rounded-full bg-zinc-400" />
                   {member.name || member.username}
                   {member.id === match.homeTeam?.captainUserId && (
-                    <span className="rounded-full bg-yellow-100 px-2 py-0.5 text-xs font-medium text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400">
+                    <span
+                      className="rounded-full px-2 py-0.5 text-xs font-medium"
+                      style={{
+                        backgroundColor: "var(--badge-knockout-bg)",
+                        color: "var(--badge-knockout-text)",
+                      }}
+                    >
                       Captain
                     </span>
                   )}
@@ -184,7 +218,13 @@ export default async function MatchDetailPage({
                     <span className="h-2 w-2 rounded-full bg-zinc-400" />
                     {member.name || member.username}
                     {member.id === match.awayTeam?.captainUserId && (
-                      <span className="rounded-full bg-yellow-100 px-2 py-0.5 text-xs font-medium text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400">
+                      <span
+                        className="rounded-full px-2 py-0.5 text-xs font-medium"
+                        style={{
+                          backgroundColor: "var(--badge-knockout-bg)",
+                          color: "var(--badge-knockout-text)",
+                        }}
+                      >
                         Captain
                       </span>
                     )}

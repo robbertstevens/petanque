@@ -119,15 +119,39 @@ function StatusBadge({
 }: Readonly<{
   status: "draft" | "registration" | "group_stage" | "knockout" | "completed";
 }>) {
-  const styles = {
-    draft: "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
-    registration:
-      "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-    group_stage:
-      "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-    knockout:
-      "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400",
-    completed: "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
+  const getStatusStyle = () => {
+    switch (status) {
+      case "draft":
+        return {
+          backgroundColor: "var(--badge-draft-bg)",
+          color: "var(--badge-draft-text)",
+        };
+      case "registration":
+        return {
+          backgroundColor: "var(--badge-registration-bg)",
+          color: "var(--badge-registration-text)",
+        };
+      case "group_stage":
+        return {
+          backgroundColor: "var(--badge-group-bg)",
+          color: "var(--badge-group-text)",
+        };
+      case "knockout":
+        return {
+          backgroundColor: "var(--badge-knockout-bg)",
+          color: "var(--badge-knockout-text)",
+        };
+      case "completed":
+        return {
+          backgroundColor: "var(--badge-completed-bg)",
+          color: "var(--badge-completed-text)",
+        };
+      default:
+        return {
+          backgroundColor: "var(--badge-draft-bg)",
+          color: "var(--badge-draft-text)",
+        };
+    }
   };
 
   const labels = {
@@ -140,7 +164,8 @@ function StatusBadge({
 
   return (
     <span
-      className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${styles[status]}`}
+      className="inline-block rounded-full px-2 py-1 text-xs font-medium"
+      style={getStatusStyle()}
     >
       {labels[status]}
     </span>

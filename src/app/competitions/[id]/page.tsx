@@ -70,20 +70,16 @@ export default async function CompetitionDetailPage({
     <div>
       <Link
         href="/competitions"
-        className="mb-4 inline-block text-sm text-zinc-600 hover:text-black dark:text-zinc-400 dark:hover:text-white"
+        className="text-muted hover:text-primary mb-4 inline-block text-sm"
       >
         ← Back to Browse
       </Link>
 
       {/* Competition Header */}
-      <div className="mb-6 rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
-        <h2 className="text-xl font-semibold text-black dark:text-white">
-          {comp.name}
-        </h2>
+      <div className="border-primary-light bg-surface mb-6 rounded-lg border p-6">
+        <h2 className="text-foreground text-xl font-semibold">{comp.name}</h2>
         {comp.description && (
-          <p className="mt-2 text-zinc-600 dark:text-zinc-400">
-            {comp.description}
-          </p>
+          <p className="text-muted mt-2">{comp.description}</p>
         )}
 
         {/* Progress Indicator */}
@@ -91,26 +87,20 @@ export default async function CompetitionDetailPage({
           <CompetitionProgress status={comp.status} />
         </div>
 
-        <div className="mt-2 flex flex-wrap gap-4 text-sm text-zinc-600 dark:text-zinc-400">
+        <div className="text-muted mt-2 flex flex-wrap gap-4 text-sm">
           <div>
-            <span className="font-medium text-black dark:text-white">
-              Team Size:
-            </span>{" "}
+            <span className="text-foreground font-medium">Team Size:</span>{" "}
             {comp.teamSize} players
           </div>
           {competition.startDate && (
             <div>
-              <span className="font-medium text-black dark:text-white">
-                Starts:
-              </span>{" "}
+              <span className="text-foreground font-medium">Starts:</span>{" "}
               {new Date(competition.startDate).toLocaleDateString()}
             </div>
           )}
           {competition.endDate && (
             <div>
-              <span className="font-medium text-black dark:text-white">
-                Ends:
-              </span>{" "}
+              <span className="text-foreground font-medium">Ends:</span>{" "}
               {new Date(competition.endDate).toLocaleDateString()}
             </div>
           )}
@@ -118,7 +108,7 @@ export default async function CompetitionDetailPage({
       </div>
 
       {/* Tabs Navigation */}
-      <div className="mb-6 border-b border-zinc-200 dark:border-zinc-800">
+      <div className="border-primary-light mb-6 border-b">
         <nav className="-mb-px flex gap-4">
           {tabs.map((t) => (
             <Link
@@ -126,8 +116,8 @@ export default async function CompetitionDetailPage({
               href={`/competitions/${id}?tab=${t.key}`}
               className={`border-b-2 py-3 text-sm font-medium transition-colors ${
                 currentTab === t.key
-                  ? "border-blue-500 text-blue-600 dark:text-blue-400"
-                  : "border-transparent text-zinc-500 hover:border-zinc-300 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-300"
+                  ? "border-primary text-primary"
+                  : "text-muted hover:border-primary-light hover:text-foreground border-transparent"
               }`}
             >
               {t.label}
@@ -165,8 +155,8 @@ export default async function CompetitionDetailPage({
         )}
 
         {currentTab === "standings" && !standings && (
-          <div className="rounded-lg border border-zinc-200 bg-white p-8 text-center dark:border-zinc-800 dark:bg-zinc-900">
-            <p className="text-zinc-600 dark:text-zinc-400">
+          <div className="border-primary-light bg-surface rounded-lg border p-8 text-center">
+            <p className="text-foreground">
               Standings are not available for this competition yet.
             </p>
           </div>
@@ -201,18 +191,31 @@ function TeamsTab({
       {/* Registration Section */}
       {competition.status === "registration" && (
         <section>
-          <h3 className="mb-4 text-lg font-medium text-black dark:text-white">
+          <h3 className="text-foreground mb-4 text-lg font-medium">
             Register Your Team
           </h3>
 
           {isAuthenticated ? (
             <>
               {alreadyRegisteredTeams.length > 0 && (
-                <div className="mb-4 rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-900 dark:bg-green-900/20">
-                  <p className="text-sm font-medium text-green-800 dark:text-green-400">
+                <div
+                  className="mb-4 rounded-lg border p-4"
+                  style={{
+                    borderColor: "var(--badge-group-bg)",
+                    backgroundColor:
+                      "color-mix(in oklab, var(--badge-group-bg) 10%, transparent)",
+                  }}
+                >
+                  <p
+                    className="text-sm font-medium"
+                    style={{ color: "var(--badge-group-bg)" }}
+                  >
                     Your registered teams:
                   </p>
-                  <ul className="mt-1 text-sm text-green-700 dark:text-green-400/80">
+                  <ul
+                    className="mt-1 text-sm"
+                    style={{ color: "var(--badge-group-bg)" }}
+                  >
                     {alreadyRegisteredTeams.map((team) => (
                       <li key={team.id}>• {team.name}</li>
                     ))}
@@ -226,12 +229,12 @@ function TeamsTab({
                   teams={eligibleTeams}
                 />
               ) : myTeams.length === 0 ? (
-                <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
-                  <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                <div className="border-primary-light bg-surface rounded-lg border p-4">
+                  <p className="text-muted text-sm">
                     You are not a captain of any teams.{" "}
                     <Link
                       href="/teams"
-                      className="text-black underline hover:no-underline dark:text-white"
+                      className="text-foreground underline hover:no-underline"
                     >
                       Create a team
                     </Link>{" "}
@@ -239,8 +242,8 @@ function TeamsTab({
                   </p>
                 </div>
               ) : (
-                <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
-                  <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                <div className="border-primary-light bg-surface rounded-lg border p-4">
+                  <p className="text-muted text-sm">
                     No eligible teams available. Teams need at least{" "}
                     {competition.teamSize} members and must not already be
                     registered.
@@ -249,13 +252,13 @@ function TeamsTab({
               )}
             </>
           ) : (
-            <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">
+            <div className="border-primary-light bg-surface rounded-lg border p-4">
+              <p className="text-muted text-sm">
                 Sign in to register your team for this competition.
               </p>
               <Link
                 href="/"
-                className="mt-2 inline-block text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+                className="text-primary hover:text-primary/80 mt-2 inline-block text-sm font-medium"
               >
                 Sign In →
               </Link>
@@ -266,28 +269,26 @@ function TeamsTab({
 
       {/* Registered Teams */}
       <section>
-        <h3 className="mb-4 text-lg font-medium text-black dark:text-white">
+        <h3 className="text-foreground mb-4 text-lg font-medium">
           Registered Teams ({competition.registeredTeams.length})
         </h3>
 
         {competition.registeredTeams.length === 0 ? (
-          <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">
-              No teams have registered yet.
-            </p>
+          <div className="border-primary-light bg-surface rounded-lg border p-4">
+            <p className="text-muted text-sm">No teams have registered yet.</p>
           </div>
         ) : (
-          <div className="rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-            <ul className="divide-y divide-zinc-200 dark:divide-zinc-800">
+          <div className="border-primary-light bg-surface rounded-lg border">
+            <ul className="divide-primary-light divide-y">
               {competition.registeredTeams.map((registration) => (
                 <li
                   key={registration.id}
                   className="flex items-center justify-between px-4 py-3"
                 >
-                  <span className="font-medium text-black dark:text-white">
+                  <span className="text-foreground font-medium">
                     {registration.teamName}
                   </span>
-                  <span className="text-xs text-zinc-500 dark:text-zinc-500">
+                  <span className="text-muted text-xs">
                     Registered{" "}
                     {new Date(registration.registeredAt).toLocaleDateString()}
                   </span>

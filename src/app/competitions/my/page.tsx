@@ -6,29 +6,41 @@ import { WithdrawButton } from "./withdraw-button";
 export default async function MyCompetitionsPage() {
   const registrations = await getMyCompetitions();
 
-  const statusLabels: Record<string, { label: string; color: string }> = {
-    draft: {
-      label: "Draft",
-      color: "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
-    },
-    registration: {
-      label: "Registration",
-      color:
-        "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-    },
-    group_stage: {
-      label: "Group Stage",
-      color: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-    },
-    knockout: {
-      label: "Knockout",
-      color:
-        "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400",
-    },
-    completed: {
-      label: "Completed",
-      color: "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
-    },
+  const getStatusStyle = (
+    status: string,
+  ): { backgroundColor: string; color: string } => {
+    switch (status) {
+      case "draft":
+        return {
+          backgroundColor: "var(--badge-draft-bg)",
+          color: "var(--badge-draft-text)",
+        };
+      case "registration":
+        return {
+          backgroundColor: "var(--badge-registration-bg)",
+          color: "var(--badge-registration-text)",
+        };
+      case "group_stage":
+        return {
+          backgroundColor: "var(--badge-group-bg)",
+          color: "var(--badge-group-text)",
+        };
+      case "knockout":
+        return {
+          backgroundColor: "var(--badge-knockout-bg)",
+          color: "var(--badge-knockout-text)",
+        };
+      case "completed":
+        return {
+          backgroundColor: "var(--badge-completed-bg)",
+          color: "var(--badge-completed-text)",
+        };
+      default:
+        return {
+          backgroundColor: "var(--badge-draft-bg)",
+          color: "var(--badge-draft-text)",
+        };
+    }
   };
 
   return (
@@ -51,80 +63,86 @@ export default async function MyCompetitionsPage() {
         </div>
       ) : (
         <div className="space-y-4">
-          {registrations.map((registration) => {
-            const status = statusLabels[registration.competitionStatus] || {
-              label: registration.competitionStatus,
-              color: "bg-zinc-100 text-zinc-700",
-            };
-
-            return (
-              <div
-                key={registration.registrationId}
-                className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900"
-              >
-                <div className="flex items-start justify-between">
-                  <div>
-                    <Link
-                      href={`/competitions/${registration.competitionId}`}
-                      className="font-medium text-black hover:underline dark:text-white"
+          {registrations.map((registration) => (
+            <div
+              key={registration.registrationId}
+              className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900"
+            >
+              <div className="flex items-start justify-between">
+                <div>
+                  <Link
+                    href={`/competitions/${registration.competitionId}`}
+                    className="font-medium text-black hover:underline dark:text-white"
+                  >
+                    {registration.competitionName}
+                  </Link>
+                  <div className="mt-1 flex items-center gap-2">
+                    <span
+                      className="rounded-full px-2 py-1 text-xs font-medium"
+                      style={{
+                        backgroundColor: "var(--badge-scheduled-bg)",
+                        color: "var(--badge-scheduled-text)",
+                      }}
                     >
-                      {registration.competitionName}
-                    </Link>
-                    <div className="mt-1 flex items-center gap-2">
-                      <span className="rounded-full bg-zinc-100 px-2 py-1 text-xs font-medium text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
-                        {registration.teamName}
-                      </span>
+                      {registration.teamName}
+                    </span>
+                    <span
+                      className="rounded-full px-2 py-1 text-xs font-medium"
+                      style={getStatusStyle(registration.competitionStatus)}
+                    >
+                      {registration.competitionStatus.replace("_", " ")}
+                    </span>
+                    {registration.isCaptain && (
                       <span
-                        className={`rounded-full px-2 py-1 text-xs font-medium ${status.color}`}
+                        className="rounded-full px-2 py-1 text-xs font-medium"
+                        style={{
+                          backgroundColor: "var(--badge-knockout-bg)",
+                          color: "var(--badge-knockout-text)",
+                        }}
                       >
-                        {status.label}
+                        Captain
                       </span>
-                      {registration.isCaptain && (
-                        <span className="rounded-full bg-amber-100 px-2 py-1 text-xs font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
-                          Captain
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    {(registration.competitionStartDate ||
-                      registration.competitionEndDate) && (
-                      <div className="text-right text-xs text-zinc-500 dark:text-zinc-500">
-                        {registration.competitionStartDate && (
-                          <div>
-                            Starts:{" "}
-                            {new Date(
-                              registration.competitionStartDate,
-                            ).toLocaleDateString()}
-                          </div>
-                        )}
-                        {registration.competitionEndDate && (
-                          <div>
-                            Ends:{" "}
-                            {new Date(
-                              registration.competitionEndDate,
-                            ).toLocaleDateString()}
-                          </div>
-                        )}
-                      </div>
                     )}
                   </div>
                 </div>
 
-                {registration.canWithdraw && (
-                  <div className="mt-4 border-t border-zinc-200 pt-4 dark:border-zinc-800">
-                    <WithdrawButton
-                      competitionId={registration.competitionId}
-                      competitionName={registration.competitionName}
-                      teamId={registration.teamId}
-                      teamName={registration.teamName}
-                    />
-                  </div>
-                )}
+                <div className="flex items-center gap-2">
+                  {(registration.competitionStartDate ||
+                    registration.competitionEndDate) && (
+                    <div className="text-right text-xs text-zinc-500 dark:text-zinc-500">
+                      {registration.competitionStartDate && (
+                        <div>
+                          Starts:{" "}
+                          {new Date(
+                            registration.competitionStartDate,
+                          ).toLocaleDateString()}
+                        </div>
+                      )}
+                      {registration.competitionEndDate && (
+                        <div>
+                          Ends:{" "}
+                          {new Date(
+                            registration.competitionEndDate,
+                          ).toLocaleDateString()}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
-            );
-          })}
+
+              {registration.canWithdraw && (
+                <div className="mt-4 border-t border-zinc-200 pt-4 dark:border-zinc-800">
+                  <WithdrawButton
+                    competitionId={registration.competitionId}
+                    competitionName={registration.competitionName}
+                    teamId={registration.teamId}
+                    teamName={registration.teamName}
+                  />
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       )}
     </div>

@@ -1,21 +1,72 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* High contrast warm base - light */
+  --background: #faf8f5;
+  --foreground: #1a1814;
+
+  /* Brand palette - higher contrast */
+  --color-primary: #a85a3a;
+  --color-primary-light: #d4c4a8;
+  --color-accent: #5a6b3a;
+  --color-muted: #6b5f55;
+  --color-warm-white: #faf8f5;
+
+  /* Surface colors - higher contrast */
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --border: #c4b8a0;
+
+  /* Badge colors - very high contrast */
+  --badge-registration-bg: #a85a3a;
+  --badge-registration-text: #ffffff;
+  --badge-group-bg: #5a6b3a;
+  --badge-group-text: #ffffff;
+  --badge-knockout-bg: #8b4513;
+  --badge-knockout-text: #ffffff;
+  --badge-completed-bg: #4a443c;
+  --badge-completed-text: #ffffff;
+  --badge-scheduled-bg: #6b5f55;
+  --badge-scheduled-text: #ffffff;
+  --badge-draft-bg: #8b7355;
+  --badge-draft-text: #ffffff;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-primary: var(--color-primary);
+  --color-primary-light: var(--color-primary-light);
+  --color-accent: var(--color-accent);
+  --color-muted: var(--color-muted);
+  --color-surface: var(--surface);
+  --color-border: var(--border);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #0f0e0c;
+    --foreground: #f5f0e8;
+    --surface: #1c1a16;
+    --surface-elevated: #262420;
+    --border: #4a443c;
+    --color-primary-light: #4a443c;
+
+    /* Badge colors - dark mode */
+    --badge-registration-bg: #d47650;
+    --badge-registration-text: #0f0e0c;
+    --badge-group-bg: #7a8b5a;
+    --badge-group-text: #0f0e0c;
+    --badge-knockout-bg: #cd853f;
+    --badge-knockout-text: #0f0e0c;
+    --badge-completed-bg: #8b8378;
+    --badge-completed-text: #0f0e0c;
+    --badge-scheduled-bg: #8b8378;
+    --badge-scheduled-text: #0f0e0c;
+    --badge-draft-bg: #a08b6d;
+    --badge-draft-text: #0f0e0c;
   }
 }
 

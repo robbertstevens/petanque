@@ -45,6 +45,25 @@ function MatchHistoryCard({ match }: Readonly<{ match: MatchData }>) {
     ? match.score.homeScore === match.score.awayScore
     : false;
 
+  const getResultStyle = () => {
+    if (myTeamWon) {
+      return {
+        backgroundColor: "var(--badge-group-bg)",
+        color: "var(--badge-group-text)",
+      };
+    }
+    if (isDraw) {
+      return {
+        backgroundColor: "var(--badge-scheduled-bg)",
+        color: "var(--badge-scheduled-text)",
+      };
+    }
+    return {
+      backgroundColor: "var(--badge-draft-bg)",
+      color: "var(--badge-draft-text)",
+    };
+  };
+
   return (
     <Link
       href={`/matches/${match.id}`}
@@ -55,19 +74,20 @@ function MatchHistoryCard({ match }: Readonly<{ match: MatchData }>) {
           <div className="flex items-center gap-2">
             {match.score && (
               <span
-                className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-                  myTeamWon
-                    ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                    : isDraw
-                      ? "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
-                      : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
-                }`}
+                className="rounded-full px-2 py-0.5 text-xs font-medium"
+                style={getResultStyle()}
               >
                 {myTeamWon ? "Won" : isDraw ? "Draw" : "Lost"}
               </span>
             )}
             {match.isKnockout && (
-              <span className="rounded-full bg-purple-100 px-2 py-0.5 text-xs font-medium text-purple-700 dark:bg-purple-900/30 dark:text-purple-400">
+              <span
+                className="rounded-full px-2 py-0.5 text-xs font-medium"
+                style={{
+                  backgroundColor: "var(--badge-knockout-bg)",
+                  color: "var(--badge-knockout-text)",
+                }}
+              >
                 Knockout
               </span>
             )}

@@ -7,6 +7,8 @@ import {
   ChevronRight,
   Inbox,
   Target,
+  CheckCircle2,
+  XCircle,
 } from "lucide-react";
 
 import { auth } from "@/lib/auth";
@@ -45,14 +47,14 @@ export default async function HomePage() {
   const displayCompetitions = competitions.slice(0, 6);
 
   return (
-    <main className="min-h-screen bg-zinc-50 dark:bg-black">
+    <main className="min-h-screen">
       {/* Hero Section */}
-      <section className="border-b border-zinc-200 bg-white px-4 py-12 dark:border-zinc-800 dark:bg-zinc-900">
+      <section className="border-primary-light bg-surface border-b px-4 py-12 dark:bg-[var(--surface)]">
         <div className="mx-auto max-w-6xl px-4">
-          <h1 className="mb-4 text-3xl font-bold text-black dark:text-white">
+          <h1 className="text-foreground mb-4 text-3xl font-bold">
             Pétanque Competition Management
           </h1>
-          <p className="max-w-2xl text-lg text-zinc-600 dark:text-zinc-400">
+          <p className="text-muted max-w-2xl text-lg">
             Discover active competitions, register your team, and track your
             progress. Join the community of pétanque players competing in
             organized tournaments.
@@ -68,26 +70,26 @@ export default async function HomePage() {
             <div className="space-y-8 lg:col-span-2">
               <section>
                 <div className="mb-4 flex items-center justify-between">
-                  <h2 className="text-xl font-semibold text-black dark:text-white">
+                  <h2 className="text-foreground text-xl font-semibold">
                     My Active Competitions
                   </h2>
                   <Link
                     href="/competitions/my"
-                    className="text-sm text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"
+                    className="text-muted hover:text-primary text-sm"
                   >
                     View all
                   </Link>
                 </div>
 
                 {myCompetitions.length === 0 ? (
-                  <div className="rounded-lg border border-zinc-200 bg-white p-8 text-center dark:border-zinc-800 dark:bg-zinc-900">
-                    <Inbox className="mx-auto mb-3 h-12 w-12 text-zinc-300 dark:text-zinc-600" />
-                    <p className="text-zinc-600 dark:text-zinc-400">
+                  <div className="border-primary-light bg-surface rounded-lg border p-8 text-center">
+                    <Inbox className="text-muted mx-auto mb-3 h-12 w-12" />
+                    <p className="text-foreground">
                       You are not registered in any active competitions.
                     </p>
                     <Link
                       href="/competitions"
-                      className="mt-2 inline-block text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+                      className="text-primary hover:text-primary/80 mt-2 inline-block text-sm font-medium"
                     >
                       Browse competitions
                     </Link>
@@ -107,23 +109,21 @@ export default async function HomePage() {
               {/* Upcoming Matches */}
               <section>
                 <div className="mb-4 flex items-center justify-between">
-                  <h2 className="text-xl font-semibold text-black dark:text-white">
+                  <h2 className="text-foreground text-xl font-semibold">
                     Upcoming Matches
                   </h2>
                   <Link
                     href="/matches"
-                    className="text-sm text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"
+                    className="text-muted hover:text-primary text-sm"
                   >
                     View all
                   </Link>
                 </div>
 
                 {upcomingMatches.length === 0 ? (
-                  <div className="rounded-lg border border-zinc-200 bg-white p-6 text-center dark:border-zinc-800 dark:bg-zinc-900">
-                    <Clock className="mx-auto mb-2 h-8 w-8 text-zinc-300 dark:text-zinc-600" />
-                    <p className="text-zinc-500 dark:text-zinc-400">
-                      No upcoming matches scheduled.
-                    </p>
+                  <div className="border-primary-light bg-surface rounded-lg border p-6 text-center">
+                    <Clock className="text-muted mx-auto mb-2 h-8 w-8" />
+                    <p className="text-muted">No upcoming matches scheduled.</p>
                   </div>
                 ) : (
                   <div className="space-y-3">
@@ -137,21 +137,21 @@ export default async function HomePage() {
               {/* Public Competitions Section */}
               <section>
                 <div className="mb-4 flex items-center justify-between">
-                  <h2 className="text-xl font-semibold text-black dark:text-white">
+                  <h2 className="text-foreground text-xl font-semibold">
                     All Active Competitions
                   </h2>
                   <Link
                     href="/competitions"
-                    className="text-sm text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"
+                    className="text-muted hover:text-primary text-sm"
                   >
                     Browse all
                   </Link>
                 </div>
 
                 {competitions.length === 0 ? (
-                  <div className="rounded-lg border border-zinc-200 bg-white p-8 text-center dark:border-zinc-800 dark:bg-zinc-900">
-                    <Trophy className="mx-auto mb-3 h-12 w-12 text-zinc-300 dark:text-zinc-600" />
-                    <p className="text-zinc-600 dark:text-zinc-400">
+                  <div className="border-primary-light bg-surface rounded-lg border p-8 text-center">
+                    <Trophy className="text-muted mx-auto mb-3 h-12 w-12" />
+                    <p className="text-foreground">
                       No active competitions at the moment.
                     </p>
                   </div>
@@ -172,23 +172,23 @@ export default async function HomePage() {
             <div className="space-y-8">
               {/* Quick Actions */}
               <section>
-                <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-black dark:text-white">
-                  <Target className="h-5 w-5" />
+                <h2 className="text-foreground mb-4 flex items-center gap-2 text-lg font-semibold">
+                  <Target className="text-primary h-5 w-5" />
                   Quick Actions
                 </h2>
                 <div className="space-y-3">
                   <Link
                     href="/competitions"
-                    className="flex items-center justify-center gap-2 rounded-lg border border-zinc-200 bg-white px-4 py-3 text-center font-medium text-black transition-colors hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-white dark:hover:bg-zinc-800"
+                    className="border-primary-light bg-surface text-foreground hover:border-primary hover:bg-primary-light flex items-center justify-center gap-2 rounded-lg border px-4 py-3 text-center font-medium transition-colors"
                   >
-                    <Trophy className="h-4 w-4" />
+                    <Trophy className="text-primary h-4 w-4" />
                     Browse Competitions
                   </Link>
                   <Link
                     href="/teams"
-                    className="flex items-center justify-center gap-2 rounded-lg border border-zinc-200 bg-white px-4 py-3 text-center font-medium text-black transition-colors hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-white dark:hover:bg-zinc-800"
+                    className="border-primary-light bg-surface text-foreground hover:border-primary hover:bg-primary-light flex items-center justify-center gap-2 rounded-lg border px-4 py-3 text-center font-medium transition-colors"
                   >
-                    <Users className="h-4 w-4" />
+                    <Users className="text-accent h-4 w-4" />
                     Manage Teams
                   </Link>
                 </div>
@@ -197,23 +197,21 @@ export default async function HomePage() {
               {/* My Teams */}
               <section>
                 <div className="mb-4 flex items-center justify-between">
-                  <h2 className="text-lg font-semibold text-black dark:text-white">
+                  <h2 className="text-foreground text-lg font-semibold">
                     My Teams
                   </h2>
                   <Link
                     href="/teams"
-                    className="text-sm text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"
+                    className="text-muted hover:text-primary text-sm"
                   >
                     View all
                   </Link>
                 </div>
 
                 {myTeams.length === 0 ? (
-                  <div className="rounded-lg border border-zinc-200 bg-white p-6 text-center dark:border-zinc-800 dark:bg-zinc-900">
-                    <Users className="mx-auto mb-2 h-8 w-8 text-zinc-300 dark:text-zinc-600" />
-                    <p className="text-sm text-zinc-500 dark:text-zinc-400">
-                      No teams yet.
-                    </p>
+                  <div className="border-primary-light bg-surface rounded-lg border p-6 text-center">
+                    <Users className="text-muted mx-auto mb-2 h-8 w-8" />
+                    <p className="text-muted text-sm">No teams yet.</p>
                   </div>
                 ) : (
                   <div className="space-y-3">
@@ -231,24 +229,24 @@ export default async function HomePage() {
             {/* Main Content - Active Competitions */}
             <div className="lg:col-span-2">
               <div className="mb-6 flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-black dark:text-white">
+                <h2 className="text-foreground text-xl font-semibold">
                   Active Competitions
                 </h2>
                 <Link
                   href="/competitions"
-                  className="text-sm text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"
+                  className="text-muted hover:text-primary text-sm"
                 >
                   View all
                 </Link>
               </div>
 
               {competitions.length === 0 ? (
-                <div className="rounded-lg border border-zinc-200 bg-white p-8 text-center dark:border-zinc-800 dark:bg-zinc-900">
-                  <Trophy className="mx-auto mb-3 h-12 w-12 text-zinc-300 dark:text-zinc-600" />
-                  <p className="text-zinc-600 dark:text-zinc-400">
+                <div className="border-primary-light bg-surface rounded-lg border p-8 text-center">
+                  <Trophy className="text-muted mx-auto mb-3 h-12 w-12" />
+                  <p className="text-foreground">
                     No active competitions at the moment.
                   </p>
-                  <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-500">
+                  <p className="text-muted mt-2 text-sm">
                     Check back later or view the archive for completed
                     competitions.
                   </p>
@@ -268,7 +266,7 @@ export default async function HomePage() {
               <div className="mt-8">
                 <Link
                   href="/competitions/archive"
-                  className="inline-flex items-center text-sm text-zinc-600 hover:text-black dark:text-zinc-400 dark:hover:text-white"
+                  className="text-muted hover:text-primary inline-flex items-center text-sm"
                 >
                   <span>View competition archive</span>
                   <ChevronRight className="ml-1 h-4 w-4" />
@@ -296,14 +294,34 @@ type CompetitionData = Awaited<ReturnType<typeof getMyCompetitions>>[number];
 function CompetitionCard({
   competition,
 }: Readonly<{ competition: CompetitionData }>) {
-  const statusStyles: Record<string, string> = {
-    registration:
-      "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-    group_stage:
-      "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-    knockout:
-      "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400",
-    completed: "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
+  const getStatusStyle = (status: string) => {
+    switch (status) {
+      case "registration":
+        return {
+          backgroundColor: "var(--badge-registration-bg)",
+          color: "var(--badge-registration-text)",
+        };
+      case "group_stage":
+        return {
+          backgroundColor: "var(--badge-group-bg)",
+          color: "var(--badge-group-text)",
+        };
+      case "knockout":
+        return {
+          backgroundColor: "var(--badge-knockout-bg)",
+          color: "var(--badge-knockout-text)",
+        };
+      case "completed":
+        return {
+          backgroundColor: "var(--badge-completed-bg)",
+          color: "var(--badge-completed-text)",
+        };
+      default:
+        return {
+          backgroundColor: "var(--badge-registration-bg)",
+          color: "var(--badge-registration-text)",
+        };
+    }
   };
 
   const statusIcons: Record<string, React.ReactNode> = {
@@ -316,19 +334,20 @@ function CompetitionCard({
   return (
     <Link
       href={`/competitions/${competition.competitionId}?tab=standings`}
-      className="block rounded-lg border border-zinc-200 bg-white p-4 transition-colors hover:border-zinc-300 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-700 dark:hover:bg-zinc-800"
+      className="border-primary-light bg-surface hover:border-primary hover:bg-primary-light block rounded-lg border p-4 transition-colors"
     >
       <div className="flex items-start justify-between">
         <div>
-          <h3 className="font-medium text-black dark:text-white">
+          <h3 className="text-foreground font-medium">
             {competition.competitionName}
           </h3>
-          <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+          <p className="text-muted mt-1 text-sm">
             Playing as {competition.teamName}
           </p>
         </div>
         <span
-          className={`flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${statusStyles[competition.competitionStatus] ?? statusStyles.registration}`}
+          className="flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium"
+          style={getStatusStyle(competition.competitionStatus)}
         >
           {statusIcons[competition.competitionStatus]}
           {competition.competitionStatus.replace("_", " ")}
@@ -345,14 +364,34 @@ type PublicCompetition = Awaited<
 function PublicCompetitionCard({
   competition,
 }: Readonly<{ competition: PublicCompetition }>) {
-  const statusStyles: Record<string, string> = {
-    registration:
-      "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-    group_stage:
-      "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-    knockout:
-      "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400",
-    completed: "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
+  const getStatusStyle = (status: string) => {
+    switch (status) {
+      case "registration":
+        return {
+          backgroundColor: "var(--badge-registration-bg)",
+          color: "var(--badge-registration-text)",
+        };
+      case "group_stage":
+        return {
+          backgroundColor: "var(--badge-group-bg)",
+          color: "var(--badge-group-text)",
+        };
+      case "knockout":
+        return {
+          backgroundColor: "var(--badge-knockout-bg)",
+          color: "var(--badge-knockout-text)",
+        };
+      case "completed":
+        return {
+          backgroundColor: "var(--badge-completed-bg)",
+          color: "var(--badge-completed-text)",
+        };
+      default:
+        return {
+          backgroundColor: "var(--badge-registration-bg)",
+          color: "var(--badge-registration-text)",
+        };
+    }
   };
 
   const statusIcons: Record<string, React.ReactNode> = {
@@ -365,30 +404,35 @@ function PublicCompetitionCard({
   return (
     <Link
       href={`/competitions/${competition.id}`}
-      className="block rounded-lg border border-zinc-200 bg-white p-4 transition-colors hover:border-zinc-300 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-700 dark:hover:bg-zinc-800"
+      className="border-primary-light bg-surface hover:border-primary hover:bg-primary-light block rounded-lg border p-4 transition-colors"
     >
-      <h3 className="font-medium text-black dark:text-white">
-        {competition.name}
-      </h3>
+      <h3 className="text-foreground font-medium">{competition.name}</h3>
       {competition.description && (
-        <p className="mt-1 line-clamp-2 text-sm text-zinc-600 dark:text-zinc-400">
+        <p className="text-muted mt-1 line-clamp-2 text-sm">
           {competition.description}
         </p>
       )}
       <div className="mt-3 flex flex-wrap gap-2">
         <span
-          className={`flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${statusStyles[competition.status] ?? statusStyles.registration}`}
+          className="flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium"
+          style={getStatusStyle(competition.status)}
         >
           {statusIcons[competition.status]}
           {competition.status.replace("_", " ")}
         </span>
-        <span className="flex items-center gap-1 rounded-full bg-zinc-100 px-2 py-0.5 text-xs font-medium text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+        <span
+          className="flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium"
+          style={{
+            backgroundColor: "var(--badge-scheduled-bg)",
+            color: "var(--badge-scheduled-text)",
+          }}
+        >
           <Users className="h-3 w-3" />
           {competition.teamSize} players/team
         </span>
       </div>
-      <div className="mt-2 flex items-center gap-1 text-xs text-zinc-500 dark:text-zinc-500">
-        <Users className="h-3 w-3" />
+      <div className="text-muted mt-2 flex items-center gap-1 text-xs">
+        <Users className="text-accent h-3 w-3" />
         {competition.registeredTeamCount} team
         {competition.registeredTeamCount !== 1 ? "s" : ""} registered
       </div>
@@ -414,31 +458,64 @@ type MatchData = {
 };
 
 function MatchCard({ match }: Readonly<{ match: MatchData }>) {
-  const statusStyles: Record<string, string> = {
-    scheduled: "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
-    in_progress:
-      "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+  const getStatusStyle = (status: string) => {
+    switch (status) {
+      case "scheduled":
+        return {
+          backgroundColor: "var(--badge-scheduled-bg)",
+          color: "var(--badge-scheduled-text)",
+        };
+      case "in_progress":
+        return {
+          backgroundColor: "var(--badge-registration-bg)",
+          color: "var(--badge-registration-text)",
+        };
+      case "completed":
+        return {
+          backgroundColor: "var(--badge-group-bg)",
+          color: "var(--badge-group-text)",
+        };
+      case "cancelled":
+        return {
+          backgroundColor: "var(--badge-completed-bg)",
+          color: "var(--badge-completed-text)",
+        };
+      default:
+        return {
+          backgroundColor: "var(--badge-scheduled-bg)",
+          color: "var(--badge-scheduled-text)",
+        };
+    }
   };
 
   const statusIcons: Record<string, React.ReactNode> = {
     scheduled: <Clock className="h-3 w-3" />,
     in_progress: <Target className="h-3 w-3" />,
+    completed: <CheckCircle2 className="h-3 w-3" />,
+    cancelled: <XCircle className="h-3 w-3" />,
   };
 
   return (
     <Link
       href={`/matches/${match.id}`}
-      className="block rounded-lg border border-zinc-200 bg-white p-4 transition-colors hover:border-zinc-300 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-700 dark:hover:bg-zinc-800"
+      className="border-primary-light bg-surface hover:border-primary hover:bg-primary-light block rounded-lg border p-4 transition-colors"
     >
       <div className="flex items-center gap-2 text-xs">
         <span
-          className={`flex items-center gap-1 rounded-full px-2 py-0.5 font-medium ${statusStyles[match.status] ?? statusStyles.scheduled}`}
+          className="flex items-center gap-1 rounded-full px-2 py-0.5 font-medium"
+          style={getStatusStyle(match.status)}
         >
           {statusIcons[match.status]}
           {match.status.replace("_", " ")}
         </span>
         {match.isKnockout && (
-          <span className="flex items-center gap-1 rounded-full bg-purple-100 px-2 py-0.5 font-medium text-purple-700 dark:bg-purple-900/30 dark:text-purple-400">
+          <span
+            className="flex items-center gap-1 rounded-full px-2 py-0.5 font-medium"
+            style={{
+              backgroundColor: "var(--badge-knockout-bg)",
+              color: "var(--badge-knockout-text)",
+            }}
+          >
             <Trophy className="h-3 w-3" />
             Knockout
           </span>
@@ -447,19 +524,15 @@ function MatchCard({ match }: Readonly<{ match: MatchData }>) {
       <div className="mt-2 flex items-center justify-between">
         <span
           className={
-            match.isMyTeamHome
-              ? "font-semibold text-black dark:text-white"
-              : "text-zinc-600 dark:text-zinc-400"
+            match.isMyTeamHome ? "text-foreground font-semibold" : "text-muted"
           }
         >
           {match.homeTeam?.name ?? "TBH"}
         </span>
-        <span className="px-2 text-zinc-400">vs</span>
+        <span className="text-muted px-2">vs</span>
         <span
           className={
-            !match.isMyTeamHome
-              ? "font-semibold text-black dark:text-white"
-              : "text-zinc-600 dark:text-zinc-400"
+            !match.isMyTeamHome ? "text-foreground font-semibold" : "text-muted"
           }
         >
           {match.awayTeam?.name ?? "TBH"}
@@ -475,17 +548,15 @@ function TeamCard({ team }: Readonly<{ team: TeamData }>) {
   return (
     <Link
       href={`/teams/${team.id}`}
-      className="flex items-center justify-between rounded-lg border border-zinc-200 bg-white p-4 transition-colors hover:border-zinc-300 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-700 dark:hover:bg-zinc-800"
+      className="border-primary-light bg-surface hover:border-primary hover:bg-primary-light flex items-center justify-between rounded-lg border p-4 transition-colors"
     >
       <div>
-        <span className="font-medium text-black dark:text-white">
-          {team.name}
-        </span>
-        <p className="text-xs text-zinc-500 dark:text-zinc-400">
+        <span className="text-foreground font-medium">{team.name}</span>
+        <p className="text-muted text-xs">
           {team.members.length} member{team.members.length !== 1 ? "s" : ""}
         </p>
       </div>
-      <ChevronRight className="h-5 w-5 text-zinc-400" />
+      <ChevronRight className="text-muted h-5 w-5" />
     </Link>
   );
 }

@@ -156,13 +156,34 @@ function MatchRow({
     null,
   );
 
-  const statusStyles: Record<string, string> = {
-    scheduled: "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
-    in_progress:
-      "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-    completed:
-      "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-    cancelled: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
+  const getMatchStatusStyle = (status: string) => {
+    switch (status) {
+      case "scheduled":
+        return {
+          backgroundColor: "var(--badge-scheduled-bg)",
+          color: "var(--badge-scheduled-text)",
+        };
+      case "in_progress":
+        return {
+          backgroundColor: "var(--badge-group-bg)",
+          color: "var(--badge-group-text)",
+        };
+      case "completed":
+        return {
+          backgroundColor: "var(--badge-completed-bg)",
+          color: "var(--badge-completed-text)",
+        };
+      case "cancelled":
+        return {
+          backgroundColor: "var(--badge-draft-bg)",
+          color: "var(--badge-draft-text)",
+        };
+      default:
+        return {
+          backgroundColor: "var(--badge-scheduled-bg)",
+          color: "var(--badge-scheduled-text)",
+        };
+    }
   };
 
   return (
@@ -205,7 +226,8 @@ function MatchRow({
       </td>
       <td className="px-4 py-2">
         <span
-          className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium ${statusStyles[match.status] ?? statusStyles.scheduled}`}
+          className="inline-block rounded-full px-2 py-0.5 text-xs font-medium"
+          style={getMatchStatusStyle(match.status)}
         >
           {match.status.replace("_", " ")}
         </span>

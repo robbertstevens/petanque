@@ -128,13 +128,34 @@ function MatchCard({
   match,
   isAuthenticated = false,
 }: Readonly<{ match: Match; isAuthenticated?: boolean }>) {
-  const statusStyles: Record<string, string> = {
-    scheduled: "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
-    in_progress:
-      "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-    completed:
-      "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-    cancelled: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
+  const getMatchStatusStyle = (status: string) => {
+    switch (status) {
+      case "scheduled":
+        return {
+          backgroundColor: "var(--badge-scheduled-bg)",
+          color: "var(--badge-scheduled-text)",
+        };
+      case "in_progress":
+        return {
+          backgroundColor: "var(--badge-group-bg)",
+          color: "var(--badge-group-text)",
+        };
+      case "completed":
+        return {
+          backgroundColor: "var(--badge-completed-bg)",
+          color: "var(--badge-completed-text)",
+        };
+      case "cancelled":
+        return {
+          backgroundColor: "var(--badge-draft-bg)",
+          color: "var(--badge-draft-text)",
+        };
+      default:
+        return {
+          backgroundColor: "var(--badge-scheduled-bg)",
+          color: "var(--badge-scheduled-text)",
+        };
+    }
   };
 
   const homeWon = match.score && match.score.homeScore > match.score.awayScore;
@@ -145,12 +166,19 @@ function MatchCard({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 text-xs">
           <span
-            className={`rounded-full px-2 py-0.5 font-medium ${statusStyles[match.status]}`}
+            className="rounded-full px-2 py-0.5 font-medium"
+            style={getMatchStatusStyle(match.status)}
           >
             {match.status.replace("_", " ")}
           </span>
           {match.isKnockout && (
-            <span className="rounded-full bg-purple-100 px-2 py-0.5 font-medium text-purple-700 dark:bg-purple-900/30 dark:text-purple-400">
+            <span
+              className="rounded-full px-2 py-0.5 font-medium"
+              style={{
+                backgroundColor: "var(--badge-knockout-bg)",
+                color: "var(--badge-knockout-text)",
+              }}
+            >
               Knockout
             </span>
           )}
