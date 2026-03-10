@@ -3,7 +3,8 @@ import { redirect } from "next/navigation";
 import { getAllUsers, isCurrentUserSuperAdmin } from "@/lib/actions/users";
 import { Table } from "@/components/table";
 
-import { UserActions, getRoleBadge, formatUserDate } from "./user-actions";
+import { UserActions, formatUserDate } from "./user-actions";
+import { RoleBadge } from "./role-badge";
 
 type User = {
   id: string;
@@ -52,7 +53,7 @@ export default async function UsersPage() {
     {
       key: "role",
       header: "Role",
-      cell: (user: User) => getRoleBadge(user.role),
+      cell: (user: User) => <RoleBadge role={user.role} />,
     },
     {
       key: "joined",
