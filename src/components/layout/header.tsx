@@ -1,18 +1,41 @@
+"use client";
+
 import Link from "next/link";
-import { headers } from "next/headers";
-import { Trophy, Users, Shield, LogIn } from "lucide-react";
+import { Trophy, Users, Shield, LogIn, LogOut } from "lucide-react";
 
-import { auth } from "@/lib/auth";
-import { isCurrentUserAdmin } from "@/lib/actions/competitions-admin";
+import { useSession } from "@/hooks/use-session";
+import { useIsAdmin } from "@/hooks/use-is-admin";
+import { signOut } from "@/lib/auth-client";
+import { MobileMenu } from "./mobile-menu";
 
-import { SignOutButton } from "@/app/dashboard/sign-out-button";
+export function Header() {
+  const { session, isLoading } = useSession();
+  const { isAdmin, isLoading: isLoadingAdmin } = useIsAdmin();
 
-export async function Header() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const isAuthenticated = !!session;
 
-  const isAdmin = session?.user ? await isCurrentUserAdmin() : false;
+  const handleSignOut = async () => {
+    await signOut();
+    window.location.href = "/";
+  };
+
+  if (isLoading || isLoadingAdmin) {
+    return (
+      <header className="border-primary-light bg-surface border-b dark:border-[color-mix(in_oklab,var(--color-primary-light)_20%,transparent)] dark:bg-[var(--surface)]">
+        <div className="mx-auto max-w-6xl px-4">
+          <div className="flex h-14 items-center justify-between">
+            <Link
+              href="/"
+              className="text-primary hover:text-primary/80 font-display text-3xl font-semibold uppercase transition-colors"
+            >
+              Pétanque
+            </Link>
+            <div className="bg-primary-light h-6 w-6 animate-pulse rounded" />
+          </div>
+        </div>
+      </header>
+    );
+  }
 
   return (
     <header className="border-primary-light bg-surface border-b dark:border-[color-mix(in_oklab,var(--color-primary-light)_20%,transparent)] dark:bg-[var(--surface)]">
@@ -26,8 +49,8 @@ export async function Header() {
             Pétanque
           </Link>
 
-          {/* Navigation */}
-          <nav className="flex items-center gap-6">
+          {/* Desktop Navigation */}
+          <nav className="hidden items-center gap-6 md:flex">
             <Link
               href="/competitions"
               className="text-muted hover:text-primary flex items-center gap-1.5 text-sm transition-colors"
@@ -36,7 +59,7 @@ export async function Header() {
               Competitions
             </Link>
 
-            {session?.user && (
+            {isAuthenticated && (
               <>
                 <Link
                   href="/teams"
@@ -57,8 +80,14 @@ export async function Header() {
               </>
             )}
 
-            {session?.user ? (
-              <SignOutButton />
+            {isAuthenticated ? (
+              <button
+                onClick={handleSignOut}
+                className="hover:bg-primary-light flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium text-red-600 transition-colors"
+              >
+                <LogOut className="h-4 w-4" />
+                Sign Out
+              </button>
             ) : (
               <Link
                 href="/"
@@ -69,6 +98,11 @@ export async function Header() {
               </Link>
             )}
           </nav>
+
+          {/* Mobile Menu */}
+          <div className="md:hidden">
+            <MobileMenu isAuthenticated={isAuthenticated} isAdmin={isAdmin} />
+          </div>
         </div>
       </div>
     </header>
