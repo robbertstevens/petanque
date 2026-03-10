@@ -75,11 +75,3 @@ export function UserActions({ user }: Readonly<{ user: User }>) {
     </div>
   );
 }
-
-export function formatUserDate(date: Date) {
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  }).format(new Date(date));
-}

@@ -3,8 +3,9 @@ import { redirect } from "next/navigation";
 import { getAllUsers, isCurrentUserSuperAdmin } from "@/lib/actions/users";
 import { Table } from "@/components/table";
 
-import { UserActions, formatUserDate } from "./user-actions";
+import { UserActions } from "./user-actions";
 import { RoleBadge } from "./role-badge";
+import { formatUserDate } from "./date-utils";
 
 type User = {
   id: string;
