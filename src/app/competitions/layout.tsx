@@ -18,14 +18,7 @@ export default async function CompetitionsLayout({
             <h1 className="font-display text-foreground text-xl font-semibold">
               Competitions
             </h1>
-            {session ? (
-              <Link
-                href="/"
-                className="text-sm text-zinc-600 hover:text-black dark:text-zinc-400 dark:hover:text-white"
-              >
-                ← Back to Home
-              </Link>
-            ) : (
+            {!session && (
               <Link
                 href="/"
                 className="text-sm text-zinc-600 hover:text-black dark:text-zinc-400 dark:hover:text-white"

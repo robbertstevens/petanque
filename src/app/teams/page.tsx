@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 import Link from "next/link";
-import { Users, ArrowLeft, Crown, Mail, Inbox } from "lucide-react";
+import { Users, Crown, Mail, Inbox } from "lucide-react";
 
 import { auth } from "@/lib/auth";
 import { getMyTeams, getMyInvitations } from "@/lib/actions/teams";
@@ -30,13 +30,6 @@ export default async function TeamsPage() {
             <Users className="text-accent h-5 w-5" />
             My Teams
           </h1>
-          <Link
-            href="/"
-            className="text-muted hover:text-primary flex items-center gap-1.5 text-sm"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back to Home
-          </Link>
         </div>
       </header>
 

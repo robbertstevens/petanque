@@ -23,12 +23,6 @@ export default async function MatchesLayout({
             <h1 className="font-display text-foreground text-xl font-semibold">
               Matches
             </h1>
-            <Link
-              href="/"
-              className="text-sm text-zinc-600 hover:text-black dark:text-zinc-400 dark:hover:text-white"
-            >
-              ← Back to Home
-            </Link>
           </div>
           <nav className="mt-4 flex gap-4">
             <NavLink href="/matches">Upcoming</NavLink>
